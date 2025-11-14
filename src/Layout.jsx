@@ -1,0 +1,711 @@
+
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
+import { createPageUrl } from "@/utils";
+import { cn } from "@/lib/utils";
+import { LayoutDashboard, Wrench, BarChart3, Menu, X, PlayCircle, ArrowRight, UserPlus, Code, BookOpen, Globe, Link2
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { User } from "@/entities/User";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
+
+const ListItem = React.forwardRef(({ className, title, children, ...props }, ref) => {
+  return (
+    <li>
+      <NavigationMenuLink asChild>
+        <a
+          ref={ref}
+          className={cn(
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-slate-800 hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            className
+          )}
+          {...props}
+        >
+          <div className="text-sm font-medium leading-none text-white">{title}</div>
+          <p className="line-clamp-2 text-sm leading-snug text-slate-400">
+            {children}
+          </p>
+        </a>
+      </NavigationMenuLink>
+    </li>
+  );
+});
+ListItem.displayName = "ListItem";
+
+export default function Layout({ children }) {
+  const location = useLocation();
+  const [user, setUser] = React.useState(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const [scrolled, setScrolled] = React.useState(false);
+  
+  React.useEffect(() => {
+    User.me().then(setUser).catch(() => setUser(null));
+  }, []);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const isActive = (path) => location.pathname === path;
+  
+  const publicNavItems = [
+    { name: "Features", path: createPageUrl("Home") + "#features" },
+    { name: "Pricing", path: createPageUrl("Home") + "#pricing" },
+    { name: "FAQ", path: createPageUrl("Home") + "#faq" }
+  ];
+
+  const authenticatedNavItems = [
+    { name: "Dashboard", path: createPageUrl("Dashboard"), icon: LayoutDashboard },
+    { name: "Analytics", path: createPageUrl("Analytics"), icon: BarChart3 },
+    { name: "Integrations", path: createPageUrl("Integrations"), icon: Link2 }
+  ];
+  
+  const toolComponents = [
+    {
+      title: "App Builder",
+      href: createPageUrl("AppBuilder"),
+      description: "Generate full-stack applications from a text prompt.",
+      icon: Code,
+    },
+    {
+      title: "Website Cloner",
+      href: createPageUrl("WebsiteCloner"),
+      description: "Clone any existing website with AI-powered code generation.",
+      icon: Globe,
+    },
+    {
+      title: "Content Studio",
+      href: createPageUrl("ContentStudio"),
+      description: "Create educational materials, lesson plans, and assessments.",
+      icon: BookOpen,
+    },
+  ];
+
+  const navItems = user ? authenticatedNavItems : publicNavItems;
+
+  // Calculate dynamic spacer height based on whether the promo banner is visible
+  // The promo banner is roughly 40px tall (10px padding top + ~20px content + 10px padding bottom)
+  // The nav bar itself is roughly 73px tall (16px padding top + 40px content + 16px padding bottom + 1px border)
+  // So, if no user, banner (40px) + nav (73px) = 113px. If user, only nav (73px).
+  const stickyHeaderHeight = user ? '73px' : '113px';
+
+  return (
+    <div style={{
+      minHeight: '100vh',
+      backgroundColor: '#0F172A',
+      color: '#FFFFFF',
+      fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif"
+    }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+        
+        body {
+          background: #0F172A;
+          color: #FFFFFF;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .ff-gradient-text {
+          background: linear-gradient(135deg, #FF7B00 0%, #00B4D8 50%, #E91E63 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        
+        .ff-card {
+          background: rgba(30, 41, 59, 0.5);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 16px;
+          backdrop-filter: blur(10px);
+          transition: all 0.3s ease;
+        }
+        
+        .ff-card:hover {
+          border-color: rgba(255, 123, 0, 0.5);
+          transform: translateY(-2px);
+          box-shadow: 0 8px 32px rgba(255, 123, 0, 0.2);
+        }
+
+        .ff-card-interactive:hover {
+          background: rgba(255, 123, 0, 0.15);
+          border-color: rgba(255, 123, 0, 0.5);
+        }
+        
+        .ff-btn-primary {
+          background: #FF7B00;
+          color: white;
+          border: none;
+          padding: 12px 32px;
+          border-radius: 12px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+        
+        .ff-btn-primary:hover {
+          background: #E66D00;
+          transform: translateY(-2px);
+          box-shadow: 0 8px 24px rgba(255, 123, 0, 0.4);
+        }
+        
+        .ff-btn-secondary {
+          background: rgba(0, 180, 216, 0.1);
+          color: #00B4D8;
+          border: 1px solid #00B4D8;
+          padding: 12px 32px;
+          border-radius: 12px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+        
+        .ff-btn-secondary:hover {
+          background: rgba(0, 180, 216, 0.2);
+          transform: translateY(-2px);
+        }
+        
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        .ff-fade-in {
+          animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .ff-nav-link {
+          color: #CBD5E1;
+          text-decoration: none;
+          padding: 8px 16px;
+          border-radius: 8px;
+          transition: all 0.3s ease;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 15px;
+          font-weight: 500;
+        }
+        
+        .ff-nav-link:hover {
+          color: #FF7B00;
+          background: rgba(255, 123, 0, 0.1);
+        }
+        
+        .ff-nav-link-active {
+          color: #FF7B00;
+          background: rgba(255, 123, 0, 0.15);
+        }
+
+        .ff-sticky-nav {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          z-index: 1000;
+          transition: all 0.3s ease;
+        }
+
+        .ff-nav-scrolled {
+          background: rgba(15, 23, 42, 0.95);
+          backdrop-filter: blur(12px);
+          box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .ff-promo-banner {
+          background: linear-gradient(135deg, rgba(233, 30, 99, 0.8) 0%, rgba(139, 92, 246, 0.8) 100%);
+          padding: 10px 24px;
+          text-align: center;
+          animation: slideDown 0.5s ease;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes slideDown {
+          from {
+            transform: translateY(-100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
+
+        .ff-mobile-menu {
+          background: rgba(15, 23, 42, 0.98);
+          backdrop-filter: blur(12px);
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @media (min-width: 768px) {
+          .ff-desktop-nav {
+            display: flex !important;
+          }
+          .ff-mobile-menu-btn {
+            display: none !important;
+          }
+        }
+
+        @media (max-width: 767px) {
+          .ff-desktop-nav {
+            display: none !important;
+          }
+          .ff-mobile-menu-btn {
+            display: block !important;
+          }
+        }
+      `}</style>
+
+      {/* Sticky Navigation */}
+      <div className={`ff-sticky-nav ${scrolled ? 'ff-nav-scrolled' : ''}`}>
+        {/* Promotional Banner */}
+        {!user && (
+          <div className="ff-promo-banner">
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '12px',
+              flexWrap: 'wrap'
+            }}>
+              <span style={{ fontSize: '14px', fontWeight: '600', color: 'white' }}>
+                🎁 Limited Time Launch Offer:
+              </span>
+              <span style={{ fontSize: '16px', fontWeight: '800', color: 'white' }}>
+                50% OFF
+              </span>
+              <span style={{ fontSize: '14px', fontWeight: '500', color: 'rgba(255, 255, 255, 0.9)' }}>
+                for 4 months | Limited spots available
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Main Navigation Bar */}
+        <nav style={{
+          backgroundColor: scrolled ? 'transparent' : 'rgba(15, 23, 42, 0.8)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+        }}>
+          <div style={{
+            maxWidth: '1400px',
+            margin: '0 auto',
+            padding: '16px 24px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            {/* Logo */}
+            <Link to={createPageUrl("Home")} style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              textDecoration: 'none'
+            }}>
+              <div style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '12px',
+                background: 'linear-gradient(135deg, #FF7B00, #E91E63)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 'bold',
+                fontSize: '20px',
+                boxShadow: '0 4px 12px rgba(255, 123, 0, 0.3)'
+              }}>
+                F
+              </div>
+              <span style={{
+                fontSize: '24px',
+                fontWeight: 'bold',
+                color: '#FFFFFF',
+                letterSpacing: '-0.5px'
+              }}>
+                FlashFusion
+              </span>
+            </Link>
+
+            {/* Desktop Navigation */}
+            <div className="ff-desktop-nav" style={{
+              display: 'none',
+              gap: '8px',
+              alignItems: 'center'
+            }}>
+              {user ? (
+                <NavigationMenu>
+                  <NavigationMenuList>
+                    {authenticatedNavItems.map(item => (
+                      <NavigationMenuItem key={item.name}>
+                        <Link to={item.path} legacyBehavior passHref>
+                          <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "bg-transparent text-slate-300 hover:bg-slate-800 hover:text-white focus:bg-slate-800", isActive(item.path) && "bg-slate-800 text-white")}>
+                            <item.icon className="w-4 h-4 mr-2" />
+                            {item.name}
+                          </NavigationMenuLink>
+                        </Link>
+                      </NavigationMenuItem>
+                    ))}
+                    <NavigationMenuItem>
+                      <NavigationMenuTrigger className="bg-transparent text-slate-300 hover:bg-slate-800 hover:text-white focus:bg-slate-800">
+                        <Wrench className="w-4 h-4 mr-2" />
+                        AI Tools
+                      </NavigationMenuTrigger>
+                      <NavigationMenuContent>
+                        <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] bg-slate-900/95 border border-slate-800 backdrop-blur-sm">
+                          {toolComponents.map((component) => (
+                            <ListItem
+                              key={component.title}
+                              title={component.title}
+                              href={component.href}
+                            >
+                              {component.description}
+                            </ListItem>
+                          ))}
+                        </ul>
+                      </NavigationMenuContent>
+                    </NavigationMenuItem>
+                  </NavigationMenuList>
+                </NavigationMenu>
+              ) : (
+                <>
+                  {navItems.map(item => (
+                    <Link
+                      key={item.name}
+                      to={item.path}
+                      className={`ff-nav-link ${isActive(item.path) ? 'ff-nav-link-active' : ''}`}
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                </>
+              )}
+              
+              {!user && (
+                <Link
+                  to={createPageUrl("Home") + "#demo"}
+                  style={{
+                    color: '#00B4D8',
+                    textDecoration: 'none',
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    fontSize: '15px',
+                    fontWeight: '500',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    border: '1px solid #00B4D8',
+                    background: 'rgba(0, 180, 216, 0.1)',
+                    transition: 'all 0.3s ease',
+                    marginLeft: '8px'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(0, 180, 216, 0.2)';
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(0, 180, 216, 0.1)';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                  }}
+                >
+                  <PlayCircle className="w-4 h-4" />
+                  Try Interactive Demo
+                </Link>
+              )}
+            </div>
+
+            {/* Auth Buttons */}
+            <div className="ff-desktop-nav" style={{
+              display: 'none',
+              gap: '12px',
+              alignItems: 'center'
+            }}>
+              {user ? (
+                <>
+                  <div style={{
+                    padding: '8px 16px',
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    color: '#CBD5E1'
+                  }}>
+                    {user.full_name || user.email}
+                  </div>
+                  <Button
+                    onClick={() => User.logout()}
+                    style={{
+                      background: 'rgba(239, 68, 68, 0.1)',
+                      color: '#EF4444',
+                      border: '1px solid #EF4444',
+                      padding: '10px 20px',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      fontWeight: '600'
+                    }}
+                  >
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    onClick={() => User.login()}
+                    style={{
+                      background: 'transparent',
+                      color: '#FFFFFF',
+                      border: '1px solid rgba(255, 255, 255, 0.2)',
+                      padding: '10px 20px',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      transition: 'all 0.3s ease',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.4)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'transparent';
+                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                    }}
+                  >
+                    <ArrowRight size={16} />
+                    Sign In
+                  </Button>
+                  <Button
+                    onClick={() => User.login()}
+                    style={{
+                      background: 'linear-gradient(135deg, #FF7B00, #E91E63)',
+                      color: 'white',
+                      border: 'none',
+                      padding: '10px 24px',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      boxShadow: '0 4px 12px rgba(255, 123, 0, 0.3)',
+                      transition: 'all 0.3s ease',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                      e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 123, 0, 0.4)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(255, 123, 0, 0.3)';
+                    }}
+                  >
+                    <UserPlus size={16} />
+                    Sign Up
+                  </Button>
+                </>
+              )}
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="ff-mobile-menu-btn"
+              style={{
+                display: 'none',
+                background: 'none',
+                border: 'none',
+                color: '#FFFFFF',
+                cursor: 'pointer',
+                padding: '8px'
+              }}
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
+
+          {/* Mobile Navigation */}
+          {mobileMenuOpen && (
+            <div className="ff-mobile-menu" style={{
+              padding: '16px 24px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px'
+            }}>
+              {/* For mobile, if user is authenticated, we show dashboard, analytics, and then "AI Tools" as a single link */}
+              {user ? (
+                <>
+                  {authenticatedNavItems.map(item => (
+                    <Link
+                      key={item.name}
+                      to={item.path}
+                      className={`ff-nav-link ${isActive(item.path) ? 'ff-nav-link-active' : ''}`}
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {item.icon && <item.icon style={{ width: '18px', height: '18px' }} />}
+                      {item.name}
+                    </Link>
+                  ))}
+                  {/* For mobile, the AI Tools becomes a single link to a default tools page or a general tools overview */}
+                  <Link
+                    to={createPageUrl("Tools")}
+                    className={`ff-nav-link ${isActive(createPageUrl("Tools")) ? 'ff-nav-link-active' : ''}`}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <Wrench style={{ width: '18px', height: '18px' }} />
+                    AI Tools
+                  </Link>
+                </>
+              ) : (
+                navItems.map(item => (
+                  <Link
+                    key={item.name}
+                    to={item.path}
+                    className={`ff-nav-link ${isActive(item.path) ? 'ff-nav-link-active' : ''}`}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {item.icon && <item.icon style={{ width: '18px', height: '18px' }} />}
+                    {item.name}
+                  </Link>
+                ))
+              )}
+              
+              {!user && (
+                <Link
+                  to={createPageUrl("Home") + "#demo"}
+                  onClick={() => setMobileMenuOpen(false)}
+                  style={{
+                    color: '#00B4D8',
+                    textDecoration: 'none',
+                    padding: '12px 16px',
+                    borderRadius: '8px',
+                    fontSize: '15px',
+                    fontWeight: '500',
+                    border: '1px solid #00B4D8',
+                    background: 'rgba(0, 180, 216, 0.1)',
+                    marginTop: '8px',
+                    textAlign: 'center',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px'
+                  }}
+                >
+                  <PlayCircle className="w-4 h-4" />
+                  Try Interactive Demo
+                </Link>
+              )}
+              
+              <div style={{
+                borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+                paddingTop: '16px',
+                marginTop: '8px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '12px'
+              }}>
+                {user ? (
+                  <>
+                    <div style={{
+                      padding: '12px',
+                      background: 'rgba(255, 255, 255, 0.05)',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      color: '#CBD5E1',
+                      textAlign: 'center'
+                    }}>
+                      {user.full_name || user.email}
+                    </div>
+                    <Button
+                      onClick={() => User.logout()}
+                      style={{
+                        background: 'rgba(239, 68, 68, 0.1)',
+                        color: '#EF4444',
+                        border: '1px solid #EF4444',
+                        width: '100%',
+                        padding: '12px'
+                      }}
+                    >
+                      Sign Out
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      onClick={() => User.login()}
+                      style={{
+                        background: 'transparent',
+                        color: '#FFFFFF',
+                        border: '1px solid rgba(255, 255, 255, 0.2)',
+                        width: '100%',
+                        padding: '12px'
+                      }}
+                    >
+                      Sign In
+                    </Button>
+                    <Button
+                      onClick={() => User.login()}
+                      style={{
+                        background: 'linear-gradient(135deg, #FF7B00, #E91E63)',
+                        color: 'white',
+                        border: 'none',
+                        width: '100%',
+                        padding: '12px',
+                        boxShadow: '0 4px 12px rgba(255, 123, 0, 0.3)'
+                      }}
+                    >
+                      Sign Up
+                    </Button>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+        </nav>
+      </div>
+
+      {/* Spacer for fixed nav */}
+      <div style={{ height: stickyHeaderHeight }} />
+
+      {/* Main Content */}
+      <main>
+        {children}
+      </main>
+
+      {/* Footer */}
+      <footer style={{
+        marginTop: '80px',
+        padding: '40px 24px',
+        borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+        textAlign: 'center',
+        color: '#94A3B8'
+      }}>
+        <p>© 2024 FlashFusion. Transform ideas into reality with AI.</p>
+      </footer>
+    </div>
+  );
+}

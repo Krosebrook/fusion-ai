@@ -1,0 +1,45 @@
+import Home from './pages/Home';
+import Dashboard from './pages/Dashboard';
+import Tools from './pages/Tools';
+import AppBuilder from './pages/AppBuilder';
+import ContentStudio from './pages/ContentStudio';
+import Analytics from './pages/Analytics';
+import Security from './pages/Security';
+import Commerce from './pages/Commerce';
+import Orchestration from './pages/Orchestration';
+import APIGenerator from './pages/APIGenerator';
+import MarketingSuite from './pages/MarketingSuite';
+import Workflows from './pages/Workflows';
+import Copilot from './pages/Copilot';
+import WebsiteCloner from './pages/WebsiteCloner';
+import Auth from './pages/Auth';
+import Onboarding from './pages/Onboarding';
+import Integrations from './pages/Integrations';
+import Layout from './Layout.jsx';
+
+
+export const PAGES = {
+    "Home": Home,
+    "Dashboard": Dashboard,
+    "Tools": Tools,
+    "AppBuilder": AppBuilder,
+    "ContentStudio": ContentStudio,
+    "Analytics": Analytics,
+    "Security": Security,
+    "Commerce": Commerce,
+    "Orchestration": Orchestration,
+    "APIGenerator": APIGenerator,
+    "MarketingSuite": MarketingSuite,
+    "Workflows": Workflows,
+    "Copilot": Copilot,
+    "WebsiteCloner": WebsiteCloner,
+    "Auth": Auth,
+    "Onboarding": Onboarding,
+    "Integrations": Integrations,
+}
+
+export const pagesConfig = {
+    mainPage: "Home",
+    Pages: PAGES,
+    Layout: Layout,
+};
