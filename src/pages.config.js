@@ -15,6 +15,7 @@ import WebsiteCloner from './pages/WebsiteCloner';
 import Auth from './pages/Auth';
 import Onboarding from './pages/Onboarding';
 import Integrations from './pages/Integrations';
+import EnhancedAnalytics from './pages/EnhancedAnalytics';
 import Layout from './Layout.jsx';
 
 
@@ -36,6 +37,7 @@ export const PAGES = {
     "Auth": Auth,
     "Onboarding": Onboarding,
     "Integrations": Integrations,
+    "EnhancedAnalytics": EnhancedAnalytics,
 }
 
 export const pagesConfig = {
