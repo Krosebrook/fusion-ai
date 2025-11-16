@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -5,10 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { base44 } from "@/api/base44Client";
 import FileTreeViewer from "./FileTreeViewer";
+import ComponentLibrary from "./ComponentLibrary";
 import { 
   CheckCircle2, FolderTree, ListChecks, Package, 
   Target, Code, Download, Eye, ArrowLeft, ChevronDown, ChevronUp,
-  Edit3, Check, X, Plus, Trash2, Wand2, Loader2, Image as ImageIcon
+  Edit3, Check, X, Plus, Trash2, Wand2, Loader2, Image as ImageIcon, Palette
 } from "lucide-react";
 
 const easeInOutCubic = [0.4, 0, 0.2, 1];
@@ -108,6 +110,20 @@ export default function GeneratedProject({ data, onReset }) {
     }
   };
 
+  const handleAddComponent = async (component) => {
+    const updated = { ...localData };
+    const newFile = {
+      path: `components/${component.name.replace(/\s+/g, '')}.jsx`,
+      description: `${component.name} component - ${component.code.substring(0, 50)}...`
+    };
+    updated.structure.fileStructure.push(newFile);
+    setLocalData(updated);
+    
+    await base44.entities.Project.update(project.id, {
+      output_data: { ...project.output_data, fileStructure: updated.structure.fileStructure }
+    });
+  };
+
   const addTechItem = (category) => {
     const updated = { ...localData.structure.techStack };
     if (Array.isArray(updated[category])) {
@@ -202,6 +218,12 @@ export default function GeneratedProject({ data, onReset }) {
           </Button>
         </div>
       </motion.div>
+
+      {/* Component Library */}
+      <ComponentLibrary 
+        projectDescription={structure.description}
+        onAddComponent={handleAddComponent}
+      />
 
       {/* Tech Stack */}
       <motion.div
