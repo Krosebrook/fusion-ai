@@ -16,6 +16,7 @@ import Auth from './pages/Auth';
 import Onboarding from './pages/Onboarding';
 import Integrations from './pages/Integrations';
 import EnhancedAnalytics from './pages/EnhancedAnalytics';
+import AITemplates from './pages/AITemplates';
 import Layout from './Layout.jsx';
 
 
@@ -38,6 +39,7 @@ export const PAGES = {
     "Onboarding": Onboarding,
     "Integrations": Integrations,
     "EnhancedAnalytics": EnhancedAnalytics,
+    "AITemplates": AITemplates,
 }
 
 export const pagesConfig = {
