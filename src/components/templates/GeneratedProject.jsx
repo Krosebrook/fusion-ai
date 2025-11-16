@@ -7,13 +7,33 @@ import { base44 } from "@/api/base44Client";
 import FileTreeViewer from "./FileTreeViewer";
 import ComponentLibrary from "./ComponentLibrary";
 import ProjectOptimizer from "./ProjectOptimizer";
-import { fadeInUp, scaleIn, slideIn, expandCollapse } from "@/utils/animations";
-import { glassCard, priorityColors, phaseColors, cardBase } from "@/utils/styles";
 import { 
   CheckCircle2, FolderTree, ListChecks, Package, 
   Target, Code, Download, Eye, ArrowLeft, ChevronDown, ChevronUp,
   Edit3, Check, X, Plus, Trash2, Wand2, Loader2
 } from "lucide-react";
+
+const easeInOutCubic = [0.4, 0, 0.2, 1];
+
+const glassCard = {
+  background: "linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.98) 100%)",
+  backdropFilter: "blur(20px)",
+  boxShadow: "0 20px 60px rgba(0, 0, 0, 0.4)"
+};
+
+const priorityColors = {
+  high: { bg: "bg-red-500/20", text: "text-red-400", border: "border-red-500/30" },
+  medium: { bg: "bg-yellow-500/20", text: "text-yellow-400", border: "border-yellow-500/30" },
+  low: { bg: "bg-green-500/20", text: "text-green-400", border: "border-green-500/30" }
+};
+
+const phaseColors = {
+  planning: "#00B4D8",
+  design: "#8B5CF6",
+  development: "#10B981",
+  testing: "#F59E0B",
+  deployment: "#E91E63"
+};
 
 export default function GeneratedProject({ data, onReset }) {
   const [expandedSection, setExpandedSection] = useState("overview");
@@ -124,10 +144,17 @@ export default function GeneratedProject({ data, onReset }) {
   }, {});
 
   return (
-    <motion.div {...fadeInUp} className="space-y-6">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: easeInOutCubic }}
+      className="space-y-6"
+    >
       {/* Success Header */}
       <motion.div
-        {...scaleIn}
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.2, ease: easeInOutCubic }}
         className="rounded-2xl border border-green-500/30 p-8 text-center"
         style={{
           background: "linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%)",
@@ -188,7 +215,13 @@ export default function GeneratedProject({ data, onReset }) {
       <ComponentLibrary projectDescription={structure.description} onAddComponent={handleAddComponent} />
 
       {/* Tech Stack */}
-      <motion.div {...slideIn} className={cardBase} style={glassCard}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="rounded-2xl border border-white/10 overflow-hidden"
+        style={glassCard}
+      >
         <button
           onClick={() => toggleSection("tech")}
           className="w-full p-6 flex items-center justify-between hover:bg-white/5 transition-colors"
@@ -201,7 +234,7 @@ export default function GeneratedProject({ data, onReset }) {
               <h3 className="text-xl font-bold text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                 Technology Stack
               </h3>
-              <p className="text-sm text-gray-400">Click to modify technologies</p>
+              <p className="text-sm text-gray-400">Click to view technologies</p>
             </div>
           </div>
           {expandedSection === "tech" ? <ChevronUp className="text-gray-400" /> : <ChevronDown className="text-gray-400" />}
@@ -209,7 +242,13 @@ export default function GeneratedProject({ data, onReset }) {
 
         <AnimatePresence>
           {expandedSection === "tech" && (
-            <motion.div {...expandCollapse} className="border-t border-white/10 p-6 space-y-4 overflow-hidden">
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: easeInOutCubic }}
+              className="border-t border-white/10 p-6 overflow-hidden"
+            >
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {Object.entries(structure.techStack).map(([category, items]) => (
                   <div key={category}>
@@ -234,7 +273,13 @@ export default function GeneratedProject({ data, onReset }) {
       </motion.div>
 
       {/* File Structure */}
-      <motion.div {...slideIn} className={cardBase} style={glassCard}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="rounded-2xl border border-white/10 overflow-hidden"
+        style={glassCard}
+      >
         <button
           onClick={() => toggleSection("files")}
           className="w-full p-6 flex items-center justify-between hover:bg-white/5 transition-colors"
@@ -255,7 +300,13 @@ export default function GeneratedProject({ data, onReset }) {
 
         <AnimatePresence>
           {expandedSection === "files" && (
-            <motion.div {...expandCollapse} className="border-t border-white/10 p-6 max-h-[600px] overflow-y-auto">
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: easeInOutCubic }}
+              className="border-t border-white/10 p-6 max-h-[600px] overflow-y-auto overflow-hidden"
+            >
               <FileTreeViewer files={structure.fileStructure} />
             </motion.div>
           )}
@@ -263,7 +314,13 @@ export default function GeneratedProject({ data, onReset }) {
       </motion.div>
 
       {/* Tasks */}
-      <motion.div {...slideIn} className={cardBase} style={glassCard}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        className="rounded-2xl border border-white/10 overflow-hidden"
+        style={glassCard}
+      >
         <button
           onClick={() => toggleSection("tasks")}
           className="w-full p-6 flex items-center justify-between hover:bg-white/5 transition-colors"
@@ -284,7 +341,13 @@ export default function GeneratedProject({ data, onReset }) {
 
         <AnimatePresence>
           {expandedSection === "tasks" && (
-            <motion.div {...expandCollapse} className="border-t border-white/10 p-6 space-y-6">
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: easeInOutCubic }}
+              className="border-t border-white/10 p-6 space-y-6 overflow-hidden"
+            >
               {Object.entries(tasksByPhase).map(([phase, phaseTasks]) => (
                 <div key={phase}>
                   <div className="flex items-center justify-between mb-3">
@@ -320,7 +383,13 @@ export default function GeneratedProject({ data, onReset }) {
 
       {/* Assets & Milestones */}
       <div className="grid md:grid-cols-2 gap-6">
-        <motion.div {...slideIn} className={cardBase} style={glassCard}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="rounded-2xl border border-white/10"
+          style={glassCard}
+        >
           <div className="p-6">
             <div className="flex items-center gap-3 mb-4">
               <Package className="w-5 h-5 text-orange-400" />
@@ -333,8 +402,7 @@ export default function GeneratedProject({ data, onReset }) {
                   <p className="text-sm font-medium text-white">{asset.name}</p>
                   <p className="text-xs text-gray-400">{asset.description}</p>
                   <Button size="sm" onClick={() => generateAsset(asset, i)} disabled={generatingAsset === i} className="mt-2 bg-orange-500/20 text-orange-400">
-                    {generatingAsset === i ? <Loader2 className="w-3 h-3 animate-spin" /> : <Wand2 className="w-3 h-3 mr-1" />}
-                    Generate
+                    {generatingAsset === i ? <Loader2 className="w-3 h-3 animate-spin" /> : <><Wand2 className="w-3 h-3 mr-1" />Generate</>}
                   </Button>
                 </div>
               ))}
@@ -342,7 +410,13 @@ export default function GeneratedProject({ data, onReset }) {
           </div>
         </motion.div>
 
-        <motion.div {...slideIn} className={cardBase} style={glassCard}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7 }}
+          className="rounded-2xl border border-white/10"
+          style={glassCard}
+        >
           <div className="p-6">
             <div className="flex items-center gap-3 mb-4">
               <Target className="w-5 h-5 text-green-400" />
