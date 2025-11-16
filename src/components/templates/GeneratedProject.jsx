@@ -7,10 +7,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { base44 } from "@/api/base44Client";
 import FileTreeViewer from "./FileTreeViewer";
 import ComponentLibrary from "./ComponentLibrary";
+import ProjectOptimizer from "./ProjectOptimizer"; // Added import for ProjectOptimizer
 import { 
   CheckCircle2, FolderTree, ListChecks, Package, 
   Target, Code, Download, Eye, ArrowLeft, ChevronDown, ChevronUp,
-  Edit3, Check, X, Plus, Trash2, Wand2, Loader2, Image as ImageIcon, Palette
+  Edit3, Check, X, Plus, Trash2, Wand2, Loader2, Image as ImageIcon
 } from "lucide-react";
 
 const easeInOutCubic = [0.4, 0, 0.2, 1];
@@ -124,6 +125,30 @@ export default function GeneratedProject({ data, onReset }) {
     });
   };
 
+  const handleApplyOptimization = async (suggestion) => {
+    // Apply optimization based on suggestion
+    const updated = { ...localData };
+    
+    // Update affected files in structure
+    if (suggestion.affected_files) {
+      const updatedFileStructure = updated.structure.fileStructure.map(file => {
+        if (suggestion.affected_files.includes(file.path)) {
+          return { ...file, optimized: true }; // Mark file as optimized
+        }
+        return file;
+      });
+      updated.structure.fileStructure = updatedFileStructure;
+    }
+    
+    setLocalData(updated);
+    
+    // Persist changes to the backend
+    await base44.entities.Project.update(project.id, {
+      output_data: { ...project.output_data, fileStructure: updated.structure.fileStructure },
+      metadata: { ...project.metadata, lastOptimized: new Date().toISOString() } // Record optimization timestamp
+    });
+  };
+
   const addTechItem = (category) => {
     const updated = { ...localData.structure.techStack };
     if (Array.isArray(updated[category])) {
@@ -218,6 +243,12 @@ export default function GeneratedProject({ data, onReset }) {
           </Button>
         </div>
       </motion.div>
+
+      {/* AI Optimizer */}
+      <ProjectOptimizer 
+        structure={structure}
+        onApplyOptimization={handleApplyOptimization}
+      />
 
       {/* Component Library */}
       <ComponentLibrary 
@@ -430,8 +461,11 @@ export default function GeneratedProject({ data, onReset }) {
                               />
                               <div className="flex gap-2">
                                 <Button size="sm" onClick={() => {
-                                  const title = document.querySelectorAll('input')[globalIndex].value;
-                                  const description = document.querySelectorAll('textarea')[globalIndex].value;
+                                  // Find the correct input and textarea elements to get values
+                                  // This assumes a simple structure where inputs/textareas are direct children
+                                  const taskContainer = document.getElementById(`task-${task.id}`); // Add an ID for robustness
+                                  const title = taskContainer ? taskContainer.querySelector('input').value : task.title;
+                                  const description = taskContainer ? taskContainer.querySelector('textarea').value : task.description;
                                   saveEdit('task', { title, description }, globalIndex);
                                 }}>
                                   <Check className="w-4 h-4" />
@@ -443,7 +477,7 @@ export default function GeneratedProject({ data, onReset }) {
                             </div>
                           ) : (
                             <>
-                              <div className="flex items-start justify-between mb-2">
+                              <div id={`task-${task.id}`} className="flex items-start justify-between mb-2"> {/* Added ID here */}
                                 <h5 className="text-sm font-semibold text-white">{task.title}</h5>
                                 <div className="flex gap-2">
                                   <Button size="sm" variant="ghost" onClick={() => startEdit('task', globalIndex)}>
