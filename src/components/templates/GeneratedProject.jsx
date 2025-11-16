@@ -3,9 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { GenerateImage } from "@/integrations/Core";
-import { Project } from "@/entities/Project";
-import { Task } from "@/entities/Task";
+import { base44 } from "@/api/base44Client";
+import FileTreeViewer from "./FileTreeViewer";
 import { 
   CheckCircle2, FolderTree, ListChecks, Package, 
   Target, Code, Download, Eye, ArrowLeft, ChevronDown, ChevronUp,
@@ -54,17 +53,17 @@ export default function GeneratedProject({ data, onReset }) {
     
     if (section === 'description') {
       updated.structure.description = value;
-      await Project.update(project.id, { 
+      await base44.entities.Project.update(project.id, { 
         output_data: { ...project.output_data, description: value } 
       });
     } else if (section === 'techStack') {
       updated.structure.techStack = value;
-      await Project.update(project.id, { 
+      await base44.entities.Project.update(project.id, { 
         configuration: { ...project.configuration, techStack: value } 
       });
     } else if (section === 'task') {
       const task = updated.tasks[index];
-      await Task.update(task.id, value);
+      await base44.entities.Task.update(task.id, value);
       updated.tasks[index] = { ...task, ...value };
     }
     
@@ -73,7 +72,7 @@ export default function GeneratedProject({ data, onReset }) {
   };
 
   const addTask = async (phase) => {
-    const newTask = await Task.create({
+    const newTask = await base44.entities.Task.create({
       title: "New Task",
       description: "Task description",
       priority: "medium",
@@ -88,7 +87,7 @@ export default function GeneratedProject({ data, onReset }) {
   };
 
   const deleteTask = async (taskId, index) => {
-    await Task.delete(taskId);
+    await base44.entities.Task.delete(taskId);
     const updated = { ...localData };
     updated.tasks.splice(index, 1);
     setLocalData(updated);
@@ -97,7 +96,9 @@ export default function GeneratedProject({ data, onReset }) {
   const generateAsset = async (asset, index) => {
     setGeneratingAsset(index);
     try {
-      const result = await GenerateImage({ prompt: asset.prompt || asset.description });
+      const result = await base44.integrations.Core.GenerateImage({ 
+        prompt: asset.prompt || asset.description 
+      });
       setGeneratedAssets({ ...generatedAssets, [index]: result.url });
     } catch (error) {
       console.error("Error generating asset:", error);
@@ -232,48 +233,51 @@ export default function GeneratedProject({ data, onReset }) {
           {expandedSection === "tech" ? <ChevronUp className="text-gray-400" /> : <ChevronDown className="text-gray-400" />}
         </button>
 
-        {expandedSection === "tech" && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="border-t border-white/10 p-6 space-y-4"
-          >
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {Object.entries(structure.techStack).map(([category, items]) => (
-                <div key={category}>
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-xs text-gray-400 uppercase tracking-wide">{category}</p>
-                    {Array.isArray(items) && (
-                      <Button size="sm" variant="ghost" onClick={() => addTechItem(category)}>
-                        <Plus className="w-3 h-3" />
-                      </Button>
-                    )}
-                  </div>
-                  <div className="space-y-2">
-                    {Array.isArray(items) ? items.map((tech, i) => (
-                      <div key={i} className="flex items-center gap-2">
-                        <div className="flex-1 px-3 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-lg text-sm text-blue-400">
-                          {tech}
-                        </div>
-                        <Button size="sm" variant="ghost" onClick={() => removeTechItem(category, i)}>
-                          <X className="w-3 h-3 text-red-400" />
+        <AnimatePresence>
+          {expandedSection === "tech" && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: easeInOutCubic }}
+              className="border-t border-white/10 p-6 space-y-4 overflow-hidden"
+            >
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {Object.entries(structure.techStack).map(([category, items]) => (
+                  <div key={category}>
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-xs text-gray-400 uppercase tracking-wide">{category}</p>
+                      {Array.isArray(items) && (
+                        <Button size="sm" variant="ghost" onClick={() => addTechItem(category)}>
+                          <Plus className="w-3 h-3" />
                         </Button>
-                      </div>
-                    )) : (
-                      <div className="px-3 py-1.5 bg-purple-500/10 border border-purple-500/20 rounded-lg text-sm text-purple-400">
-                        {items}
-                      </div>
-                    )}
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      {Array.isArray(items) ? items.map((tech, i) => (
+                        <div key={i} className="flex items-center gap-2">
+                          <div className="flex-1 px-3 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-lg text-sm text-blue-400">
+                            {tech}
+                          </div>
+                          <Button size="sm" variant="ghost" onClick={() => removeTechItem(category, i)}>
+                            <X className="w-3 h-3 text-red-400" />
+                          </Button>
+                        </div>
+                      )) : (
+                        <div className="px-3 py-1.5 bg-purple-500/10 border border-purple-500/20 rounded-lg text-sm text-purple-400">
+                          {items}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        )}
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
 
-      {/* File Structure */}
+      {/* File Structure with Tree View */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -303,31 +307,19 @@ export default function GeneratedProject({ data, onReset }) {
           {expandedSection === "files" ? <ChevronUp className="text-gray-400" /> : <ChevronDown className="text-gray-400" />}
         </button>
 
-        {expandedSection === "files" && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            className="border-t border-white/10 p-6 max-h-96 overflow-y-auto"
-          >
-            <div className="space-y-2 font-mono text-sm">
-              {structure.fileStructure.map((file, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.03 }}
-                  className="flex items-start gap-3 p-2 hover:bg-white/5 rounded-lg transition-colors"
-                >
-                  <span className="text-gray-400 mt-0.5">├──</span>
-                  <div className="flex-1">
-                    <p className="text-cyan-400">{file.path}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">{file.description}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        )}
+        <AnimatePresence>
+          {expandedSection === "files" && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: easeInOutCubic }}
+              className="border-t border-white/10 p-6 max-h-[600px] overflow-y-auto overflow-hidden"
+            >
+              <FileTreeViewer files={structure.fileStructure} />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
 
       {/* Tasks by Phase */}
@@ -360,100 +352,104 @@ export default function GeneratedProject({ data, onReset }) {
           {expandedSection === "tasks" ? <ChevronUp className="text-gray-400" /> : <ChevronDown className="text-gray-400" />}
         </button>
 
-        {expandedSection === "tasks" && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            className="border-t border-white/10 p-6 space-y-6"
-          >
-            {Object.entries(tasksByPhase).map(([phase, phaseTasks]) => (
-              <div key={phase}>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <div 
-                      className="w-3 h-3 rounded-full"
-                      style={{ backgroundColor: phaseColors[phase] || "#6B7280" }}
-                    />
-                    <h4 className="text-sm font-bold text-white uppercase tracking-wide">
-                      {phase}
-                    </h4>
-                    <span className="text-xs text-gray-500">({phaseTasks.length})</span>
+        <AnimatePresence>
+          {expandedSection === "tasks" && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: easeInOutCubic }}
+              className="border-t border-white/10 p-6 space-y-6 overflow-hidden"
+            >
+              {Object.entries(tasksByPhase).map(([phase, phaseTasks]) => (
+                <div key={phase}>
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <div 
+                        className="w-3 h-3 rounded-full"
+                        style={{ backgroundColor: phaseColors[phase] || "#6B7280" }}
+                      />
+                      <h4 className="text-sm font-bold text-white uppercase tracking-wide">
+                        {phase}
+                      </h4>
+                      <span className="text-xs text-gray-500">({phaseTasks.length})</span>
+                    </div>
+                    <Button size="sm" onClick={() => addTask(phase)} className="bg-green-500/20 text-green-400 hover:bg-green-500/30">
+                      <Plus className="w-4 h-4 mr-1" />
+                      Add Task
+                    </Button>
                   </div>
-                  <Button size="sm" onClick={() => addTask(phase)} className="bg-green-500/20 text-green-400 hover:bg-green-500/30">
-                    <Plus className="w-4 h-4 mr-1" />
-                    Add Task
-                  </Button>
-                </div>
-                
-                <div className="space-y-2 pl-5">
-                  {phaseTasks.map((task, i) => {
-                    const globalIndex = tasks.findIndex(t => t.id === task.id);
-                    const isEditing = editing.section === 'task' && editing.index === globalIndex;
-                    
-                    return (
-                      <motion.div
-                        key={task.id}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.05 }}
-                        className="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 transition-colors"
-                      >
-                        {isEditing ? (
-                          <div className="space-y-3">
-                            <Input
-                              defaultValue={task.title}
-                              className="bg-white/5 border-white/10 text-white"
-                              placeholder="Task title"
-                            />
-                            <Textarea
-                              defaultValue={task.description}
-                              className="bg-white/5 border-white/10 text-white"
-                              rows={2}
-                              placeholder="Task description"
-                            />
-                            <div className="flex gap-2">
-                              <Button size="sm" onClick={() => {
-                                const title = document.querySelectorAll('input')[globalIndex].value;
-                                const description = document.querySelectorAll('textarea')[globalIndex].value;
-                                saveEdit('task', { title, description }, globalIndex);
-                              }}>
-                                <Check className="w-4 h-4" />
-                              </Button>
-                              <Button size="sm" variant="outline" onClick={cancelEdit}>
-                                <X className="w-4 h-4" />
-                              </Button>
-                            </div>
-                          </div>
-                        ) : (
-                          <>
-                            <div className="flex items-start justify-between mb-2">
-                              <h5 className="text-sm font-semibold text-white">{task.title}</h5>
+                  
+                  <div className="space-y-2 pl-5">
+                    {phaseTasks.map((task, i) => {
+                      const globalIndex = tasks.findIndex(t => t.id === task.id);
+                      const isEditing = editing.section === 'task' && editing.index === globalIndex;
+                      
+                      return (
+                        <motion.div
+                          key={task.id}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: i * 0.05 }}
+                          className="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 transition-colors"
+                        >
+                          {isEditing ? (
+                            <div className="space-y-3">
+                              <Input
+                                defaultValue={task.title}
+                                className="bg-white/5 border-white/10 text-white"
+                                placeholder="Task title"
+                              />
+                              <Textarea
+                                defaultValue={task.description}
+                                className="bg-white/5 border-white/10 text-white"
+                                rows={2}
+                                placeholder="Task description"
+                              />
                               <div className="flex gap-2">
-                                <Button size="sm" variant="ghost" onClick={() => startEdit('task', globalIndex)}>
-                                  <Edit3 className="w-3 h-3 text-gray-400" />
+                                <Button size="sm" onClick={() => {
+                                  const title = document.querySelectorAll('input')[globalIndex].value;
+                                  const description = document.querySelectorAll('textarea')[globalIndex].value;
+                                  saveEdit('task', { title, description }, globalIndex);
+                                }}>
+                                  <Check className="w-4 h-4" />
                                 </Button>
-                                <Button size="sm" variant="ghost" onClick={() => deleteTask(task.id, globalIndex)}>
-                                  <Trash2 className="w-3 h-3 text-red-400" />
+                                <Button size="sm" variant="outline" onClick={cancelEdit}>
+                                  <X className="w-4 h-4" />
                                 </Button>
-                                <span className={`px-2 py-1 rounded text-xs font-bold ${priorityColors[task.priority].bg} ${priorityColors[task.priority].text} border ${priorityColors[task.priority].border}`}>
-                                  {task.priority}
-                                </span>
                               </div>
                             </div>
-                            <p className="text-xs text-gray-400 leading-relaxed">{task.description}</p>
-                            {task.metadata?.estimatedHours && (
-                              <p className="text-xs text-gray-500 mt-2">Est: {task.metadata.estimatedHours}h</p>
-                            )}
-                          </>
-                        )}
-                      </motion.div>
-                    );
-                  })}
+                          ) : (
+                            <>
+                              <div className="flex items-start justify-between mb-2">
+                                <h5 className="text-sm font-semibold text-white">{task.title}</h5>
+                                <div className="flex gap-2">
+                                  <Button size="sm" variant="ghost" onClick={() => startEdit('task', globalIndex)}>
+                                    <Edit3 className="w-3 h-3 text-gray-400" />
+                                  </Button>
+                                  <Button size="sm" variant="ghost" onClick={() => deleteTask(task.id, globalIndex)}>
+                                    <Trash2 className="w-3 h-3 text-red-400" />
+                                  </Button>
+                                  <span className={`px-2 py-1 rounded text-xs font-bold ${priorityColors[task.priority].bg} ${priorityColors[task.priority].text} border ${priorityColors[task.priority].border}`}>
+                                    {task.priority}
+                                  </span>
+                                </div>
+                              </div>
+                              <p className="text-xs text-gray-400 leading-relaxed">{task.description}</p>
+                              {task.metadata?.estimatedHours && (
+                                <p className="text-xs text-gray-500 mt-2">Est: {task.metadata.estimatedHours}h</p>
+                              )}
+                            </>
+                          )}
+                        </motion.div>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </motion.div>
-        )}
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
 
       {/* Assets & Milestones */}
