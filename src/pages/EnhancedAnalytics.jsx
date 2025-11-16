@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import { User } from "@/entities/User";
-import { Event } from "@/entities/Event";
-import { Session } from "@/entities/Session";
 import StatsGrid from "@/components/analytics/StatsGrid";
-import CinematicChart from "@/components/analytics/CinematicChart";
+import InteractiveChart from "@/components/analytics/InteractiveChart";
+import PredictiveInsights from "@/components/analytics/PredictiveInsights";
+import AnomalyDetection from "@/components/analytics/AnomalyDetection";
+import ABTestingView from "@/components/analytics/ABTestingView";
+import DraggableWidget from "@/components/analytics/DraggableWidget";
 import { 
-  BarChart3, Users, Activity, Eye, Clock, Target, 
-  TrendingUp, Zap, Globe, MousePointer
+  BarChart3, Users, Activity, Eye, Clock, TrendingUp, LayoutGrid, Lock, Unlock
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -18,6 +20,14 @@ export default function EnhancedAnalyticsPage() {
   const [user, setUser] = useState(null);
   const [timeRange, setTimeRange] = useState("7d");
   const [loading, setLoading] = useState(true);
+  const [editMode, setEditMode] = useState(false);
+  const [widgets, setWidgets] = useState([
+    { id: "anomalies", type: "anomalies", enabled: true },
+    { id: "predictive", type: "predictive", enabled: true },
+    { id: "growth", type: "chart-growth", enabled: true },
+    { id: "sessions", type: "chart-sessions", enabled: true },
+    { id: "abtesting", type: "abtesting", enabled: true },
+  ]);
 
   useEffect(() => {
     loadData();
@@ -27,7 +37,6 @@ export default function EnhancedAnalyticsPage() {
     try {
       const currentUser = await User.me();
       setUser(currentUser);
-      // Load analytics data here
     } catch (error) {
       console.error("Error loading analytics:", error);
     } finally {
@@ -35,7 +44,16 @@ export default function EnhancedAnalyticsPage() {
     }
   };
 
-  // Sample data - replace with real data
+  const handleDragEnd = (result) => {
+    if (!result.destination) return;
+    
+    const items = Array.from(widgets);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    
+    setWidgets(items);
+  };
+
   const stats = [
     {
       label: "Total Users",
@@ -95,12 +113,36 @@ export default function EnhancedAnalyticsPage() {
     { name: "Sun", value: 62 }
   ];
 
-  const conversionData = [
-    { name: "Week 1", value: 24 },
-    { name: "Week 2", value: 38 },
-    { name: "Week 3", value: 42 },
-    { name: "Week 4", value: 56 }
-  ];
+  const renderWidget = (widget) => {
+    switch (widget.type) {
+      case "anomalies":
+        return <AnomalyDetection />;
+      case "predictive":
+        return <PredictiveInsights />;
+      case "chart-growth":
+        return (
+          <InteractiveChart
+            title="User Growth"
+            data={userGrowthData}
+            dataKey="users"
+            color="#00B4D8"
+          />
+        );
+      case "chart-sessions":
+        return (
+          <InteractiveChart
+            title="Session Activity"
+            data={sessionData}
+            dataKey="value"
+            color="#10B981"
+          />
+        );
+      case "abtesting":
+        return <ABTestingView />;
+      default:
+        return null;
+    }
+  };
 
   if (loading) {
     return (
@@ -138,9 +180,9 @@ export default function EnhancedAnalyticsPage() {
             </motion.div>
             <div>
               <h1 className="text-4xl font-bold text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                Analytics Dashboard
+                AI-Powered Analytics
               </h1>
-              <p className="text-gray-400 mt-1">Real-time insights with cinematic visuals</p>
+              <p className="text-gray-400 mt-1">Predictive insights with interactive drill-downs</p>
             </div>
           </div>
 
@@ -157,6 +199,14 @@ export default function EnhancedAnalyticsPage() {
               </SelectContent>
             </Select>
             
+            <Button 
+              onClick={() => setEditMode(!editMode)}
+              className={editMode ? "bg-orange-500 hover:bg-orange-600" : "bg-white/5 hover:bg-white/10"}
+            >
+              {editMode ? <Unlock className="w-4 h-4 mr-2" /> : <Lock className="w-4 h-4 mr-2" />}
+              {editMode ? "Lock Layout" : "Customize"}
+            </Button>
+
             <Button className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 shadow-lg shadow-orange-500/30">
               <TrendingUp className="w-4 h-4 mr-2" />
               Export Report
@@ -164,147 +214,57 @@ export default function EnhancedAnalyticsPage() {
           </div>
         </motion.div>
 
+        {/* Edit Mode Banner */}
+        {editMode && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="rounded-xl border border-orange-500/30 p-4 flex items-center justify-center gap-3"
+            style={{
+              background: "linear-gradient(135deg, rgba(255, 123, 0, 0.1) 0%, rgba(233, 30, 99, 0.1) 100%)",
+              backdropFilter: "blur(10px)"
+            }}
+          >
+            <LayoutGrid className="w-5 h-5 text-orange-400" />
+            <p className="text-sm text-orange-400 font-medium">
+              Drag & drop widgets to customize your dashboard layout
+            </p>
+          </motion.div>
+        )}
+
         {/* Stats Grid */}
         <StatsGrid stats={stats} />
 
-        {/* Charts Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <CinematicChart
-            title="User Growth"
-            subtitle="New users over time"
-            value="12,458"
-            change="+12.5%"
-            data={userGrowthData}
-            dataKey="users"
-            type="area"
-            color="#00B4D8"
-            height={300}
-          />
-
-          <CinematicChart
-            title="Session Activity"
-            subtitle="Active sessions this week"
-            value="3,247"
-            change="+8.3%"
-            data={sessionData}
-            dataKey="value"
-            type="line"
-            color="#10B981"
-            height={300}
-          />
-
-          <CinematicChart
-            title="Conversion Rate"
-            subtitle="Weekly conversion metrics"
-            value="42%"
-            change="+15.8%"
-            data={conversionData}
-            dataKey="value"
-            type="bar"
-            color="#FF7B00"
-            height={300}
-          />
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3, ease: easeInOutCubic }}
-            className="rounded-2xl border border-white/10 p-6"
-            style={{
-              background: "linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.98) 100%)",
-              backdropFilter: "blur(20px)",
-              boxShadow: "0 20px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)"
-            }}
-          >
-            <h3 className="text-lg font-bold text-white mb-4" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-              Top Performing Pages
-            </h3>
-            <div className="space-y-4">
-              {[
-                { page: "/dashboard", views: "8,432", change: "+12%", color: "#00B4D8" },
-                { page: "/analytics", views: "6,231", change: "+8%", color: "#10B981" },
-                { page: "/app-builder", views: "5,847", change: "+15%", color: "#FF7B00" },
-                { page: "/home", views: "4,956", change: "-2%", color: "#8B5CF6" }
-              ].map((item, idx) => (
-                <motion.div
-                  key={item.page}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.4 + idx * 0.1 }}
-                  className="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"
-                >
-                  <div className="flex items-center gap-3">
-                    <div 
-                      className="w-2 h-10 rounded-full"
-                      style={{ 
-                        background: `linear-gradient(to bottom, ${item.color}, transparent)`,
-                        boxShadow: `0 0 12px ${item.color}`
-                      }}
-                    />
-                    <div>
-                      <p className="text-sm font-medium text-white">{item.page}</p>
-                      <p className="text-xs text-gray-400">{item.views} views</p>
-                    </div>
-                  </div>
-                  <span className={`text-xs font-bold ${
-                    item.change.startsWith('+') ? 'text-green-400' : 'text-red-400'
-                  }`}>
-                    {item.change}
-                  </span>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Real-time Activity Feed */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4, ease: easeInOutCubic }}
-          className="rounded-2xl border border-white/10 p-6"
-          style={{
-            background: "linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.98) 100%)",
-            backdropFilter: "blur(20px)",
-            boxShadow: "0 20px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)"
-          }}
-        >
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-bold text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-              Real-Time Activity
-            </h3>
-            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/20">
-              <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-              <span className="text-xs font-medium text-green-400">Live</span>
-            </div>
-          </div>
-          
-          <div className="space-y-3">
-            {[
-              { action: "New user registered", user: "alex@example.com", time: "2s ago", icon: Users },
-              { action: "Page view", page: "/dashboard", time: "5s ago", icon: Eye },
-              { action: "Button clicked", element: "Generate App", time: "12s ago", icon: MousePointer },
-              { action: "Session started", location: "San Francisco, CA", time: "18s ago", icon: Globe }
-            ].map((activity, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5 + idx * 0.1 }}
-                className="flex items-center gap-4 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"
+        {/* Draggable Widgets */}
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Droppable droppableId="widgets">
+            {(provided) => (
+              <div
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                className="grid grid-cols-1 lg:grid-cols-2 gap-6"
               >
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-500/20 to-pink-500/20 flex items-center justify-center">
-                  <activity.icon className="w-5 h-5 text-orange-400" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-white">{activity.action}</p>
-                  <p className="text-xs text-gray-400">{activity.user || activity.page || activity.element || activity.location}</p>
-                </div>
-                <span className="text-xs text-gray-500">{activity.time}</span>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
+                {widgets.filter(w => w.enabled).map((widget, index) => (
+                  editMode ? (
+                    <DraggableWidget key={widget.id} id={widget.id} index={index}>
+                      {renderWidget(widget)}
+                    </DraggableWidget>
+                  ) : (
+                    <motion.div
+                      key={widget.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                    >
+                      {renderWidget(widget)}
+                    </motion.div>
+                  )
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
       </div>
     </div>
   );
