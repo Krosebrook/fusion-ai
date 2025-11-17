@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Lightbulb, ChevronDown, ChevronUp, TrendingUp } from "lucide-react";
+import { Lightbulb, ChevronDown, ChevronUp, Wand2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-export default function SuggestionsPanel({ suggestions }) {
+export default function SuggestionsPanel({ suggestions, onRefactor }) {
   const [expandedSuggestion, setExpandedSuggestion] = useState(null);
 
   const getImpactColor = (impact) => {
@@ -31,9 +32,9 @@ export default function SuggestionsPanel({ suggestions }) {
               onClick={() => setExpandedSuggestion(isExpanded ? null : idx)}
               className="w-full p-6 flex items-start justify-between hover:bg-white/5 transition-colors"
             >
-              <div className="flex items-start gap-4">
-                <Lightbulb className="w-5 h-5 text-yellow-400" />
-                <div className="text-left">
+              <div className="flex items-start gap-4 flex-1">
+                <Lightbulb className="w-5 h-5 text-yellow-400 flex-shrink-0" />
+                <div className="text-left flex-1">
                   <h4 className="text-sm font-bold text-white mb-2">{suggestion.title}</h4>
                   <p className="text-sm text-gray-400 mb-2">{suggestion.description}</p>
                   <div className="flex gap-2">
@@ -46,7 +47,7 @@ export default function SuggestionsPanel({ suggestions }) {
                   </div>
                 </div>
               </div>
-              {isExpanded ? <ChevronUp className="text-gray-400" /> : <ChevronDown className="text-gray-400" />}
+              {isExpanded ? <ChevronUp className="text-gray-400 flex-shrink-0" /> : <ChevronDown className="text-gray-400 flex-shrink-0" />}
             </button>
 
             <AnimatePresence>
@@ -59,7 +60,7 @@ export default function SuggestionsPanel({ suggestions }) {
                 >
                   {suggestion.code_before && (
                     <div>
-                      <h5 className="text-sm font-medium text-white mb-2">Before</h5>
+                      <h5 className="text-sm font-medium text-white mb-2">Current Code</h5>
                       <pre className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 text-xs text-gray-300 overflow-x-auto">
                         {suggestion.code_before}
                       </pre>
@@ -67,12 +68,22 @@ export default function SuggestionsPanel({ suggestions }) {
                   )}
                   {suggestion.code_after && (
                     <div>
-                      <h5 className="text-sm font-medium text-white mb-2">After</h5>
+                      <h5 className="text-sm font-medium text-white mb-2">Suggested Code</h5>
                       <pre className="bg-green-500/10 border border-green-500/20 rounded-lg p-4 text-xs text-gray-300 overflow-x-auto">
                         {suggestion.code_after}
                       </pre>
                     </div>
                   )}
+                  
+                  <div className="flex justify-end pt-2">
+                    <Button
+                      onClick={() => onRefactor(suggestion)}
+                      className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                    >
+                      <Wand2 className="w-4 h-4 mr-2" />
+                      Refactor This Code
+                    </Button>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>

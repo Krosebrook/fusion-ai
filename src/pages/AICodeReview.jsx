@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CodeReviewPanel from "@/components/code-review/CodeReviewPanel";
 import IssuesList from "@/components/code-review/IssuesList";
 import SuggestionsPanel from "@/components/code-review/SuggestionsPanel";
+import RefactoringPanel from "@/components/code-review/RefactoringPanel";
 import { 
   FileCode, AlertTriangle, CheckCircle2, Zap, 
-  TrendingUp, Target, Shield, Sparkles 
+  TrendingUp, Target, Shield, Sparkles, ArrowLeft 
 } from "lucide-react";
 
 const easeInOutCubic = [0.4, 0, 0.2, 1];
@@ -19,6 +20,8 @@ export default function AICodeReviewPage() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [reviewData, setReviewData] = useState(null);
+  const [refactoringSuggestion, setRefactoringSuggestion] = useState(null);
+  const [refactoringResults, setRefactoringResults] = useState([]);
 
   useEffect(() => {
     loadData();
@@ -110,6 +113,15 @@ export default function AICodeReviewPage() {
     }
   };
 
+  const handleRefactor = (suggestion) => {
+    setRefactoringSuggestion(suggestion);
+  };
+
+  const handleRefactoringComplete = (result) => {
+    setRefactoringResults([...refactoringResults, result]);
+    setRefactoringSuggestion(null);
+  };
+
   const stats = reviewData ? [
     { label: "Overall Score", value: `${reviewData.overall_score}/100`, icon: Target, color: "#10B981" },
     { label: "Issues Found", value: reviewData.issues.length.toString(), icon: AlertTriangle, color: "#F59E0B" },
@@ -139,12 +151,12 @@ export default function AICodeReviewPage() {
               <h1 className="text-4xl font-bold text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                 AI Code Review Assistant
               </h1>
-              <p className="text-gray-400 mt-1">Automated code analysis with actionable insights</p>
+              <p className="text-gray-400 mt-1">Automated code analysis with AI refactoring</p>
             </div>
           </div>
 
           {/* Project Selection */}
-          {!reviewData && (
+          {!reviewData && !refactoringSuggestion && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -180,8 +192,34 @@ export default function AICodeReviewPage() {
           )}
         </motion.div>
 
+        {/* Refactoring View */}
+        <AnimatePresence mode="wait">
+          {refactoringSuggestion && (
+            <motion.div
+              key="refactoring"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+            >
+              <Button
+                onClick={() => setRefactoringSuggestion(null)}
+                variant="ghost"
+                className="mb-4 text-gray-400 hover:text-white"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Review
+              </Button>
+              <RefactoringPanel
+                suggestion={refactoringSuggestion}
+                projectId={selectedProject?.id}
+                onComplete={handleRefactoringComplete}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Review Results */}
-        {reviewData && (
+        {reviewData && !refactoringSuggestion && (
           <>
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -208,12 +246,35 @@ export default function AICodeReviewPage() {
               ))}
             </div>
 
+            {/* Refactoring Results Banner */}
+            {refactoringResults.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="rounded-xl border border-green-500/30 p-4 bg-green-500/10"
+              >
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-green-400" />
+                  <div>
+                    <p className="text-sm font-medium text-white">
+                      {refactoringResults.filter(r => r.status === "applied").length} refactoring(s) applied successfully
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      Your code has been improved for better readability and performance
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
             {/* Tabs */}
             <Tabs defaultValue="overview" className="w-full">
               <TabsList className="bg-white/5 border-white/10">
                 <TabsTrigger value="overview">Overview</TabsTrigger>
                 <TabsTrigger value="issues">Issues ({reviewData.issues.length})</TabsTrigger>
-                <TabsTrigger value="suggestions">Suggestions ({reviewData.suggestions.length})</TabsTrigger>
+                <TabsTrigger value="suggestions">
+                  Suggestions ({reviewData.suggestions.length})
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="overview">
@@ -225,7 +286,10 @@ export default function AICodeReviewPage() {
               </TabsContent>
 
               <TabsContent value="suggestions">
-                <SuggestionsPanel suggestions={reviewData.suggestions} />
+                <SuggestionsPanel 
+                  suggestions={reviewData.suggestions} 
+                  onRefactor={handleRefactor}
+                />
               </TabsContent>
             </Tabs>
 
