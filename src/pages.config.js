@@ -17,7 +17,10 @@ import Onboarding from './pages/Onboarding';
 import Integrations from './pages/Integrations';
 import EnhancedAnalytics from './pages/EnhancedAnalytics';
 import AITemplates from './pages/AITemplates';
-import Layout from './Layout.jsx';
+import AIDeployment from './pages/AIDeployment';
+import AICodeReview from './pages/AICodeReview';
+import AIDocumentation from './pages/AIDocumentation';
+import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
@@ -40,10 +43,13 @@ export const PAGES = {
     "Integrations": Integrations,
     "EnhancedAnalytics": EnhancedAnalytics,
     "AITemplates": AITemplates,
+    "AIDeployment": AIDeployment,
+    "AICodeReview": AICodeReview,
+    "AIDocumentation": AIDocumentation,
 }
 
 export const pagesConfig = {
     mainPage: "Home",
     Pages: PAGES,
-    Layout: Layout,
+    Layout: __Layout,
 };
