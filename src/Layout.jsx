@@ -1,9 +1,10 @@
-
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Wrench, BarChart3, Menu, X, PlayCircle, ArrowRight, UserPlus, Code, BookOpen, Globe, Link2
+import { 
+  Home, LayoutDashboard, Wrench, BarChart3, Menu, X, 
+  Sparkles, PlayCircle, ArrowRight, UserPlus, Code, BookOpen, Globe, Link2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { User } from "@/entities/User";
@@ -56,6 +57,45 @@ export default function Layout({ children }) {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // PWA Meta Tags
+  React.useEffect(() => {
+    // Viewport meta tag
+    const viewportMeta = document.querySelector('meta[name="viewport"]');
+    if (!viewportMeta) {
+      const meta = document.createElement('meta');
+      meta.name = 'viewport';
+      meta.content = 'width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover';
+      document.head.appendChild(meta);
+    }
+
+    // Theme color
+    let themeColor = document.querySelector('meta[name="theme-color"]');
+    if (!themeColor) {
+      themeColor = document.createElement('meta');
+      themeColor.name = 'theme-color';
+      document.head.appendChild(themeColor);
+    }
+    themeColor.content = '#0F172A';
+
+    // Apple mobile web app capable
+    const appleMeta = document.querySelector('meta[name="apple-mobile-web-app-capable"]');
+    if (!appleMeta) {
+      const meta = document.createElement('meta');
+      meta.name = 'apple-mobile-web-app-capable';
+      meta.content = 'yes';
+      document.head.appendChild(meta);
+    }
+
+    // Apple status bar style
+    const appleStatus = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+    if (!appleStatus) {
+      const meta = document.createElement('meta');
+      meta.name = 'apple-mobile-web-app-status-bar-style';
+      meta.content = 'black-translucent';
+      document.head.appendChild(meta);
+    }
   }, []);
 
   const isActive = (path) => location.pathname === path;
@@ -123,6 +163,29 @@ export default function Layout({ children }) {
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
+          overscroll-behavior: none;
+          -webkit-tap-highlight-color: transparent;
+        }
+
+        /* PWA Safe Areas */
+        @supports(padding: max(0px)) {
+          body {
+            padding-left: max(0px, env(safe-area-inset-left));
+            padding-right: max(0px, env(safe-area-inset-right));
+          }
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+          * {
+            -webkit-user-select: none;
+            user-select: none;
+          }
+
+          input, textarea, button, select {
+            -webkit-user-select: text;
+            user-select: text;
+          }
         }
         
         .ff-gradient-text {
