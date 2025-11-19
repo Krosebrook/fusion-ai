@@ -6,10 +6,12 @@ import { useQuery } from "@tanstack/react-query";
 import PipelineConfigurator from "../components/cicd/PipelineConfigurator";
 import PipelineStatus from "../components/cicd/PipelineStatus";
 import DeploymentTimeline from "../components/cicd/DeploymentTimeline";
-import { Rocket, GitBranch, Activity, Plus, RefreshCw } from "lucide-react";
+import EnvironmentManager from "../components/cicd/EnvironmentManager";
+import { Rocket, GitBranch, Activity, Plus, RefreshCw, Server } from "lucide-react";
 
 export default function CICDAutomationPage() {
   const [showConfig, setShowConfig] = useState(false);
+  const [showEnvironments, setShowEnvironments] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
   const [configs, setConfigs] = useState([]);
@@ -157,6 +159,14 @@ export default function CICDAutomationPage() {
               Refresh
             </Button>
             <Button
+              onClick={() => setShowEnvironments(!showEnvironments)}
+              variant="outline"
+              className="border-blue-500/30 text-blue-400"
+            >
+              <Server className="w-4 h-4 mr-2" />
+              Environments
+            </Button>
+            <Button
               onClick={() => setShowConfig(!showConfig)}
               className="bg-gradient-to-r from-orange-500 to-pink-500"
             >
@@ -198,6 +208,17 @@ export default function CICDAutomationPage() {
             </motion.div>
           ))}
         </motion.div>
+
+        {/* Environment Manager */}
+        {showEnvironments && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+          >
+            <EnvironmentManager />
+          </motion.div>
+        )}
 
         {/* Pipeline Configurator */}
         {showConfig && (

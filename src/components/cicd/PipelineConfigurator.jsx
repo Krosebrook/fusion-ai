@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,9 +6,17 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { GitBranch, Play, Settings, Zap, Clock, GitCommit } from "lucide-react";
+import { GitBranch, Play, Settings, Zap, Clock, GitCommit, Server } from "lucide-react";
+import { base44 } from "@/api/base44Client";
+import { useQuery } from "@tanstack/react-query";
 
 export default function PipelineConfigurator({ onSave }) {
+  const { data: environments = [] } = useQuery({
+    queryKey: ['environments'],
+    queryFn: () => base44.entities.Environment.list('-created_date'),
+    initialData: []
+  });
+
   const [config, setConfig] = useState({
     provider: "github",
     projectType: "react",
@@ -22,7 +30,7 @@ export default function PipelineConfigurator({ onSave }) {
     buildCommand: "npm run build",
     testCommand: "npm test",
     deployCommand: "npm run deploy",
-    environment: "production",
+    environment_id: null,
     autoScale: true,
     notifications: true
   });
@@ -36,11 +44,7 @@ export default function PipelineConfigurator({ onSave }) {
     { value: "docker", label: "Docker", buildCmd: "docker build ." }
   ];
 
-  const environments = [
-    { value: "development", color: "#00B4D8" },
-    { value: "staging", color: "#F59E0B" },
-    { value: "production", color: "#10B981" }
-  ];
+  const selectedEnvironment = environments.find(e => e.id === config.environment_id);
 
   const handleProjectTypeChange = (type) => {
     const selected = projectTypes.find(p => p.value === type);
@@ -128,22 +132,45 @@ export default function PipelineConfigurator({ onSave }) {
             </div>
 
             <div>
-              <Label className="text-white mb-2 block">Environment</Label>
-              <Select value={config.environment} onValueChange={(v) => setConfig({ ...config, environment: v })}>
-                <SelectTrigger className="bg-white/5 border-white/10 text-white">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-slate-900 border-white/10">
-                  {environments.map(env => (
-                    <SelectItem key={env.value} value={env.value} className="text-white">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: env.color }} />
-                        {env.value.charAt(0).toUpperCase() + env.value.slice(1)}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Label className="text-white mb-2 block flex items-center gap-2">
+                <Server className="w-4 h-4 text-blue-400" />
+                Deployment Environment
+              </Label>
+              {environments.length > 0 ? (
+                <Select value={config.environment_id} onValueChange={(v) => setConfig({ ...config, environment_id: v })}>
+                  <SelectTrigger className="bg-white/5 border-white/10 text-white">
+                    <SelectValue placeholder="Select environment" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-slate-900 border-white/10">
+                    {environments.map(env => (
+                      <SelectItem key={env.id} value={env.id} className="text-white">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: env.color }} />
+                          {env.name}
+                          {env.deployment_url && (
+                            <span className="text-xs text-gray-400">• {env.deployment_url}</span>
+                          )}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <div className="p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
+                  <p className="text-xs text-yellow-400">No environments configured. Create one first.</p>
+                </div>
+              )}
+              {selectedEnvironment && (
+                <div className="mt-2 p-3 rounded-lg bg-white/5 border border-white/10">
+                  <div className="flex items-center gap-2 text-xs text-gray-400 mb-1">
+                    <span>Deploy to:</span>
+                    <span className="text-white font-mono">{selectedEnvironment.deployment_url || 'No URL'}</span>
+                  </div>
+                  {selectedEnvironment.protection_enabled && (
+                    <p className="text-xs text-orange-400">⚠️ Protected environment - requires approval</p>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
