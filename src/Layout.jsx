@@ -7,7 +7,7 @@ import {
   Sparkles, PlayCircle, ArrowRight, UserPlus, Code, BookOpen, Globe, Link2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { User } from "@/entities/User";
+import { base44 } from "@/api/base44Client";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -48,7 +48,7 @@ export default function Layout({ children }) {
   const [scrolled, setScrolled] = React.useState(false);
   
   React.useEffect(() => {
-    User.me().then(setUser).catch(() => setUser(null));
+    base44.auth.me().then(setUser).catch(() => setUser(null));
   }, []);
 
   React.useEffect(() => {
@@ -554,7 +554,7 @@ export default function Layout({ children }) {
                     {user.full_name || user.email}
                   </div>
                   <Button
-                    onClick={() => User.logout()}
+                    onClick={() => base44.auth.logout()}
                     style={{
                       background: 'rgba(239, 68, 68, 0.1)',
                       color: '#EF4444',
@@ -571,7 +571,7 @@ export default function Layout({ children }) {
               ) : (
                 <>
                   <Button
-                    onClick={() => User.login()}
+                    onClick={() => base44.auth.redirectToLogin()}
                     style={{
                       background: 'transparent',
                       color: '#FFFFFF',
@@ -598,7 +598,7 @@ export default function Layout({ children }) {
                     Sign In
                   </Button>
                   <Button
-                    onClick={() => User.login()}
+                    onClick={() => base44.auth.redirectToLogin()}
                     style={{
                       background: 'linear-gradient(135deg, #FF7B00, #E91E63)',
                       color: 'white',
@@ -740,7 +740,7 @@ export default function Layout({ children }) {
                       {user.full_name || user.email}
                     </div>
                     <Button
-                      onClick={() => User.logout()}
+                      onClick={() => base44.auth.logout()}
                       style={{
                         background: 'rgba(239, 68, 68, 0.1)',
                         color: '#EF4444',
@@ -755,7 +755,7 @@ export default function Layout({ children }) {
                 ) : (
                   <>
                     <Button
-                      onClick={() => User.login()}
+                      onClick={() => base44.auth.redirectToLogin()}
                       style={{
                         background: 'transparent',
                         color: '#FFFFFF',
@@ -767,7 +767,7 @@ export default function Layout({ children }) {
                       Sign In
                     </Button>
                     <Button
-                      onClick={() => User.login()}
+                      onClick={() => base44.auth.redirectToLogin()}
                       style={{
                         background: 'linear-gradient(135deg, #FF7B00, #E91E63)',
                         color: 'white',
