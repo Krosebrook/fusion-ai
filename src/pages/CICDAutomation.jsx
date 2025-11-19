@@ -6,154 +6,124 @@ import { useQuery } from "@tanstack/react-query";
 import PipelineConfigurator from "../components/cicd/PipelineConfigurator";
 import PipelineStatus from "../components/cicd/PipelineStatus";
 import DeploymentTimeline from "../components/cicd/DeploymentTimeline";
-import WorkflowGenerator from "../components/cicd/WorkflowGenerator";
-import { Rocket, GitBranch, Activity, Plus, RefreshCw, Github } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
+import { Rocket, GitBranch, Activity, Plus, RefreshCw } from "lucide-react";
 
 export default function CICDAutomationPage() {
   const [showConfig, setShowConfig] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [repository, setRepository] = useState("");
-  const [pipelineConfig, setPipelineConfig] = useState(null);
 
-  // Mock data - replace with real API calls
-  const [pipelines, setPipelines] = useState([
-    {
-      id: "1",
-      name: "Production Deploy",
-      branch: "main",
-      commit: "a3b2c1d",
-      status: "running",
-      progress: 65,
-      triggeredBy: "john@example.com",
-      duration: "2m 30s",
-      steps: [
-        { name: "Checkout", status: "completed" },
-        { name: "Build", status: "completed" },
-        { name: "Test", status: "running" },
-        { name: "Deploy", status: "pending" }
-      ]
-    },
-    {
-      id: "2",
-      name: "Staging Deploy",
-      branch: "develop",
-      commit: "f4e5d6c",
-      status: "success",
-      progress: 100,
-      triggeredBy: "jane@example.com",
-      duration: "3m 15s",
-      steps: [
-        { name: "Checkout", status: "completed" },
-        { name: "Build", status: "completed" },
-        { name: "Test", status: "completed" },
-        { name: "Deploy", status: "completed" }
-      ]
-    },
-    {
-      id: "3",
-      name: "PR #42 Build",
-      branch: "feature/new-ui",
-      commit: "b7c8d9e",
-      status: "failed",
-      progress: 45,
-      triggeredBy: "bot@github.com",
-      duration: "1m 45s",
-      steps: [
-        { name: "Checkout", status: "completed" },
-        { name: "Build", status: "completed" },
-        { name: "Test", status: "failed" },
-        { name: "Deploy", status: "pending" }
-      ]
-    }
-  ]);
+  const [configs, setConfigs] = useState([]);
+  const [pipelines, setPipelines] = useState([]);
+  const [history, setHistory] = useState([]);
 
-  const [history, setHistory] = useState([
-    {
-      id: "h1",
-      environment: "production",
-      status: "success",
-      timestamp: "2 hours ago",
-      commit: "a3b2c1d",
-      branch: "main",
-      triggeredBy: "john@example.com",
-      duration: "3m 20s",
-      url: "https://app.example.com"
-    },
-    {
-      id: "h2",
-      environment: "staging",
-      status: "success",
-      timestamp: "5 hours ago",
-      commit: "f4e5d6c",
-      branch: "develop",
-      triggeredBy: "jane@example.com",
-      duration: "2m 55s",
-      url: "https://staging.example.com"
-    },
-    {
-      id: "h3",
-      environment: "production",
-      status: "failed",
-      timestamp: "1 day ago",
-      commit: "z1y2x3w",
-      branch: "main",
-      triggeredBy: "bot@github.com",
-      duration: "1m 30s"
+  const { data: pipelineConfigs, refetch: refetchConfigs } = useQuery({
+    queryKey: ['pipelineConfigs'],
+    queryFn: () => base44.entities.PipelineConfig.filter({ active: true }),
+    initialData: []
+  });
+
+  const { data: pipelineRuns, refetch: refetchRuns } = useQuery({
+    queryKey: ['pipelineRuns'],
+    queryFn: () => base44.entities.PipelineRun.list('-created_date', 20),
+    initialData: []
+  });
+
+  useEffect(() => {
+    if (pipelineRuns.length > 0) {
+      setPipelines(pipelineRuns.slice(0, 5).map(run => ({
+        id: run.id,
+        name: pipelineConfigs.find(c => c.id === run.pipeline_config_id)?.name || 'Unknown',
+        branch: run.branch,
+        commit: run.commit?.substring(0, 7),
+        status: run.status,
+        progress: run.progress || 0,
+        triggeredBy: run.triggered_by,
+        duration: run.duration_seconds ? `${Math.floor(run.duration_seconds / 60)}m ${run.duration_seconds % 60}s` : '—',
+        steps: run.steps || []
+      })));
+
+      setHistory(pipelineRuns.map(run => {
+        const config = pipelineConfigs.find(c => c.id === run.pipeline_config_id);
+        return {
+          id: run.id,
+          environment: config?.environment || 'production',
+          status: run.status,
+          timestamp: new Date(run.created_date).toLocaleString(),
+          commit: run.commit?.substring(0, 7),
+          branch: run.branch,
+          triggeredBy: run.triggered_by,
+          duration: run.duration_seconds ? `${Math.floor(run.duration_seconds / 60)}m ${run.duration_seconds % 60}s` : '—',
+          url: run.deployment_url
+        };
+      }));
     }
-  ]);
+  }, [pipelineRuns, pipelineConfigs]);
 
   const handleSaveConfig = async (config) => {
-    setPipelineConfig(config);
-    setShowConfig(false);
-    toast.success('Pipeline configuration saved!');
+    try {
+      const workflowContent = await base44.functions.invoke('githubActions', {
+        action: 'create_workflow',
+        repository: config.repository_name,
+        config
+      });
+
+      await base44.entities.PipelineConfig.create({
+        name: config.projectType + ' Pipeline',
+        provider: config.provider,
+        repository_name: config.repository_name,
+        branch: config.branch,
+        project_type: config.projectType,
+        environment: config.environment,
+        triggers: config.triggers,
+        build_command: config.buildCommand,
+        test_command: config.testCommand,
+        deploy_command: config.deployCommand,
+        auto_scale: config.autoScale,
+        notifications: config.notifications,
+        workflow_file: workflowContent.workflow
+      });
+
+      await refetchConfigs();
+      setShowConfig(false);
+    } catch (error) {
+      console.error('Failed to save config:', error);
+    }
   };
 
   const handleTriggerPipeline = async (id) => {
-    if (!repository) {
-      toast.error('Please set a GitHub repository first');
-      return;
-    }
-
     try {
-      await base44.functions.invoke('triggerGitHubWorkflow', {
-        repository,
-        workflowId: 'deploy.yml',
-        ref: 'main'
-      });
-      toast.success('Pipeline triggered successfully!');
-      handleRefresh();
+      const run = pipelineRuns.find(r => r.id === id);
+      const config = pipelineConfigs.find(c => c.id === run?.pipeline_config_id);
+      
+      if (config) {
+        await base44.functions.invoke('githubActions', {
+          action: 'trigger_workflow',
+          repository: config.repository_name,
+          workflow_id: config.name.toLowerCase().replace(/\s/g, '-'),
+          config
+        });
+        
+        await refetchRuns();
+      }
     } catch (error) {
-      toast.error(`Failed to trigger pipeline: ${error.message}`);
+      console.error('Failed to trigger pipeline:', error);
     }
   };
 
   const handleRefresh = async () => {
-    if (!repository) return;
-    
     setRefreshing(true);
-    try {
-      const result = await base44.functions.invoke('fetchGitHubPipelines', {
-        repository
-      });
-      
-      if (result.pipelines) {
-        setPipelines(result.pipelines);
-        toast.success('Pipelines refreshed!');
-      }
-    } catch (error) {
-      toast.error(`Failed to fetch pipelines: ${error.message}`);
-    } finally {
-      setRefreshing(false);
-    }
+    await Promise.all([refetchConfigs(), refetchRuns()]);
+    setRefreshing(false);
   };
 
   const stats = {
-    totalRuns: 247,
-    successRate: 94.3,
-    avgDuration: "2m 45s",
+    totalRuns: pipelineRuns.length,
+    successRate: pipelineRuns.length > 0 
+      ? ((pipelineRuns.filter(r => r.status === 'success').length / pipelineRuns.length) * 100).toFixed(1)
+      : 0,
+    avgDuration: pipelineRuns.length > 0
+      ? `${Math.floor(pipelineRuns.reduce((sum, r) => sum + (r.duration_seconds || 0), 0) / pipelineRuns.length / 60)}m`
+      : '—',
     activeRuns: pipelines.filter(p => p.status === 'running').length
   };
 
@@ -196,38 +166,11 @@ export default function CICDAutomationPage() {
           </div>
         </motion.div>
 
-        {/* Repository Input */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="rounded-xl border border-white/10 p-6"
-          style={{
-            background: "linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.9) 100%)",
-            backdropFilter: "blur(10px)"
-          }}
-        >
-          <Label className="text-white mb-2 block">GitHub Repository</Label>
-          <div className="relative">
-            <Github className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <Input
-              value={repository}
-              onChange={(e) => setRepository(e.target.value)}
-              onBlur={handleRefresh}
-              placeholder="owner/repository (e.g., microsoft/vscode)"
-              className="bg-white/5 border-white/10 text-white pl-10"
-            />
-          </div>
-          <p className="text-xs text-gray-400 mt-2">
-            Connect your GitHub repository to fetch live pipeline data
-          </p>
-        </motion.div>
-
         {/* Stats */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          transition={{ delay: 0.1 }}
           className="grid grid-cols-1 md:grid-cols-4 gap-4"
         >
           {[
@@ -262,12 +205,8 @@ export default function CICDAutomationPage() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="space-y-6"
           >
             <PipelineConfigurator onSave={handleSaveConfig} />
-            {pipelineConfig && (
-              <WorkflowGenerator config={pipelineConfig} />
-            )}
           </motion.div>
         )}
 

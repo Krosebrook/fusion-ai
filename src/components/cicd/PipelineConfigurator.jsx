@@ -105,6 +105,16 @@ export default function PipelineConfigurator({ onSave }) {
             </div>
 
             <div>
+              <Label className="text-white mb-2 block">Repository (owner/repo)</Label>
+              <Input
+                value={config.repository_name || ''}
+                onChange={(e) => setConfig({ ...config, repository_name: e.target.value })}
+                className="bg-white/5 border-white/10 text-white"
+                placeholder="username/repository"
+              />
+            </div>
+
+            <div>
               <Label className="text-white mb-2 block">Branch</Label>
               <div className="relative">
                 <GitBranch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
