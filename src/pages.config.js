@@ -20,6 +20,7 @@ import AITemplates from './pages/AITemplates';
 import AIDeployment from './pages/AIDeployment';
 import AICodeReview from './pages/AICodeReview';
 import AIDocumentation from './pages/AIDocumentation';
+import AIFeaturePlanner from './pages/AIFeaturePlanner';
 import __Layout from './Layout.jsx';
 
 
@@ -46,6 +47,7 @@ export const PAGES = {
     "AIDeployment": AIDeployment,
     "AICodeReview": AICodeReview,
     "AIDocumentation": AIDocumentation,
+    "AIFeaturePlanner": AIFeaturePlanner,
 }
 
 export const pagesConfig = {
