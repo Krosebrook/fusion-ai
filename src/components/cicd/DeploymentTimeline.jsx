@@ -2,9 +2,21 @@ import React from "react";
 import { motion } from "framer-motion";
 import { CheckCircle2, XCircle, GitCommit, Clock, User } from "lucide-react";
 
-export default function DeploymentTimeline({ history }) {
+export default function DeploymentTimeline({ history, repository }) {
+  const [selectedRun, setSelectedRun] = useState(null);
   return (
-    <motion.div
+    <>
+      <AnimatePresence>
+        {selectedRun && (
+          <PipelineRunDetails
+            run={selectedRun}
+            repository={repository}
+            onClose={() => setSelectedRun(null)}
+          />
+        )}
+      </AnimatePresence>
+
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="rounded-2xl border border-white/10 overflow-hidden"
@@ -108,6 +120,7 @@ export default function DeploymentTimeline({ history }) {
           </div>
         </div>
       </div>
-    </motion.div>
+      </motion.div>
+    </>
   );
 }

@@ -3,7 +3,8 @@ import { motion } from "framer-motion";
 import { CheckCircle2, XCircle, Clock, Loader2, AlertCircle, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export default function PipelineStatus({ pipelines, onTrigger }) {
+export default function PipelineStatus({ pipelines, onTrigger, repository }) {
+  const [selectedRun, setSelectedRun] = useState(null);
   const statusConfig = {
     success: {
       icon: CheckCircle2,
@@ -45,7 +46,18 @@ export default function PipelineStatus({ pipelines, onTrigger }) {
         const Icon = config.icon;
 
         return (
-          <motion.div
+          <>
+            <AnimatePresence>
+              {selectedRun && (
+                <PipelineRunDetails
+                  run={selectedRun}
+                  repository={repository}
+                  onClose={() => setSelectedRun(null)}
+                />
+              )}
+            </AnimatePresence>
+
+            <motion.div
             key={pipeline.id}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
