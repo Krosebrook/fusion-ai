@@ -6,11 +6,17 @@ import { useQuery } from "@tanstack/react-query";
 import PipelineConfigurator from "../components/cicd/PipelineConfigurator";
 import PipelineStatus from "../components/cicd/PipelineStatus";
 import DeploymentTimeline from "../components/cicd/DeploymentTimeline";
-import { Rocket, GitBranch, Activity, Plus, RefreshCw } from "lucide-react";
+import WorkflowGenerator from "../components/cicd/WorkflowGenerator";
+import { Rocket, GitBranch, Activity, Plus, RefreshCw, Github } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 export default function CICDAutomationPage() {
   const [showConfig, setShowConfig] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [repository, setRepository] = useState("");
+  const [pipelineConfig, setPipelineConfig] = useState(null);
 
   // Mock data - replace with real API calls
   const [pipelines, setPipelines] = useState([
@@ -100,20 +106,48 @@ export default function CICDAutomationPage() {
   ]);
 
   const handleSaveConfig = async (config) => {
-    console.log("Saving pipeline config:", config);
-    // TODO: Save to backend
+    setPipelineConfig(config);
     setShowConfig(false);
+    toast.success('Pipeline configuration saved!');
   };
 
-  const handleTriggerPipeline = (id) => {
-    console.log("Triggering pipeline:", id);
-    // TODO: Trigger via API
+  const handleTriggerPipeline = async (id) => {
+    if (!repository) {
+      toast.error('Please set a GitHub repository first');
+      return;
+    }
+
+    try {
+      await base44.functions.invoke('triggerGitHubWorkflow', {
+        repository,
+        workflowId: 'deploy.yml',
+        ref: 'main'
+      });
+      toast.success('Pipeline triggered successfully!');
+      handleRefresh();
+    } catch (error) {
+      toast.error(`Failed to trigger pipeline: ${error.message}`);
+    }
   };
 
   const handleRefresh = async () => {
+    if (!repository) return;
+    
     setRefreshing(true);
-    // TODO: Fetch fresh data
-    setTimeout(() => setRefreshing(false), 1000);
+    try {
+      const result = await base44.functions.invoke('fetchGitHubPipelines', {
+        repository
+      });
+      
+      if (result.pipelines) {
+        setPipelines(result.pipelines);
+        toast.success('Pipelines refreshed!');
+      }
+    } catch (error) {
+      toast.error(`Failed to fetch pipelines: ${error.message}`);
+    } finally {
+      setRefreshing(false);
+    }
   };
 
   const stats = {
@@ -162,11 +196,38 @@ export default function CICDAutomationPage() {
           </div>
         </motion.div>
 
-        {/* Stats */}
+        {/* Repository Input */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
+          className="rounded-xl border border-white/10 p-6"
+          style={{
+            background: "linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.9) 100%)",
+            backdropFilter: "blur(10px)"
+          }}
+        >
+          <Label className="text-white mb-2 block">GitHub Repository</Label>
+          <div className="relative">
+            <Github className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Input
+              value={repository}
+              onChange={(e) => setRepository(e.target.value)}
+              onBlur={handleRefresh}
+              placeholder="owner/repository (e.g., microsoft/vscode)"
+              className="bg-white/5 border-white/10 text-white pl-10"
+            />
+          </div>
+          <p className="text-xs text-gray-400 mt-2">
+            Connect your GitHub repository to fetch live pipeline data
+          </p>
+        </motion.div>
+
+        {/* Stats */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
           className="grid grid-cols-1 md:grid-cols-4 gap-4"
         >
           {[
@@ -201,8 +262,12 @@ export default function CICDAutomationPage() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
+            className="space-y-6"
           >
             <PipelineConfigurator onSave={handleSaveConfig} />
+            {pipelineConfig && (
+              <WorkflowGenerator config={pipelineConfig} />
+            )}
           </motion.div>
         )}
 
