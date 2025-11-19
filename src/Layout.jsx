@@ -59,7 +59,7 @@ export default function Layout({ children }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // PWA Meta Tags
+  // PWA Meta Tags & Manifest
   React.useEffect(() => {
     // Viewport meta tag
     const viewportMeta = document.querySelector('meta[name="viewport"]');
@@ -79,6 +79,24 @@ export default function Layout({ children }) {
     }
     themeColor.content = '#0F172A';
 
+    // Manifest link
+    let manifestLink = document.querySelector('link[rel="manifest"]');
+    if (!manifestLink) {
+      manifestLink = document.createElement('link');
+      manifestLink.rel = 'manifest';
+      manifestLink.href = '/manifest.json';
+      document.head.appendChild(manifestLink);
+    }
+
+    // Apple touch icon
+    let appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
+    if (!appleTouchIcon) {
+      appleTouchIcon = document.createElement('link');
+      appleTouchIcon.rel = 'apple-touch-icon';
+      appleTouchIcon.href = '/icon-192.png';
+      document.head.appendChild(appleTouchIcon);
+    }
+
     // Apple mobile web app capable
     const appleMeta = document.querySelector('meta[name="apple-mobile-web-app-capable"]');
     if (!appleMeta) {
@@ -88,12 +106,30 @@ export default function Layout({ children }) {
       document.head.appendChild(meta);
     }
 
+    // Apple mobile web app title
+    const appleTitle = document.querySelector('meta[name="apple-mobile-web-app-title"]');
+    if (!appleTitle) {
+      const meta = document.createElement('meta');
+      meta.name = 'apple-mobile-web-app-title';
+      meta.content = 'FlashFusion';
+      document.head.appendChild(meta);
+    }
+
     // Apple status bar style
     const appleStatus = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
     if (!appleStatus) {
       const meta = document.createElement('meta');
       meta.name = 'apple-mobile-web-app-status-bar-style';
       meta.content = 'black-translucent';
+      document.head.appendChild(meta);
+    }
+
+    // Description meta
+    const description = document.querySelector('meta[name="description"]');
+    if (!description) {
+      const meta = document.createElement('meta');
+      meta.name = 'description';
+      meta.content = 'Transform ideas into reality with AI-powered development tools';
       document.head.appendChild(meta);
     }
   }, []);
