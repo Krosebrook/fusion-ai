@@ -7,6 +7,7 @@ import {
   CheckCircle2, XCircle, Circle, Loader2, ChevronRight, ChevronDown,
   Terminal, AlertTriangle
 } from "lucide-react";
+import CommitInfo from "./CommitInfo";
 
 const easeInOutCubic = [0.4, 0, 0.2, 1];
 
@@ -115,41 +116,48 @@ export default function PipelineRunDetails({ run, repository, onClose }) {
           ) : details ? (
             <div className="p-6 space-y-6">
               {/* Run Overview */}
-              <div className="rounded-xl border border-white/10 p-6 bg-white/5">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div>
-                    <p className="text-xs text-gray-400 mb-1">Status</p>
-                    <div className={`flex items-center gap-2 ${getStatusColor(details.run.status, details.run.conclusion)}`}>
-                      {getStatusIcon(details.run.status, details.run.conclusion)}
-                      <span className="font-semibold capitalize">
-                        {details.run.status === 'completed' ? details.run.conclusion : details.run.status}
-                      </span>
+              <div className="space-y-4">
+                <div className="rounded-xl border border-white/10 p-6 bg-white/5">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div>
+                      <p className="text-xs text-gray-400 mb-1">Status</p>
+                      <div className={`flex items-center gap-2 ${getStatusColor(details.run.status, details.run.conclusion)}`}>
+                        {getStatusIcon(details.run.status, details.run.conclusion)}
+                        <span className="font-semibold capitalize">
+                          {details.run.status === 'completed' ? details.run.conclusion : details.run.status}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-400 mb-1">Duration</p>
-                    <div className="flex items-center gap-2 text-white">
-                      <Clock className="w-4 h-4 text-gray-400" />
-                      <span className="font-semibold">{calculateDuration(details.run.created_at, details.run.updated_at)}</span>
+                    <div>
+                      <p className="text-xs text-gray-400 mb-1">Duration</p>
+                      <div className="flex items-center gap-2 text-white">
+                        <Clock className="w-4 h-4 text-gray-400" />
+                        <span className="font-semibold">{calculateDuration(details.run.created_at, details.run.updated_at)}</span>
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-400 mb-1">Trigger</p>
-                    <span className="text-white font-semibold capitalize">{details.run.event}</span>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-400 mb-1">View on GitHub</p>
-                    <a
-                      href={details.run.html_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1 text-blue-400 hover:text-blue-300"
-                    >
-                      <ExternalLink className="w-4 h-4" />
-                      <span className="text-sm">Open</span>
-                    </a>
+                    <div>
+                      <p className="text-xs text-gray-400 mb-1">Trigger</p>
+                      <span className="text-white font-semibold capitalize">{details.run.event}</span>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-400 mb-1">View on GitHub</p>
+                      <a
+                        href={details.run.html_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 text-blue-400 hover:text-blue-300"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                        <span className="text-sm">Open</span>
+                      </a>
+                    </div>
                   </div>
                 </div>
+
+                {/* Commit Details */}
+                {run.commit && repository && (
+                  <CommitInfo repository={repository} sha={run.commit} />
+                )}
               </div>
 
               {/* Jobs */}
