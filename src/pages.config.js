@@ -25,6 +25,7 @@ import AICodeAgent from './pages/AICodeAgent';
 import CICDAutomation from './pages/CICDAutomation';
 import CICDAnalytics from './pages/CICDAnalytics';
 import AccessControl from './pages/AccessControl';
+import Secrets from './pages/Secrets';
 import __Layout from './Layout.jsx';
 
 
@@ -56,6 +57,7 @@ export const PAGES = {
     "CICDAutomation": CICDAutomation,
     "CICDAnalytics": CICDAnalytics,
     "AccessControl": AccessControl,
+    "Secrets": Secrets,
 }
 
 export const pagesConfig = {
