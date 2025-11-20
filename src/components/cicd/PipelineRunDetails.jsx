@@ -8,11 +8,13 @@ import {
   Terminal, AlertTriangle
 } from "lucide-react";
 import CommitInfo from "./CommitInfo";
+import QualityResults from "./QualityResults";
 
 const easeInOutCubic = [0.4, 0, 0.2, 1];
 
 export default function PipelineRunDetails({ run, repository, onClose }) {
   const [details, setDetails] = useState(null);
+  const [qualityChecks, setQualityChecks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expandedJob, setExpandedJob] = useState(null);
   const [expandedStep, setExpandedStep] = useState(null);
@@ -28,6 +30,10 @@ export default function PipelineRunDetails({ run, repository, onClose }) {
         run_id: run.run_id || run.id
       });
       setDetails(result);
+
+      // Fetch quality checks
+      const checks = await base44.entities.QualityCheck.filter({ pipeline_run_id: run.id });
+      setQualityChecks(checks);
     } catch (error) {
       console.error('Failed to fetch run details:', error);
     } finally {
@@ -159,6 +165,17 @@ export default function PipelineRunDetails({ run, repository, onClose }) {
                   <CommitInfo repository={repository} sha={run.commit} />
                 )}
               </div>
+
+              {/* Quality Checks */}
+              {qualityChecks.length > 0 && (
+                <div className="space-y-3">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <Shield className="w-5 h-5 text-purple-400" />
+                    Quality & Security Checks
+                  </h3>
+                  <QualityResults checks={qualityChecks} />
+                </div>
+              )}
 
               {/* Jobs */}
               <div className="space-y-3">

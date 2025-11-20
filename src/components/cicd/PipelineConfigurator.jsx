@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { GitBranch, Play, Settings, Zap, Clock, GitCommit, Server, Github } from "lucide-react";
+import { GitBranch, Play, Settings, Zap, Clock, GitCommit, Server, Github, Shield } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import GitRepositoryManager from "./GitRepositoryManager";
@@ -359,7 +359,52 @@ export default function PipelineConfigurator({ onSave }) {
                 onCheckedChange={(checked) => setConfig({ ...config, notifications: checked })}
               />
             </div>
-          </div>
+            </div>
+
+            <div className="space-y-4 pt-4 border-t border-white/10">
+            <h4 className="text-sm font-semibold text-white flex items-center gap-2">
+              <Shield className="w-4 h-4 text-purple-400" />
+              Quality Gates
+            </h4>
+
+            <div className="flex items-center justify-between p-3 rounded-lg bg-white/5">
+              <div>
+                <p className="text-sm font-medium text-white">Enable Quality Checks</p>
+                <p className="text-xs text-gray-400">Run automated code quality and security scans</p>
+              </div>
+              <Switch
+                checked={config.quality_gates?.enabled || false}
+                onCheckedChange={(checked) => setConfig({
+                  ...config,
+                  quality_gates: { ...config.quality_gates, enabled: checked, tools: checked ? ['eslint', 'snyk'] : [] }
+                })}
+              />
+            </div>
+
+            {config.quality_gates?.enabled && (
+              <div className="space-y-3 ml-4">
+                <div className="grid grid-cols-2 gap-3">
+                  {['eslint', 'snyk', 'sonarqube', 'prettier'].map(tool => (
+                    <label key={tool} className="flex items-center gap-2 p-2 rounded bg-white/5 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={config.quality_gates?.tools?.includes(tool) || false}
+                        onChange={(e) => {
+                          const tools = config.quality_gates?.tools || [];
+                          const updated = e.target.checked
+                            ? [...tools, tool]
+                            : tools.filter(t => t !== tool);
+                          setConfig({ ...config, quality_gates: { ...config.quality_gates, tools: updated } });
+                        }}
+                        className="rounded"
+                      />
+                      <span className="text-xs text-gray-300 capitalize">{tool}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+            </div>
         </TabsContent>
 
         <TabsContent value="gitlab" className="p-6">
