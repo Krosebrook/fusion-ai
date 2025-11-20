@@ -156,6 +156,33 @@ function generateGitHubWorkflow(config) {
   if (config.triggers?.push) triggers.push('push');
   if (config.triggers?.pull_request) triggers.push('pull_request');
   
+  const qualitySteps = [];
+  if (config.quality_gates?.enabled) {
+    const tools = config.quality_gates.tools || [];
+    
+    if (tools.includes('eslint')) {
+      qualitySteps.push(`      - name: Run ESLint
+        run: npm run lint || true
+        continue-on-error: ${config.quality_gates.max_high_issues > 0}`);
+    }
+    
+    if (tools.includes('snyk')) {
+      qualitySteps.push(`      - name: Snyk Security Scan
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: \${{ secrets.SNYK_TOKEN }}
+        continue-on-error: true`);
+    }
+    
+    if (tools.includes('sonarqube')) {
+      qualitySteps.push(`      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: \${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: \${{ secrets.SONAR_HOST_URL }}`);
+    }
+  }
+  
   return `name: ${config.name}
 
 on:
@@ -179,7 +206,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       
-      - name: Build
+${qualitySteps.length > 0 ? qualitySteps.join('\n\n') + '\n\n' : ''}      - name: Build
         run: ${config.build_command || 'npm run build'}
       
       - name: Run tests
