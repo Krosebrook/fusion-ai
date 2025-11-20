@@ -7,9 +7,12 @@ import PipelineConfigurator from "../components/cicd/PipelineConfigurator";
 import PipelineStatus from "../components/cicd/PipelineStatus";
 import DeploymentTimeline from "../components/cicd/DeploymentTimeline";
 import EnvironmentManager from "../components/cicd/EnvironmentManager";
-import { Rocket, GitBranch, Activity, Plus, RefreshCw, Server } from "lucide-react";
+import { Rocket, GitBranch, Activity, Plus, RefreshCw, Server, BarChart3 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 
 export default function CICDAutomationPage() {
+  const navigate = useNavigate();
   const [showConfig, setShowConfig] = useState(false);
   const [showEnvironments, setShowEnvironments] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -157,6 +160,14 @@ export default function CICDAutomationPage() {
             >
               <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
               Refresh
+            </Button>
+            <Button
+              onClick={() => navigate(createPageUrl("CICDAnalytics"))}
+              variant="outline"
+              className="border-purple-500/30 text-purple-400"
+            >
+              <BarChart3 className="w-4 h-4 mr-2" />
+              Analytics
             </Button>
             <Button
               onClick={() => setShowEnvironments(!showEnvironments)}
