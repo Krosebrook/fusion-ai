@@ -6,9 +6,10 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { GitBranch, Play, Settings, Zap, Clock, GitCommit, Server } from "lucide-react";
+import { GitBranch, Play, Settings, Zap, Clock, GitCommit, Server, Github } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
+import GitRepositoryManager from "./GitRepositoryManager";
 
 export default function PipelineConfigurator({ onSave }) {
   const { data: environments = [] } = useQuery({
@@ -20,6 +21,10 @@ export default function PipelineConfigurator({ onSave }) {
   const [config, setConfig] = useState({
     provider: "github",
     projectType: "react",
+    repository_name: "",
+    repository_id: "",
+    repository_url: "",
+    available_branches: [],
     branch: "main",
     triggers: {
       push: true,
@@ -34,6 +39,8 @@ export default function PipelineConfigurator({ onSave }) {
     autoScale: true,
     notifications: true
   });
+
+  const [showRepoSelector, setShowRepoSelector] = useState(false);
 
   const projectTypes = [
     { value: "react", label: "React App", buildCmd: "npm run build" },
@@ -53,6 +60,18 @@ export default function PipelineConfigurator({ onSave }) {
       projectType: type,
       buildCommand: selected?.buildCmd || config.buildCommand
     });
+  };
+
+  const handleSelectRepository = (repoData) => {
+    setConfig({
+      ...config,
+      repository_id: repoData.repository_id,
+      repository_name: repoData.repository_name,
+      repository_url: repoData.repository_url,
+      available_branches: repoData.available_branches,
+      branch: repoData.default_branch
+    });
+    setShowRepoSelector(false);
   };
 
   return (
@@ -108,28 +127,64 @@ export default function PipelineConfigurator({ onSave }) {
               </Select>
             </div>
 
+            {/* Repository Selector */}
             <div>
-              <Label className="text-white mb-2 block">Repository (owner/repo)</Label>
-              <Input
-                value={config.repository_name || ''}
-                onChange={(e) => setConfig({ ...config, repository_name: e.target.value })}
-                className="bg-white/5 border-white/10 text-white"
-                placeholder="username/repository"
-              />
+              <Label className="text-white mb-2 block flex items-center gap-2">
+                <Github className="w-4 h-4 text-orange-400" />
+                Git Repository
+              </Label>
+              {config.repository_name ? (
+                <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/30 flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-white">{config.repository_name}</p>
+                    <p className="text-xs text-gray-400">{config.available_branches?.length || 0} branches available</p>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => setShowRepoSelector(true)}
+                    className="text-blue-400"
+                  >
+                    Change
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  onClick={() => setShowRepoSelector(true)}
+                  className="w-full bg-blue-500/20 text-blue-400 border border-blue-500/30"
+                >
+                  <Github className="w-4 h-4 mr-2" />
+                  Connect Repository
+                </Button>
+              )}
             </div>
 
-            <div>
-              <Label className="text-white mb-2 block">Branch</Label>
-              <div className="relative">
-                <GitBranch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <Input
-                  value={config.branch}
-                  onChange={(e) => setConfig({ ...config, branch: e.target.value })}
-                  className="bg-white/5 border-white/10 text-white pl-10"
-                  placeholder="main"
-                />
+            {showRepoSelector && (
+              <div className="p-4 rounded-xl border border-white/10 bg-white/5">
+                <GitRepositoryManager onSelectRepository={handleSelectRepository} />
               </div>
-            </div>
+            )}
+
+            {config.available_branches?.length > 0 && (
+              <div>
+                <Label className="text-white mb-2 block">Branch</Label>
+                <Select value={config.branch} onValueChange={(v) => setConfig({ ...config, branch: v })}>
+                  <SelectTrigger className="bg-white/5 border-white/10 text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-slate-900 border-white/10">
+                    {config.available_branches.map(branch => (
+                      <SelectItem key={branch} value={branch} className="text-white">
+                        <div className="flex items-center gap-2">
+                          <GitBranch className="w-3 h-3 text-purple-400" />
+                          {branch}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
 
             <div>
               <Label className="text-white mb-2 block flex items-center gap-2">
