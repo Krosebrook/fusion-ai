@@ -24,6 +24,7 @@ import AIFeaturePlanner from './pages/AIFeaturePlanner';
 import AICodeAgent from './pages/AICodeAgent';
 import CICDAutomation from './pages/CICDAutomation';
 import CICDAnalytics from './pages/CICDAnalytics';
+import AccessControl from './pages/AccessControl';
 import __Layout from './Layout.jsx';
 
 
@@ -54,6 +55,7 @@ export const PAGES = {
     "AICodeAgent": AICodeAgent,
     "CICDAutomation": CICDAutomation,
     "CICDAnalytics": CICDAnalytics,
+    "AccessControl": AccessControl,
 }
 
 export const pagesConfig = {

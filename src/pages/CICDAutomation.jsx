@@ -7,12 +7,14 @@ import PipelineConfigurator from "../components/cicd/PipelineConfigurator";
 import PipelineStatus from "../components/cicd/PipelineStatus";
 import DeploymentTimeline from "../components/cicd/DeploymentTimeline";
 import EnvironmentManager from "../components/cicd/EnvironmentManager";
-import { Rocket, GitBranch, Activity, Plus, RefreshCw, Server, BarChart3 } from "lucide-react";
+import { Rocket, GitBranch, Activity, Plus, RefreshCw, Server, BarChart3, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import { PermissionGuard, usePermissions } from "../components/rbac/PermissionGuard";
 
 export default function CICDAutomationPage() {
   const navigate = useNavigate();
+  const { hasPermission, isAdmin } = usePermissions();
   const [showConfig, setShowConfig] = useState(false);
   const [showEnvironments, setShowEnvironments] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -161,29 +163,45 @@ export default function CICDAutomationPage() {
               <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
               Refresh
             </Button>
-            <Button
-              onClick={() => navigate(createPageUrl("CICDAnalytics"))}
-              variant="outline"
-              className="border-purple-500/30 text-purple-400"
-            >
-              <BarChart3 className="w-4 h-4 mr-2" />
-              Analytics
-            </Button>
-            <Button
-              onClick={() => setShowEnvironments(!showEnvironments)}
-              variant="outline"
-              className="border-blue-500/30 text-blue-400"
-            >
-              <Server className="w-4 h-4 mr-2" />
-              Environments
-            </Button>
-            <Button
-              onClick={() => setShowConfig(!showConfig)}
-              className="bg-gradient-to-r from-orange-500 to-pink-500"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Configure Pipeline
-            </Button>
+            <PermissionGuard resource="analytics" action="view">
+              <Button
+                onClick={() => navigate(createPageUrl("CICDAnalytics"))}
+                variant="outline"
+                className="border-purple-500/30 text-purple-400"
+              >
+                <BarChart3 className="w-4 h-4 mr-2" />
+                Analytics
+              </Button>
+            </PermissionGuard>
+            <PermissionGuard resource="environments" action="read">
+              <Button
+                onClick={() => setShowEnvironments(!showEnvironments)}
+                variant="outline"
+                className="border-blue-500/30 text-blue-400"
+              >
+                <Server className="w-4 h-4 mr-2" />
+                Environments
+              </Button>
+            </PermissionGuard>
+            <PermissionGuard resource="pipelines" action="create">
+              <Button
+                onClick={() => setShowConfig(!showConfig)}
+                className="bg-gradient-to-r from-orange-500 to-pink-500"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Configure Pipeline
+              </Button>
+            </PermissionGuard>
+            {isAdmin() && (
+              <Button
+                onClick={() => navigate(createPageUrl("AccessControl"))}
+                variant="outline"
+                className="border-purple-500/30 text-purple-400"
+              >
+                <Shield className="w-4 h-4 mr-2" />
+                Access Control
+              </Button>
+            )}
           </div>
         </motion.div>
 
