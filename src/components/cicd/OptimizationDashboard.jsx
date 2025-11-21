@@ -5,8 +5,9 @@ import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Sparkles, TrendingUp, Zap, Clock, Target, CheckCircle2,
-  XCircle, Loader2, ChevronDown, Code, ArrowRight, BarChart3
+  XCircle, Loader2, ChevronDown, Code, ArrowRight, BarChart3, Share2
 } from "lucide-react";
+import ShareDialog from "../collaboration/ShareDialog";
 
 const optimizationIcons = {
   parallelization: Zap,
@@ -30,6 +31,7 @@ export default function OptimizationDashboard({ pipelineId, onOptimizationApplie
   const [analyzing, setAnalyzing] = useState(false);
   const [optimizations, setOptimizations] = useState([]);
   const [summary, setSummary] = useState(null);
+  const [shareOpt, setShareOpt] = useState(null);
 
   const analyzeMutation = useMutation({
     mutationFn: async () => {
@@ -268,21 +270,31 @@ export default function OptimizationDashboard({ pipelineId, onOptimizationApplie
 
                   {/* Action Buttons */}
                   {opt.status === 'pending' && (
-                    <div className="flex gap-3 mt-4">
+                    <div className="space-y-3 mt-4">
+                      <div className="flex gap-3">
+                        <Button
+                          onClick={() => applyMutation.mutate(opt.id)}
+                          className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500"
+                        >
+                          <CheckCircle2 className="w-4 h-4 mr-2" />
+                          Apply Optimization
+                        </Button>
+                        <Button
+                          onClick={() => rejectMutation.mutate(opt.id)}
+                          variant="outline"
+                          className="border-red-500/30 text-red-400"
+                        >
+                          <XCircle className="w-4 h-4 mr-2" />
+                          Dismiss
+                        </Button>
+                      </div>
                       <Button
-                        onClick={() => applyMutation.mutate(opt.id)}
-                        className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500"
-                      >
-                        <CheckCircle2 className="w-4 h-4 mr-2" />
-                        Apply Optimization
-                      </Button>
-                      <Button
-                        onClick={() => rejectMutation.mutate(opt.id)}
+                        onClick={() => setShareOpt(opt)}
                         variant="outline"
-                        className="border-red-500/30 text-red-400"
+                        className="w-full border-blue-500/30 text-blue-400"
                       >
-                        <XCircle className="w-4 h-4 mr-2" />
-                        Dismiss
+                        <Share2 className="w-4 h-4 mr-2" />
+                        Share Recommendation
                       </Button>
                     </div>
                   )}
@@ -298,6 +310,23 @@ export default function OptimizationDashboard({ pipelineId, onOptimizationApplie
             );
           })}
         </div>
+      )}
+
+      {shareOpt && (
+        <ShareDialog
+          title={shareOpt.title}
+          data={{
+            optimization_type: shareOpt.optimization_type,
+            title: shareOpt.title,
+            description: shareOpt.description,
+            current_metrics: shareOpt.current_metrics,
+            projected_metrics: shareOpt.projected_metrics,
+            implementation_steps: shareOpt.implementation_steps,
+            confidence_score: shareOpt.confidence_score
+          }}
+          type="optimization"
+          onClose={() => setShareOpt(null)}
+        />
       )}
     </div>
   );

@@ -5,10 +5,12 @@ import { Button } from "@/components/ui/button";
 import { 
   X, Clock, GitCommit, GitBranch, User, ExternalLink,
   CheckCircle2, XCircle, Circle, Loader2, ChevronRight, ChevronDown,
-  Terminal, AlertTriangle, Shield
+  Terminal, AlertTriangle, Shield, Share2, MessageCircle
 } from "lucide-react";
 import CommitInfo from "./CommitInfo";
 import QualityResults from "./QualityResults";
+import CommentThread from "../collaboration/CommentThread";
+import ShareDialog from "../collaboration/ShareDialog";
 
 const easeInOutCubic = [0.4, 0, 0.2, 1];
 
@@ -18,6 +20,8 @@ export default function PipelineRunDetails({ run, repository, onClose }) {
   const [loading, setLoading] = useState(true);
   const [expandedJob, setExpandedJob] = useState(null);
   const [expandedStep, setExpandedStep] = useState(null);
+  const [showShare, setShowShare] = useState(false);
+  const [activeTab, setActiveTab] = useState("details");
 
   useEffect(() => {
     fetchDetails();
@@ -108,14 +112,61 @@ export default function PipelineRunDetails({ run, repository, onClose }) {
               </div>
             </div>
           </div>
-          <Button variant="ghost" size="icon" onClick={onClose}>
-            <X className="w-5 h-5 text-gray-400" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={() => setShowShare(true)}
+              className="text-blue-400"
+            >
+              <Share2 className="w-5 h-5" />
+            </Button>
+            <Button variant="ghost" size="icon" onClick={onClose}>
+              <X className="w-5 h-5 text-gray-400" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div className="px-6 border-b border-white/10 flex gap-4">
+          <button
+            onClick={() => setActiveTab("details")}
+            className={`px-4 py-3 text-sm font-semibold transition-colors relative ${
+              activeTab === "details" ? "text-white" : "text-gray-400 hover:text-white"
+            }`}
+          >
+            Details
+            {activeTab === "details" && (
+              <motion.div
+                layoutId="activeTab"
+                className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"
+              />
+            )}
+          </button>
+          <button
+            onClick={() => setActiveTab("discussion")}
+            className={`px-4 py-3 text-sm font-semibold transition-colors relative flex items-center gap-2 ${
+              activeTab === "discussion" ? "text-white" : "text-gray-400 hover:text-white"
+            }`}
+          >
+            <MessageCircle className="w-4 h-4" />
+            Discussion
+            {activeTab === "discussion" && (
+              <motion.div
+                layoutId="activeTab"
+                className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"
+              />
+            )}
+          </button>
         </div>
 
         {/* Content */}
-        <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
-          {loading ? (
+        <div className="overflow-y-auto max-h-[calc(90vh-180px)]">
+          {activeTab === "discussion" ? (
+            <div className="p-6">
+              <CommentThread pipelineRunId={run.id} />
+            </div>
+          ) : loading ? (
             <div className="flex items-center justify-center p-12">
               <Loader2 className="w-8 h-8 text-blue-400 animate-spin" />
             </div>
@@ -299,6 +350,22 @@ export default function PipelineRunDetails({ run, repository, onClose }) {
           )}
         </div>
       </motion.div>
+
+      {showShare && (
+        <ShareDialog
+          title="Pipeline Run"
+          data={{
+            run_id: run.id,
+            repository,
+            commit: run.commit,
+            branch: run.branch,
+            status: run.status,
+            details: details
+          }}
+          type="pipeline-run"
+          onClose={() => setShowShare(false)}
+        />
+      )}
     </motion.div>
   );
 }
