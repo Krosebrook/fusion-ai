@@ -537,6 +537,17 @@ export default function Layout({ children }) {
               )}
             </div>
 
+            {/* Notifications */}
+            {user && (
+              <div className="ff-desktop-nav" style={{
+                display: 'none',
+                gap: '12px',
+                alignItems: 'center'
+              }}>
+                <NotificationCenter user={user} />
+              </div>
+            )}
+
             {/* Auth Buttons */}
             <div className="ff-desktop-nav" style={{
               display: 'none',
