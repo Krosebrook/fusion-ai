@@ -118,30 +118,32 @@ export default function PipelineStatus({ pipelines, onTrigger, repository }) {
                       Details
                     </Button>
                     {pipeline.status !== 'running' && (
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onTrigger(pipeline.id);
-                        }}
-                        className="h-7 px-2 text-xs text-gray-400 hover:text-white"
-                      >
-                        <Play className="w-3 h-3 mr-1" />
-                        Retry
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate(createPageUrl("PipelineOptimization") + `?id=${pipeline.pipeline_config_id || pipeline.id}`);
-                        }}
-                        className="h-7 px-2 text-xs text-purple-400 hover:text-purple-300"
-                      >
-                        <Sparkles className="w-3 h-3 mr-1" />
-                        Optimize
-                      </Button>
+                      <>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onTrigger(pipeline.id);
+                          }}
+                          className="h-7 px-2 text-xs text-gray-400 hover:text-white"
+                        >
+                          <Play className="w-3 h-3 mr-1" />
+                          Retry
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(createPageUrl("PipelineOptimization") + `?id=${pipeline.pipeline_config_id || pipeline.id}`);
+                          }}
+                          className="h-7 px-2 text-xs text-purple-400 hover:text-purple-300"
+                        >
+                          <Sparkles className="w-3 h-3 mr-1" />
+                          Optimize
+                        </Button>
+                      </>
                     )}
                   </div>
                 </div>
