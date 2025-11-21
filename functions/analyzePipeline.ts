@@ -45,6 +45,9 @@ Deno.serve(async (req) => {
         return acc;
       }, {});
 
+    // Detect bottlenecks
+    const bottlenecks = detectBottlenecks(runs, config);
+
     // Prepare analysis prompt
     const analysisPrompt = `Analyze this CI/CD pipeline and suggest optimizations:
 
@@ -65,6 +68,9 @@ Commands:
 
 Common Failure Points:
 ${Object.entries(failurePatterns).map(([step, count]) => `- ${step}: ${count} failures`).join('\n')}
+
+Detected Bottlenecks:
+${bottlenecks.map(b => `- ${b.type}: ${b.description} (Impact: ${b.severity})`).join('\n')}
 
 Based on this data, suggest 3-5 specific optimizations that could:
 1. Reduce execution time
@@ -143,13 +149,15 @@ For each optimization, provide:
     return Response.json({
       success: true,
       optimizations: savedOptimizations,
+      bottlenecks,
       analysis_summary: {
         total_runs: runs.length,
         avg_duration_minutes: Math.round(avgDuration / 60),
         success_rate: successRate.toFixed(1),
         potential_time_saved: savedOptimizations.reduce((sum, opt) => 
           sum + (opt.projected_metrics?.time_saved || 0), 0
-        )
+        ),
+        critical_bottlenecks: bottlenecks.filter(b => b.severity === 'high').length
       }
     });
 
@@ -158,3 +166,77 @@ For each optimization, provide:
     return Response.json({ error: error.message }, { status: 500 });
   }
 });
+
+function detectBottlenecks(runs, config) {
+  const bottlenecks = [];
+  
+  if (runs.length === 0) return bottlenecks;
+
+  // Calculate metrics
+  const avgDuration = runs.reduce((sum, r) => sum + (r.duration_seconds || 0), 0) / runs.length;
+  const recentRuns = runs.slice(0, 10);
+  const recentAvgDuration = recentRuns.reduce((sum, r) => sum + (r.duration_seconds || 0), 0) / recentRuns.length;
+
+  // Bottleneck 1: Increasing build times
+  if (recentAvgDuration > avgDuration * 1.2) {
+    bottlenecks.push({
+      type: 'increasing_duration',
+      description: 'Build times increasing by 20% - possible dependency bloat or test slowdown',
+      severity: 'high',
+      prediction: `If trend continues, builds may reach ${Math.round(recentAvgDuration * 1.3 / 60)}m in next 2 weeks`,
+      recommendation: 'Review dependencies, enable caching, or parallelize tests'
+    });
+  }
+
+  // Bottleneck 2: Sequential job execution
+  if (!config.workflow_file?.includes('matrix') && avgDuration > 300) {
+    bottlenecks.push({
+      type: 'sequential_execution',
+      description: 'Jobs running sequentially - parallelization could reduce time by 40%',
+      severity: 'medium',
+      prediction: 'Could save ~2-3 minutes per run',
+      recommendation: 'Enable matrix strategy for parallel job execution'
+    });
+  }
+
+  // Bottleneck 3: No caching
+  if (!config.workflow_file?.includes('cache')) {
+    bottlenecks.push({
+      type: 'missing_cache',
+      description: 'No dependency caching - reinstalling packages on every run',
+      severity: 'medium',
+      prediction: 'Adding cache could reduce dependency install time by 60%',
+      recommendation: 'Implement npm/pip caching strategy'
+    });
+  }
+
+  // Bottleneck 4: High failure rate
+  const failureRate = runs.filter(r => r.status === 'failed').length / runs.length;
+  if (failureRate > 0.15) {
+    bottlenecks.push({
+      type: 'high_failure_rate',
+      description: `${(failureRate * 100).toFixed(1)}% failure rate - stability issues detected`,
+      severity: 'high',
+      prediction: 'Failures likely to increase without intervention',
+      recommendation: 'Add quality gates, improve test coverage, or review recent changes'
+    });
+  }
+
+  // Bottleneck 5: Resource constraints
+  const runsDuringPeakHours = runs.filter(r => {
+    const hour = new Date(r.created_date).getHours();
+    return hour >= 9 && hour <= 17;
+  });
+  
+  if (runsDuringPeakHours.length > runs.length * 0.7) {
+    bottlenecks.push({
+      type: 'peak_hour_congestion',
+      description: 'Most runs during peak hours - may face queue delays',
+      severity: 'low',
+      prediction: 'Queue times may increase during business hours',
+      recommendation: 'Consider off-peak scheduling or increase runner capacity'
+    });
+  }
+
+  return bottlenecks;
+}

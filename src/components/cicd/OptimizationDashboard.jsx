@@ -5,7 +5,8 @@ import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Sparkles, TrendingUp, Zap, Clock, Target, CheckCircle2,
-  XCircle, Loader2, ChevronDown, Code, ArrowRight, BarChart3, Share2
+  XCircle, Loader2, ChevronDown, Code, ArrowRight, BarChart3, Share2,
+  AlertTriangle, TrendingDown
 } from "lucide-react";
 import ShareDialog from "../collaboration/ShareDialog";
 
@@ -30,6 +31,7 @@ export default function OptimizationDashboard({ pipelineId, onOptimizationApplie
   const [expandedOpt, setExpandedOpt] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [optimizations, setOptimizations] = useState([]);
+  const [bottlenecks, setBottlenecks] = useState([]);
   const [summary, setSummary] = useState(null);
   const [shareOpt, setShareOpt] = useState(null);
 
@@ -43,6 +45,7 @@ export default function OptimizationDashboard({ pipelineId, onOptimizationApplie
     },
     onSuccess: (data) => {
       setOptimizations(data.optimizations);
+      setBottlenecks(data.bottlenecks || []);
       setSummary(data.analysis_summary);
       setAnalyzing(false);
     },
@@ -53,9 +56,8 @@ export default function OptimizationDashboard({ pipelineId, onOptimizationApplie
 
   const applyMutation = useMutation({
     mutationFn: async (optimizationId) => {
-      return base44.entities.PipelineOptimization.update(optimizationId, {
-        status: 'applied',
-        applied_at: new Date().toISOString()
+      return base44.functions.invoke('applyOptimization', {
+        optimization_id: optimizationId
       });
     },
     onSuccess: () => {
@@ -115,6 +117,94 @@ export default function OptimizationDashboard({ pipelineId, onOptimizationApplie
           )}
         </Button>
       </motion.div>
+
+      {/* Bottleneck Predictions */}
+      {bottlenecks.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-2xl border border-orange-500/30 overflow-hidden"
+          style={{
+            background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(239, 68, 68, 0.1) 100%)",
+            backdropFilter: "blur(20px)"
+          }}
+        >
+          <div className="p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center">
+                <AlertTriangle className="w-6 h-6 text-orange-400" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                  Predicted Bottlenecks
+                </h3>
+                <p className="text-sm text-gray-400">Issues detected before they impact your pipeline</p>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              {bottlenecks.map((bottleneck, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="p-4 rounded-xl border border-white/10 bg-white/5"
+                >
+                  <div className="flex items-start gap-3 mb-2">
+                    <div
+                      className="w-8 h-8 rounded-lg flex items-center justify-center"
+                      style={{
+                        backgroundColor: bottleneck.severity === 'high' ? 'rgba(239, 68, 68, 0.2)' :
+                                       bottleneck.severity === 'medium' ? 'rgba(251, 146, 60, 0.2)' :
+                                       'rgba(234, 179, 8, 0.2)'
+                      }}
+                    >
+                      <TrendingDown
+                        className="w-5 h-5"
+                        style={{
+                          color: bottleneck.severity === 'high' ? '#EF4444' :
+                                bottleneck.severity === 'medium' ? '#FB923C' :
+                                '#EAB308'
+                        }}
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h4 className="text-sm font-bold text-white capitalize">
+                          {bottleneck.type.replace(/_/g, ' ')}
+                        </h4>
+                        <span
+                          className="px-2 py-0.5 rounded-full text-xs font-semibold"
+                          style={{
+                            backgroundColor: bottleneck.severity === 'high' ? 'rgba(239, 68, 68, 0.2)' :
+                                           bottleneck.severity === 'medium' ? 'rgba(251, 146, 60, 0.2)' :
+                                           'rgba(234, 179, 8, 0.2)',
+                            color: bottleneck.severity === 'high' ? '#EF4444' :
+                                  bottleneck.severity === 'medium' ? '#FB923C' :
+                                  '#EAB308'
+                          }}
+                        >
+                          {bottleneck.severity}
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-400 mb-2">{bottleneck.description}</p>
+                      <div className="p-2 rounded bg-blue-500/10 border border-blue-500/20 mb-2">
+                        <p className="text-xs text-blue-400">
+                          <strong>Prediction:</strong> {bottleneck.prediction}
+                        </p>
+                      </div>
+                      <p className="text-xs text-green-400">
+                        <strong>Fix:</strong> {bottleneck.recommendation}
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      )}
 
       {/* Analysis Summary */}
       {summary && (
@@ -274,10 +364,20 @@ export default function OptimizationDashboard({ pipelineId, onOptimizationApplie
                       <div className="flex gap-3">
                         <Button
                           onClick={() => applyMutation.mutate(opt.id)}
+                          disabled={applyMutation.isPending}
                           className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500"
                         >
-                          <CheckCircle2 className="w-4 h-4 mr-2" />
-                          Apply Optimization
+                          {applyMutation.isPending ? (
+                            <>
+                              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                              Applying...
+                            </>
+                          ) : (
+                            <>
+                              <CheckCircle2 className="w-4 h-4 mr-2" />
+                              Auto-Apply Optimization
+                            </>
+                          )}
                         </Button>
                         <Button
                           onClick={() => rejectMutation.mutate(opt.id)}
