@@ -78,6 +78,9 @@ export default function CICDAutomationPage() {
         name: config.projectType + ' Pipeline',
         provider: config.provider,
         repository_name: config.repository_name,
+        repository_id: config.repository_id,
+        repository_url: config.repository_url,
+        available_branches: config.available_branches,
         branch: config.branch,
         project_type: config.projectType,
         environment: config.environment,
@@ -87,6 +90,7 @@ export default function CICDAutomationPage() {
         deploy_command: config.deployCommand,
         auto_scale: config.autoScale,
         notifications: config.notifications,
+        quality_gates: config.quality_gates,
         workflow_file: workflowContent.workflow
       });
 
@@ -280,7 +284,13 @@ export default function CICDAutomationPage() {
               Active Pipelines
             </h2>
           </div>
-          <PipelineStatus pipelines={pipelines} onTrigger={handleTriggerPipeline} />
+          <PipelineStatus 
+            pipelines={pipelines.map(p => ({ 
+              ...p, 
+              pipeline_config_id: pipelineRuns.find(r => r.id === p.id)?.pipeline_config_id 
+            }))} 
+            onTrigger={handleTriggerPipeline} 
+          />
         </motion.div>
 
         {/* Deployment Timeline */}

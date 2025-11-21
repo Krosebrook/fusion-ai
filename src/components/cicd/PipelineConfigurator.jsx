@@ -37,7 +37,11 @@ export default function PipelineConfigurator({ onSave }) {
     deployCommand: "npm run deploy",
     environment_id: null,
     autoScale: true,
-    notifications: true
+    notifications: true,
+    quality_gates: {
+      enabled: false,
+      tools: []
+    }
   });
 
   const [showRepoSelector, setShowRepoSelector] = useState(false);

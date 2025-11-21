@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { 
   X, Clock, GitCommit, GitBranch, User, ExternalLink,
   CheckCircle2, XCircle, Circle, Loader2, ChevronRight, ChevronDown,
-  Terminal, AlertTriangle
+  Terminal, AlertTriangle, Shield
 } from "lucide-react";
 import CommitInfo from "./CommitInfo";
 import QualityResults from "./QualityResults";
