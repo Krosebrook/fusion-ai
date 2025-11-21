@@ -12,7 +12,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import GitRepositoryManager from "./GitRepositoryManager";
 import TemplateLibrary from "./TemplateLibrary";
 
-export default function PipelineConfigurator({ onSave }) {
+export default function PipelineConfigurator({ onSave, initialConfig }) {
   const queryClient = useQueryClient();
   const [showTemplates, setShowTemplates] = useState(false);
   const [showSaveTemplate, setShowSaveTemplate] = useState(false);
@@ -35,7 +35,7 @@ export default function PipelineConfigurator({ onSave }) {
     }
   });
 
-  const [config, setConfig] = useState({
+  const [config, setConfig] = useState(initialConfig || {
     provider: "github",
     projectType: "react",
     repository_name: "",
