@@ -61,15 +61,22 @@ export default function PipelineConfigurator({ onSave, initialConfig }) {
     }
   });
 
-  // Update config when initialConfig changes
+  // Update config when initialConfig changes (only on mount)
   React.useEffect(() => {
-    if (initialConfig) {
+    if (initialConfig && Object.keys(initialConfig).length > 0) {
       setConfig(prev => ({
         ...prev,
-        ...initialConfig
+        ...initialConfig,
+        // Ensure required fields have defaults
+        provider: initialConfig.provider || prev.provider,
+        repository_name: initialConfig.repository_name || prev.repository_name,
+        repository_id: initialConfig.repository_id || prev.repository_id,
+        repository_url: initialConfig.repository_url || prev.repository_url,
+        available_branches: initialConfig.available_branches || prev.available_branches
       }));
     }
-  }, [initialConfig]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [showRepoSelector, setShowRepoSelector] = useState(false);
 

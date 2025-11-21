@@ -158,13 +158,15 @@ export default function CICDAutomationPage() {
           </div>
 
           <div className="flex gap-3">
-            <Button
-              onClick={() => navigate(createPageUrl("AIPipelineGenerator"))}
-              className="bg-gradient-to-r from-purple-500 to-pink-500"
-            >
-              <Wand2 className="w-4 h-4 mr-2" />
-              AI Generator
-            </Button>
+            <PermissionGuard resource="pipelines" action="create">
+              <Button
+                onClick={() => navigate(createPageUrl("AIPipelineGenerator"))}
+                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+              >
+                <Wand2 className="w-4 h-4 mr-2" />
+                AI Generator
+              </Button>
+            </PermissionGuard>
             <Button
               onClick={handleRefresh}
               variant="outline"
