@@ -10,7 +10,6 @@ import {
   Key, Plus, Copy, Trash2, Eye, EyeOff, AlertCircle, 
   CheckCircle2, Calendar, Activity, Lock
 } from "lucide-react";
-import { createHash } from "crypto-js";
 
 export default function APIKeyManager() {
   const queryClient = useQueryClient();
@@ -35,27 +34,15 @@ export default function APIKeyManager() {
 
   const createMutation = useMutation({
     mutationFn: async (data) => {
-      // Generate secure API key
-      const apiKey = `ffai_${Array.from(crypto.getRandomValues(new Uint8Array(32)))
-        .map(b => b.toString(16).padStart(2, '0')).join('')}`;
-      
-      const keyHash = createHash('sha256').update(apiKey).digest('hex');
-      const keyPreview = `...${apiKey.slice(-4)}`;
-      
-      const expiresAt = data.expires_in_days 
-        ? new Date(Date.now() + data.expires_in_days * 24 * 60 * 60 * 1000).toISOString()
-        : null;
-
-      const created = await base44.entities.APIKey.create({
+      // Call backend to generate API key securely
+      const result = await base44.functions.invoke('createAPIKey', {
         name: data.name,
-        key_hash: keyHash,
-        key_preview: keyPreview,
         permissions: data.permissions,
         pipeline_ids: data.pipeline_ids,
-        expires_at: expiresAt
+        expires_in_days: data.expires_in_days
       });
 
-      return { ...created, plaintext_key: apiKey };
+      return result;
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries(['apiKeys']);
