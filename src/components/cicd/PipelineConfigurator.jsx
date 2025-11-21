@@ -6,16 +6,33 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { GitBranch, Play, Settings, Zap, Clock, GitCommit, Server, Github, Shield } from "lucide-react";
+import { GitBranch, Play, Settings, Zap, Clock, GitCommit, Server, Github, Shield, Sparkles, Save } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import GitRepositoryManager from "./GitRepositoryManager";
+import TemplateLibrary from "./TemplateLibrary";
 
 export default function PipelineConfigurator({ onSave }) {
+  const queryClient = useQueryClient();
+  const [showTemplates, setShowTemplates] = useState(false);
+  const [showSaveTemplate, setShowSaveTemplate] = useState(false);
+  const [templateName, setTemplateName] = useState("");
+  const [templateDesc, setTemplateDesc] = useState("");
+
   const { data: environments = [] } = useQuery({
     queryKey: ['environments'],
     queryFn: () => base44.entities.Environment.list('-created_date'),
     initialData: []
+  });
+
+  const saveTemplateMutation = useMutation({
+    mutationFn: (data) => base44.entities.PipelineTemplate.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['pipelineTemplates']);
+      setShowSaveTemplate(false);
+      setTemplateName("");
+      setTemplateDesc("");
+    }
   });
 
   const [config, setConfig] = useState({
@@ -57,6 +74,34 @@ export default function PipelineConfigurator({ onSave }) {
 
   const selectedEnvironment = environments.find(e => e.id === config.environment_id);
 
+  const handleLoadTemplate = (templateConfig) => {
+    setConfig({
+      ...config,
+      ...templateConfig
+    });
+    setShowTemplates(false);
+  };
+
+  const handleSaveAsTemplate = () => {
+    if (templateName && config.projectType) {
+      saveTemplateMutation.mutate({
+        name: templateName,
+        description: templateDesc,
+        project_type: config.projectType,
+        configuration: {
+          build_command: config.buildCommand,
+          test_command: config.testCommand,
+          deploy_command: config.deployCommand,
+          triggers: config.triggers,
+          quality_gates: config.quality_gates,
+          auto_scale: config.autoScale,
+          notifications: config.notifications
+        },
+        is_default: false
+      });
+    }
+  };
+
   const handleProjectTypeChange = (type) => {
     const selected = projectTypes.find(p => p.value === type);
     setConfig({
@@ -79,7 +124,58 @@ export default function PipelineConfigurator({ onSave }) {
   };
 
   return (
-    <motion.div
+    <>
+      {showTemplates && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6"
+        >
+          <TemplateLibrary
+            onSelectTemplate={handleLoadTemplate}
+            onClose={() => setShowTemplates(false)}
+          />
+        </motion.div>
+      )}
+
+      {showSaveTemplate && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6 p-6 rounded-xl border border-blue-500/30 bg-gradient-to-br from-blue-500/10 to-purple-500/10"
+        >
+          <h4 className="text-lg font-bold text-white mb-4">Save as Template</h4>
+          <div className="grid gap-4 mb-4">
+            <Input
+              value={templateName}
+              onChange={(e) => setTemplateName(e.target.value)}
+              placeholder="Template name..."
+              className="bg-white/5 border-white/10 text-white"
+            />
+            <Input
+              value={templateDesc}
+              onChange={(e) => setTemplateDesc(e.target.value)}
+              placeholder="Description..."
+              className="bg-white/5 border-white/10 text-white"
+            />
+          </div>
+          <div className="flex gap-3">
+            <Button
+              onClick={handleSaveAsTemplate}
+              disabled={!templateName || !config.projectType}
+              className="bg-gradient-to-r from-blue-500 to-purple-500"
+            >
+              <Save className="w-4 h-4 mr-2" />
+              Save Template
+            </Button>
+            <Button variant="outline" onClick={() => setShowSaveTemplate(false)}>
+              Cancel
+            </Button>
+          </div>
+        </motion.div>
+      )}
+
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="rounded-2xl border border-white/10 overflow-hidden"
@@ -90,15 +186,37 @@ export default function PipelineConfigurator({ onSave }) {
       }}
     >
       <div className="p-6 border-b border-white/10">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-500/20 to-pink-500/20 flex items-center justify-center">
-            <Settings className="w-5 h-5 text-orange-400" />
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-500/20 to-pink-500/20 flex items-center justify-center">
+              <Settings className="w-5 h-5 text-orange-400" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                Pipeline Configuration
+              </h3>
+              <p className="text-sm text-gray-400">Configure your CI/CD pipeline settings</p>
+            </div>
           </div>
-          <h3 className="text-xl font-bold text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-            Pipeline Configuration
-          </h3>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => setShowTemplates(true)}
+              variant="outline"
+              className="border-purple-500/30 text-purple-400"
+            >
+              <Sparkles className="w-4 h-4 mr-2" />
+              Templates
+            </Button>
+            <Button
+              onClick={() => setShowSaveTemplate(true)}
+              variant="outline"
+              className="border-blue-500/30 text-blue-400"
+            >
+              <Save className="w-4 h-4 mr-2" />
+              Save as Template
+            </Button>
+          </div>
         </div>
-        <p className="text-sm text-gray-400">Configure your CI/CD pipeline settings</p>
       </div>
 
       <Tabs defaultValue="github" className="w-full" onValueChange={(v) => setConfig({ ...config, provider: v })}>
@@ -430,5 +548,6 @@ export default function PipelineConfigurator({ onSave }) {
         </Button>
       </div>
     </motion.div>
-  );
-}
+    </>
+    );
+    }
