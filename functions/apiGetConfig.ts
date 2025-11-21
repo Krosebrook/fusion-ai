@@ -6,12 +6,23 @@ Deno.serve(async (req) => {
     const apiKey = req.headers.get('X-API-Key');
     
     if (!apiKey) {
-      return Response.json({ error: 'Missing X-API-Key header' }, { status: 401 });
+      return Response.json({ 
+        error: 'Missing X-API-Key header',
+        message: 'Include your API key in the X-API-Key header'
+      }, { status: 401 });
     }
 
     const base44 = createClientFromRequest(req);
     
-    // Verify API key
+    // Verify API key format
+    if (!apiKey.startsWith('ffai_')) {
+      return Response.json({ 
+        error: 'Invalid API key format',
+        message: 'API keys must start with ffai_'
+      }, { status: 401 });
+    }
+
+    // Hash and verify API key
     const keyHash = createHash('sha256').update(apiKey).digest('hex');
     const keys = await base44.asServiceRole.entities.APIKey.filter({
       key_hash: keyHash,
@@ -19,10 +30,21 @@ Deno.serve(async (req) => {
     });
 
     if (!keys || keys.length === 0) {
-      return Response.json({ error: 'Invalid API key' }, { status: 401 });
+      return Response.json({ 
+        error: 'Invalid or inactive API key',
+        message: 'Check your API key or generate a new one'
+      }, { status: 401 });
     }
 
     const apiKeyRecord = keys[0];
+
+    // Check expiration
+    if (apiKeyRecord.expires_at && new Date(apiKeyRecord.expires_at) < new Date()) {
+      return Response.json({ 
+        error: 'API key expired',
+        message: 'Generate a new API key in the dashboard'
+      }, { status: 401 });
+    }
 
     if (!apiKeyRecord.permissions.includes('read_config')) {
       return Response.json({ error: 'Insufficient permissions' }, { status: 403 });
