@@ -62,6 +62,23 @@ Deno.serve(async (req) => {
     }
 
     // Trigger workflow
+    // Trigger webhook notification
+    if (action === 'trigger_workflow' && workflow_id) {
+      try {
+        await base44.asServiceRole.functions.invoke('sendWebhook', {
+          event_type: 'run.started',
+          pipeline_id: config?.id,
+          payload: {
+            repository: repository,
+            workflow: workflow_id,
+            triggered_by: user.email
+          }
+        });
+      } catch (error) {
+        console.error('Webhook notification failed:', error);
+      }
+    }
+
     if (action === 'trigger_workflow') {
       const response = await fetch(
         `https://api.github.com/repos/${repository}/actions/workflows/${workflow_id}/dispatches`,

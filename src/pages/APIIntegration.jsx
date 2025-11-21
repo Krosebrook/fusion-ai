@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Code2, Key, Webhook, BookOpen } from "lucide-react";
 import APIKeyManager from "../components/api/APIKeyManager";
+import WebhookManager from "../components/api/WebhookManager";
 
 export default function APIIntegrationPage() {
   const [selectedLanguage, setSelectedLanguage] = useState("curl");
@@ -176,6 +177,29 @@ print(run['status'], run['progress'])`
                 </div>
               </div>
 
+              {/* Get Config */}
+              <div className="mb-8">
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="px-3 py-1 rounded bg-blue-500/20 text-blue-400 text-sm font-bold">GET</span>
+                  <code className="text-lg text-white font-mono">/api/get-config</code>
+                </div>
+                <p className="text-gray-400 mb-4">Retrieve detailed pipeline configuration</p>
+
+                <div className="mb-4">
+                  <h4 className="text-sm font-semibold text-white mb-2">Query Parameters</h4>
+                  <div className="p-4 rounded-lg bg-black/40 border border-white/10">
+                    <pre className="text-xs text-gray-300 font-mono">pipeline_id: string (required)</pre>
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-lg bg-black/40 border border-white/10 overflow-x-auto">
+                  <pre className="text-xs text-gray-300 font-mono">
+{`curl -X GET "https://api.flashfusion.app/api/get-config?pipeline_id=..." \\
+  -H "X-API-Key: your_api_key_here"`}
+                  </pre>
+                </div>
+              </div>
+
               {/* Get Status */}
               <div>
                 <div className="flex items-center gap-3 mb-4">
@@ -240,12 +264,44 @@ pipeline_id: string (required) - returns last 10 runs`}
               animate={{ opacity: 1, y: 0 }}
               className="rounded-2xl border border-white/10 p-6 bg-gradient-to-br from-slate-900/95 to-slate-800/98"
             >
-              <div className="text-center py-12">
-                <Webhook className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                <h3 className="text-xl font-bold text-white mb-2">Webhook Support Coming Soon</h3>
-                <p className="text-gray-400">
-                  Receive real-time notifications when pipeline events occur
-                </p>
+              <WebhookManager />
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="mt-6 rounded-2xl border border-white/10 p-6 bg-gradient-to-br from-slate-900/95 to-slate-800/98"
+            >
+              <h3 className="text-xl font-bold text-white mb-4">Webhook Verification</h3>
+              <p className="text-gray-400 mb-4">
+                All webhook requests include an HMAC signature for verification
+              </p>
+
+              <div className="p-4 rounded-lg bg-black/40 border border-white/10">
+                <p className="text-xs text-gray-400 mb-2">Request Headers:</p>
+                <pre className="text-xs text-gray-300 font-mono mb-4">
+{`X-FlashFusion-Signature: <hmac-sha256>
+X-FlashFusion-Event: run.completed`}
+                </pre>
+
+                <p className="text-xs text-gray-400 mb-2">Verify Signature (Node.js):</p>
+                <pre className="text-xs text-gray-300 font-mono whitespace-pre-wrap">
+{`const crypto = require('crypto');
+
+const signature = req.headers['x-flashfusion-signature'];
+const payload = JSON.stringify(req.body);
+const secret = 'your_webhook_secret';
+
+const expectedSignature = crypto
+  .createHmac('sha256', secret)
+  .update(payload)
+  .digest('hex');
+
+if (signature === expectedSignature) {
+  // Valid webhook
+}`}
+                </pre>
               </div>
             </motion.div>
           </TabsContent>

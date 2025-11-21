@@ -120,17 +120,32 @@ export default function PipelineStatus({ pipelines, onTrigger, repository }) {
                     {pipeline.status !== 'running' && (
                       <>
                         <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onTrigger(pipeline.id);
-                          }}
-                          className="h-7 px-2 text-xs text-gray-400 hover:text-white"
-                        >
-                          <Play className="w-3 h-3 mr-1" />
-                          Retry
-                        </Button>
+                                        size="sm"
+                                        variant="ghost"
+                                        onClick={async (e) => {
+                                          e.stopPropagation();
+                                          await onTrigger(pipeline.id);
+
+                                          // Trigger webhook notification
+                                          try {
+                                            await base44.functions.invoke('sendWebhook', {
+                                              event_type: pipeline.status === 'success' ? 'run.completed' : 'run.failed',
+                                              pipeline_id: pipeline.pipeline_config_id,
+                                              payload: {
+                                                run_id: pipeline.id,
+                                                status: pipeline.status,
+                                                duration: pipeline.duration
+                                              }
+                                            });
+                                          } catch (err) {
+                                            console.error('Webhook failed:', err);
+                                          }
+                                        }}
+                                        className="h-7 px-2 text-xs text-gray-400 hover:text-white"
+                                      >
+                                        <Play className="w-3 h-3 mr-1" />
+                                        Retry
+                                      </Button>
                         <Button
                           size="sm"
                           variant="ghost"
