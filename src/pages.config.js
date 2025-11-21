@@ -28,6 +28,7 @@ import AccessControl from './pages/AccessControl';
 import Secrets from './pages/Secrets';
 import PipelineOptimization from './pages/PipelineOptimization';
 import AIPipelineGenerator from './pages/AIPipelineGenerator';
+import APIIntegration from './pages/APIIntegration';
 import __Layout from './Layout.jsx';
 
 
@@ -62,6 +63,7 @@ export const PAGES = {
     "Secrets": Secrets,
     "PipelineOptimization": PipelineOptimization,
     "AIPipelineGenerator": AIPipelineGenerator,
+    "APIIntegration": APIIntegration,
 }
 
 export const pagesConfig = {

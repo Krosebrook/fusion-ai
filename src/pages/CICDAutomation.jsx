@@ -7,7 +7,7 @@ import PipelineConfigurator from "../components/cicd/PipelineConfigurator";
 import PipelineStatus from "../components/cicd/PipelineStatus";
 import DeploymentTimeline from "../components/cicd/DeploymentTimeline";
 import EnvironmentManager from "../components/cicd/EnvironmentManager";
-import { Rocket, GitBranch, Activity, Plus, RefreshCw, Server, BarChart3, Shield, Lock, Wand2 } from "lucide-react";
+import { Rocket, GitBranch, Activity, Plus, RefreshCw, Server, BarChart3, Shield, Lock, Wand2, Code2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { PermissionGuard, usePermissions } from "../components/rbac/PermissionGuard";
@@ -203,6 +203,14 @@ export default function CICDAutomationPage() {
             >
               <Lock className="w-4 h-4 mr-2" />
               Secrets
+            </Button>
+            <Button
+              onClick={() => navigate(createPageUrl("APIIntegration"))}
+              variant="outline"
+              className="border-blue-500/30 text-blue-400"
+            >
+              <Code2 className="w-4 h-4 mr-2" />
+              API
             </Button>
             <PermissionGuard resource="pipelines" action="create">
               <Button
