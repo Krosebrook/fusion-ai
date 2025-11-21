@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, XCircle, Clock, Loader2, AlertCircle, Play, Eye } from "lucide-react";
+import { CheckCircle2, XCircle, Clock, Loader2, AlertCircle, Play, Eye, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PipelineRunDetails from "./PipelineRunDetails";
+import { useNavigate } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 
 export default function PipelineStatus({ pipelines, onTrigger, repository }) {
+  const navigate = useNavigate();
   const [selectedRun, setSelectedRun] = useState(null);
   
   const statusConfig = {
@@ -126,6 +129,18 @@ export default function PipelineStatus({ pipelines, onTrigger, repository }) {
                       >
                         <Play className="w-3 h-3 mr-1" />
                         Retry
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(createPageUrl("PipelineOptimization") + `?id=${pipeline.pipeline_config_id || pipeline.id}`);
+                        }}
+                        className="h-7 px-2 text-xs text-purple-400 hover:text-purple-300"
+                      >
+                        <Sparkles className="w-3 h-3 mr-1" />
+                        Optimize
                       </Button>
                     )}
                   </div>

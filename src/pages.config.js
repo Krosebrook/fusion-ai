@@ -26,6 +26,7 @@ import CICDAutomation from './pages/CICDAutomation';
 import CICDAnalytics from './pages/CICDAnalytics';
 import AccessControl from './pages/AccessControl';
 import Secrets from './pages/Secrets';
+import PipelineOptimization from './pages/PipelineOptimization';
 import __Layout from './Layout.jsx';
 
 
@@ -58,6 +59,7 @@ export const PAGES = {
     "CICDAnalytics": CICDAnalytics,
     "AccessControl": AccessControl,
     "Secrets": Secrets,
+    "PipelineOptimization": PipelineOptimization,
 }
 
 export const pagesConfig = {
