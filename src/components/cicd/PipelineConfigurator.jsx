@@ -61,6 +61,16 @@ export default function PipelineConfigurator({ onSave, initialConfig }) {
     }
   });
 
+  // Update config when initialConfig changes
+  React.useEffect(() => {
+    if (initialConfig) {
+      setConfig(prev => ({
+        ...prev,
+        ...initialConfig
+      }));
+    }
+  }, [initialConfig]);
+
   const [showRepoSelector, setShowRepoSelector] = useState(false);
 
   const projectTypes = [
