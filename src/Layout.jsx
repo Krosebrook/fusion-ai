@@ -183,6 +183,11 @@ export default function Layout({ children }) {
       description: "Deep insights with AI-powered predictions and bottleneck analysis.",
     },
     {
+      title: "Extended Analytics",
+      href: createPageUrl("ExtendedAnalytics"),
+      description: "Code quality, dependencies, costs, and compliance reports.",
+    },
+    {
       title: "Deployment Center",
       href: createPageUrl("DeploymentCenter"),
       description: "Multi-environment deployments with blue-green and canary strategies.",
@@ -191,6 +196,16 @@ export default function Layout({ children }) {
       title: "Secrets Vault",
       href: createPageUrl("SecretsVault"),
       description: "Enterprise secrets management with external vault integration.",
+    },
+    {
+      title: "Agent Orchestrator",
+      href: createPageUrl("AgentOrchestrator"),
+      description: "Multi-agent collaboration for intelligent automation workflows.",
+    },
+    {
+      title: "Developer Tools",
+      href: createPageUrl("DeveloperTools"),
+      description: "CLI, VS Code extension, and API playground for local dev.",
     },
   ];
 
