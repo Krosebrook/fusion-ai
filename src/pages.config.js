@@ -29,6 +29,8 @@ import Secrets from './pages/Secrets';
 import PipelineOptimization from './pages/PipelineOptimization';
 import AIPipelineGenerator from './pages/AIPipelineGenerator';
 import APIIntegration from './pages/APIIntegration';
+import AdvancedAnalytics from './pages/AdvancedAnalytics';
+import DeploymentCenter from './pages/DeploymentCenter';
 import __Layout from './Layout.jsx';
 
 
@@ -64,6 +66,8 @@ export const PAGES = {
     "PipelineOptimization": PipelineOptimization,
     "AIPipelineGenerator": AIPipelineGenerator,
     "APIIntegration": APIIntegration,
+    "AdvancedAnalytics": AdvancedAnalytics,
+    "DeploymentCenter": DeploymentCenter,
 }
 
 export const pagesConfig = {
