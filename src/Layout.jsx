@@ -4,7 +4,8 @@ import { createPageUrl } from "@/utils";
 import { cn } from "@/lib/utils";
 import { 
   Home, LayoutDashboard, Wrench, BarChart3, Menu, X, 
-  Sparkles, PlayCircle, ArrowRight, UserPlus, Code, BookOpen, Globe, Link2
+  Sparkles, PlayCircle, ArrowRight, UserPlus, Code, BookOpen, Globe, Link2,
+  Rocket, Server, Lock, GitBranch
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { base44 } from "@/api/base44Client";
@@ -167,6 +168,29 @@ export default function Layout({ children }) {
       href: createPageUrl("ContentStudio"),
       description: "Create educational materials, lesson plans, and assessments.",
       icon: BookOpen,
+    },
+  ];
+
+  const cicdComponents = [
+    {
+      title: "CI/CD Automation",
+      href: createPageUrl("CICDAutomation"),
+      description: "Configure and manage your deployment pipelines.",
+    },
+    {
+      title: "Advanced Analytics",
+      href: createPageUrl("AdvancedAnalytics"),
+      description: "Deep insights with AI-powered predictions and bottleneck analysis.",
+    },
+    {
+      title: "Deployment Center",
+      href: createPageUrl("DeploymentCenter"),
+      description: "Multi-environment deployments with blue-green and canary strategies.",
+    },
+    {
+      title: "Secrets Vault",
+      href: createPageUrl("SecretsVault"),
+      description: "Enterprise secrets management with external vault integration.",
     },
   ];
 
@@ -477,6 +501,25 @@ export default function Layout({ children }) {
                       <NavigationMenuContent>
                         <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] bg-slate-900/95 border border-slate-800 backdrop-blur-sm">
                           {toolComponents.map((component) => (
+                            <ListItem
+                              key={component.title}
+                              title={component.title}
+                              href={component.href}
+                            >
+                              {component.description}
+                            </ListItem>
+                          ))}
+                        </ul>
+                      </NavigationMenuContent>
+                    </NavigationMenuItem>
+                    <NavigationMenuItem>
+                      <NavigationMenuTrigger className="bg-transparent text-slate-300 hover:bg-slate-800 hover:text-white focus:bg-slate-800">
+                        <Rocket className="w-4 h-4 mr-2" />
+                        CI/CD
+                      </NavigationMenuTrigger>
+                      <NavigationMenuContent>
+                        <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] bg-slate-900/95 border border-slate-800 backdrop-blur-sm">
+                          {cicdComponents.map((component) => (
                             <ListItem
                               key={component.title}
                               title={component.title}
