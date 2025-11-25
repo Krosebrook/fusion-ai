@@ -31,6 +31,7 @@ import AIPipelineGenerator from './pages/AIPipelineGenerator';
 import APIIntegration from './pages/APIIntegration';
 import AdvancedAnalytics from './pages/AdvancedAnalytics';
 import DeploymentCenter from './pages/DeploymentCenter';
+import SecretsVault from './pages/SecretsVault';
 import __Layout from './Layout.jsx';
 
 
@@ -68,6 +69,7 @@ export const PAGES = {
     "APIIntegration": APIIntegration,
     "AdvancedAnalytics": AdvancedAnalytics,
     "DeploymentCenter": DeploymentCenter,
+    "SecretsVault": SecretsVault,
 }
 
 export const pagesConfig = {
