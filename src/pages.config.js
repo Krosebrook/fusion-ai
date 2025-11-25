@@ -34,6 +34,7 @@ import DeploymentCenter from './pages/DeploymentCenter';
 import SecretsVault from './pages/SecretsVault';
 import AgentOrchestrator from './pages/AgentOrchestrator';
 import ExtendedAnalytics from './pages/ExtendedAnalytics';
+import DeveloperTools from './pages/DeveloperTools';
 import __Layout from './Layout.jsx';
 
 
@@ -74,6 +75,7 @@ export const PAGES = {
     "SecretsVault": SecretsVault,
     "AgentOrchestrator": AgentOrchestrator,
     "ExtendedAnalytics": ExtendedAnalytics,
+    "DeveloperTools": DeveloperTools,
 }
 
 export const pagesConfig = {
