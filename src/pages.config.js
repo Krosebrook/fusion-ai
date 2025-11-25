@@ -32,6 +32,8 @@ import APIIntegration from './pages/APIIntegration';
 import AdvancedAnalytics from './pages/AdvancedAnalytics';
 import DeploymentCenter from './pages/DeploymentCenter';
 import SecretsVault from './pages/SecretsVault';
+import AgentOrchestrator from './pages/AgentOrchestrator';
+import ExtendedAnalytics from './pages/ExtendedAnalytics';
 import __Layout from './Layout.jsx';
 
 
@@ -70,6 +72,8 @@ export const PAGES = {
     "AdvancedAnalytics": AdvancedAnalytics,
     "DeploymentCenter": DeploymentCenter,
     "SecretsVault": SecretsVault,
+    "AgentOrchestrator": AgentOrchestrator,
+    "ExtendedAnalytics": ExtendedAnalytics,
 }
 
 export const pagesConfig = {
