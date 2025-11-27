@@ -92,7 +92,12 @@ export default function Layout({ children }) {
 
     // Register Service Worker for PWA
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(() => {});
+      navigator.serviceWorker.register('/api/sw').catch(() => {});
+    }
+
+    // Update manifest link to use API endpoint
+    if (manifestLink) {
+      manifestLink.href = '/api/manifest';
     }
 
     // Apple touch icon
