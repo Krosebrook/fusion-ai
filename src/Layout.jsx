@@ -90,6 +90,11 @@ export default function Layout({ children }) {
       document.head.appendChild(manifestLink);
     }
 
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+
     // Apple touch icon
     let appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
     if (!appleTouchIcon) {
