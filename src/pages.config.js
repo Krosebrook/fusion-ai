@@ -36,6 +36,7 @@ import AgentOrchestrator from './pages/AgentOrchestrator';
 import ExtendedAnalytics from './pages/ExtendedAnalytics';
 import DeveloperTools from './pages/DeveloperTools';
 import APIDocumentation from './pages/APIDocumentation';
+import AgentOrchestration from './pages/AgentOrchestration';
 import __Layout from './Layout.jsx';
 
 
@@ -78,6 +79,7 @@ export const PAGES = {
     "ExtendedAnalytics": ExtendedAnalytics,
     "DeveloperTools": DeveloperTools,
     "APIDocumentation": APIDocumentation,
+    "AgentOrchestration": AgentOrchestration,
 }
 
 export const pagesConfig = {

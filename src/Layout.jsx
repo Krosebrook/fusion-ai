@@ -208,10 +208,15 @@ export default function Layout({ children }) {
       description: "Enterprise secrets management with external vault integration.",
     },
     {
-      title: "Agent Orchestrator",
-      href: createPageUrl("AgentOrchestrator"),
-      description: "Multi-agent collaboration for intelligent automation workflows.",
-    },
+        title: "Agent Orchestrator",
+        href: createPageUrl("AgentOrchestrator"),
+        description: "Multi-agent collaboration for intelligent automation workflows.",
+      },
+      {
+        title: "Agent Orchestration",
+        href: createPageUrl("AgentOrchestration"),
+        description: "Advanced multi-agent roles, permissions, and task execution.",
+      },
     {
         title: "Developer Tools",
         href: createPageUrl("DeveloperTools"),
