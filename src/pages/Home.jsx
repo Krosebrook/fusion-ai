@@ -1,9 +1,10 @@
-
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Code, Zap, Shield, BarChart3, ShoppingCart, 
-  Globe, Workflow, Brain, CheckCircle, ArrowRight, Check, 
+import { base44 } from "@/api/base44Client";
+import { 
+  Sparkles, Code, Zap, Shield, BarChart3, ShoppingCart, 
+  Globe, Workflow, Brain, CheckCircle, ArrowRight, Star, Check, 
   Gift, Clock, Users, PlayCircle, DollarSign, PenTool, Bot, Code2, MoveRight, ChevronDown, ChevronUp
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -301,7 +302,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-12">
             <div className="relative">
               <Button
-                onClick={() => window.location.href = createPageUrl("Dashboard")}
+                onClick={() => base44.auth.redirectToLogin(createPageUrl("Dashboard"))}
                 className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-lg px-10 py-8 rounded-xl shadow-2xl shadow-orange-500/30"
               >
                 <div className="flex flex-col items-center">
@@ -758,23 +759,27 @@ export default function HomePage() {
             justifyContent: 'center',
             flexWrap: 'wrap'
           }}>
-            <Link to={createPageUrl("Dashboard")}>
-              <button className="ff-btn-primary ff-glow-orange" style={{
+            <button 
+              onClick={() => base44.auth.redirectToLogin(createPageUrl("Dashboard"))}
+              className="ff-btn-primary ff-glow-orange" 
+              style={{
                 fontSize: '18px',
                 padding: '18px 48px'
-              }}>
-                Start Building - 50% OFF
-              </button>
-            </Link>
+              }}
+            >
+              Start Building - 50% OFF
+            </button>
 
-            <Link to={createPageUrl("Tools")}>
-              <button className="ff-btn-secondary" style={{
+            <button 
+              onClick={() => document.querySelector('#demo')?.scrollIntoView({ behavior: 'smooth' })}
+              className="ff-btn-secondary" 
+              style={{
                 fontSize: '18px',
                 padding: '18px 48px'
-              }}>
-                Try Demo First
-              </button>
-            </Link>
+              }}
+            >
+              Try Demo First
+            </button>
           </div>
 
           <p style={{
