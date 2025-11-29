@@ -65,7 +65,7 @@ export default function PromptVersionControl({ templateId, onSelectVersion }) {
           template: template.template,
           variables: template.variables,
           chain_config: template.chain_of_thought,
-          model_config: template.model_config,
+          llm_settings: template.llm_settings,
           context_injection: template.context_injection
         },
         commit_message: message,
@@ -113,7 +113,7 @@ export default function PromptVersionControl({ templateId, onSelectVersion }) {
         template: version.template_snapshot.template,
         variables: version.template_snapshot.variables,
         chain_of_thought: version.template_snapshot.chain_config,
-        model_config: version.template_snapshot.model_config,
+        llm_settings: version.template_snapshot.llm_settings,
         context_injection: version.template_snapshot.context_injection
       });
     },
@@ -485,7 +485,7 @@ function calculateDiff(oldSnapshot, newTemplate) {
     if (!newVars.has(v)) diff.removed.push(`Variable: ${v}`);
   });
 
-  if (JSON.stringify(oldSnapshot.model_config) !== JSON.stringify(newTemplate.model_config)) {
+  if (JSON.stringify(oldSnapshot.llm_settings) !== JSON.stringify(newTemplate.llm_settings)) {
     diff.modified.push("Model configuration");
   }
 

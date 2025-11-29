@@ -227,7 +227,7 @@ function PromptTemplateEditor({ template, onClose, selectedAgent }) {
       steps: [],
       require_reasoning: true
     },
-    model_config: {
+    llm_settings: {
       temperature: 0.7,
       max_tokens: 1000,
       top_p: 1
@@ -481,7 +481,7 @@ function PromptTemplateEditor({ template, onClose, selectedAgent }) {
             )}
           </div>
 
-          {/* Model Config */}
+          {/* LLM Settings */}
           <div className="grid grid-cols-3 gap-4">
             <div>
               <Label className="text-gray-400">Temperature</Label>
@@ -490,10 +490,10 @@ function PromptTemplateEditor({ template, onClose, selectedAgent }) {
                 min="0"
                 max="2"
                 step="0.1"
-                value={formData.model_config.temperature}
+                value={formData.llm_settings.temperature}
                 onChange={(e) => setFormData(prev => ({
                   ...prev,
-                  model_config: { ...prev.model_config, temperature: parseFloat(e.target.value) }
+                  llm_settings: { ...prev.llm_settings, temperature: parseFloat(e.target.value) }
                 }))}
                 className="bg-white/5 border-white/10 text-white"
               />
@@ -505,10 +505,10 @@ function PromptTemplateEditor({ template, onClose, selectedAgent }) {
                 min="100"
                 max="8000"
                 step="100"
-                value={formData.model_config.max_tokens}
+                value={formData.llm_settings.max_tokens}
                 onChange={(e) => setFormData(prev => ({
                   ...prev,
-                  model_config: { ...prev.model_config, max_tokens: parseInt(e.target.value) }
+                  llm_settings: { ...prev.llm_settings, max_tokens: parseInt(e.target.value) }
                 }))}
                 className="bg-white/5 border-white/10 text-white"
               />
@@ -520,10 +520,10 @@ function PromptTemplateEditor({ template, onClose, selectedAgent }) {
                 min="0"
                 max="1"
                 step="0.1"
-                value={formData.model_config.top_p}
+                value={formData.llm_settings.top_p}
                 onChange={(e) => setFormData(prev => ({
                   ...prev,
-                  model_config: { ...prev.model_config, top_p: parseFloat(e.target.value) }
+                  llm_settings: { ...prev.llm_settings, top_p: parseFloat(e.target.value) }
                 }))}
                 className="bg-white/5 border-white/10 text-white"
               />
