@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Bot, Zap, GitBranch, Shield, Brain, ArrowRight, Plus, Play, 
-  Settings, MessageSquare, Network, Workflow, Sparkles, Clock, FileText, Wand2
+  Settings, MessageSquare, Network, Workflow, Sparkles, Clock, FileText, Wand2,
+  FlaskConical, BarChart3, History
 } from "lucide-react";
 import AgentCollaborationFlow from "../components/agents/AgentCollaborationFlow";
 import WorkflowBuilder from "../components/agents/WorkflowBuilder";
@@ -15,6 +16,10 @@ import ActiveCollaborations from "../components/agents/ActiveCollaborations";
 import PromptTemplateManager from "../components/prompt-engineering/PromptTemplateManager";
 import PromptExecutor from "../components/prompt-engineering/PromptExecutor";
 import DynamicPromptGenerator from "../components/prompt-engineering/DynamicPromptGenerator";
+import PromptVersionControl from "../components/prompt-engineering/PromptVersionControl";
+import PromptChainBuilder from "../components/prompt-engineering/PromptChainBuilder";
+import PromptExperimentManager from "../components/prompt-engineering/PromptExperimentManager";
+import PromptAnalyticsDashboard from "../components/prompt-engineering/PromptAnalyticsDashboard";
 
 export default function AgentOrchestratorPage() {
   const queryClient = useQueryClient();
@@ -23,6 +28,8 @@ export default function AgentOrchestratorPage() {
   const [selectedAgentForPrompt, setSelectedAgentForPrompt] = useState(null);
   const [userContext, setUserContext] = useState(null);
   const [pipelineContext, setPipelineContext] = useState(null);
+  const [promptSubTab, setPromptSubTab] = useState("templates");
+  const [showChainBuilder, setShowChainBuilder] = useState(false);
 
   // Fetch user context
   React.useEffect(() => {
@@ -220,6 +227,18 @@ export default function AgentOrchestratorPage() {
               <FileText className="w-4 h-4 mr-2" />
               Prompt Engineering
             </TabsTrigger>
+            <TabsTrigger value="chains" className="data-[state=active]:bg-green-500/20">
+              <Workflow className="w-4 h-4 mr-2" />
+              Prompt Chains
+            </TabsTrigger>
+            <TabsTrigger value="experiments" className="data-[state=active]:bg-cyan-500/20">
+              <FlaskConical className="w-4 h-4 mr-2" />
+              A/B Testing
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="data-[state=active]:bg-yellow-500/20">
+              <BarChart3 className="w-4 h-4 mr-2" />
+              Analytics
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="collaborations">
@@ -303,33 +322,101 @@ export default function AgentOrchestratorPage() {
           </TabsContent>
 
           <TabsContent value="prompts">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Left: Template Manager & Generator */}
-              <div className="space-y-6">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="rounded-xl border border-white/10 p-6"
-                  style={{ background: "linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.9) 100%)" }}
+            {/* Sub-navigation for Prompt Engineering */}
+            <div className="flex gap-2 mb-6">
+              {[
+                { id: "templates", label: "Templates", icon: FileText },
+                { id: "versions", label: "Version Control", icon: History },
+                { id: "generator", label: "AI Generator", icon: Wand2 }
+              ].map(tab => (
+                <Button
+                  key={tab.id}
+                  variant={promptSubTab === tab.id ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setPromptSubTab(tab.id)}
+                  className={promptSubTab === tab.id 
+                    ? "bg-purple-500/20 text-purple-400 border-purple-500/30" 
+                    : "border-white/10 text-gray-400"
+                  }
                 >
-                  <PromptTemplateManager 
-                    onSelectTemplate={setSelectedTemplate}
-                    selectedAgent={selectedAgentForPrompt}
-                  />
-                </motion.div>
+                  <tab.icon className="w-4 h-4 mr-2" />
+                  {tab.label}
+                </Button>
+              ))}
+            </div>
 
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 }}
-                  className="rounded-xl border border-white/10 p-6"
-                  style={{ background: "linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.9) 100%)" }}
-                >
-                  <DynamicPromptGenerator 
-                    agentId={selectedAgentForPrompt}
-                    onGenerated={(template) => setSelectedTemplate(template)}
-                  />
-                </motion.div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Left: Template Manager / Version Control / Generator */}
+              <div className="space-y-6">
+                {promptSubTab === "templates" && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="rounded-xl border border-white/10 p-6"
+                    style={{ background: "linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.9) 100%)" }}
+                  >
+                    <PromptTemplateManager 
+                      onSelectTemplate={setSelectedTemplate}
+                      selectedAgent={selectedAgentForPrompt}
+                    />
+                  </motion.div>
+                )}
+
+                {promptSubTab === "versions" && selectedTemplate && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="rounded-xl border border-white/10 p-6"
+                    style={{ background: "linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.9) 100%)" }}
+                  >
+                    <PromptVersionControl 
+                      templateId={selectedTemplate?.id}
+                      onSelectVersion={(version) => {
+                        // Apply version snapshot to selected template for preview
+                        setSelectedTemplate(prev => ({
+                          ...prev,
+                          ...version.template_snapshot
+                        }));
+                      }}
+                    />
+                  </motion.div>
+                )}
+
+                {promptSubTab === "versions" && !selectedTemplate && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="rounded-xl border border-white/10 p-6"
+                    style={{ background: "linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.9) 100%)" }}
+                  >
+                    <div className="text-center py-8 text-gray-500">
+                      <History className="w-12 h-12 mx-auto mb-4 opacity-30" />
+                      <p>Select a template to view its version history</p>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="mt-4 border-white/10"
+                        onClick={() => setPromptSubTab("templates")}
+                      >
+                        Go to Templates
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
+
+                {promptSubTab === "generator" && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="rounded-xl border border-white/10 p-6"
+                    style={{ background: "linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.9) 100%)" }}
+                  >
+                    <DynamicPromptGenerator 
+                      agentId={selectedAgentForPrompt}
+                      onGenerated={(template) => setSelectedTemplate(template)}
+                    />
+                  </motion.div>
+                )}
               </div>
 
               {/* Right: Prompt Executor */}
@@ -387,6 +474,41 @@ export default function AgentOrchestratorPage() {
                   </button>
                 ))}
               </div>
+            </motion.div>
+          </TabsContent>
+
+          <TabsContent value="chains">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-xl border border-white/10 p-6"
+              style={{ background: "linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.9) 100%)" }}
+            >
+              <PromptChainBuilder 
+                onSave={() => queryClient.invalidateQueries(['promptChains'])}
+              />
+            </motion.div>
+          </TabsContent>
+
+          <TabsContent value="experiments">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-xl border border-white/10 p-6"
+              style={{ background: "linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.9) 100%)" }}
+            >
+              <PromptExperimentManager templateId={selectedTemplate?.id} />
+            </motion.div>
+          </TabsContent>
+
+          <TabsContent value="analytics">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-xl border border-white/10 p-6"
+              style={{ background: "linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.9) 100%)" }}
+            >
+              <PromptAnalyticsDashboard templateId={selectedTemplate?.id} />
             </motion.div>
           </TabsContent>
         </Tabs>
