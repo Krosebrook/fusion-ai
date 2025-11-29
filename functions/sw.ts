@@ -1,12 +1,26 @@
 Deno.serve(async (req) => {
   const swCode = `
-const CACHE_NAME = 'flashfusion-v1';
-const OFFLINE_URL = '/';
+const CACHE_VERSION = 'flashfusion-v2';
+const STATIC_CACHE = 'flashfusion-static-v2';
+const DYNAMIC_CACHE = 'flashfusion-dynamic-v2';
+
+const STATIC_ASSETS = [
+  '/',
+  '/Dashboard',
+  '/CICDAutomation',
+  '/AdvancedAnalytics'
+];
+
+const CACHE_STRATEGIES = {
+  static: ['fonts.googleapis.com', 'fonts.gstatic.com', 'api.dicebear.com'],
+  networkFirst: ['api/', 'functions/'],
+  cacheFirst: ['.js', '.css', '.woff2', '.png', '.svg', '.jpg', '.webp']
+};
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll([OFFLINE_URL]);
+    caches.open(STATIC_CACHE).then((cache) => {
+      return cache.addAll(STATIC_ASSETS);
     })
   );
   self.skipWaiting();
@@ -17,7 +31,7 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames
-          .filter((name) => name !== CACHE_NAME)
+          .filter((name) => !name.includes('v2'))
           .map((name) => caches.delete(name))
       );
     })
@@ -25,14 +39,93 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
+const isMatch = (url, patterns) => patterns.some(p => url.includes(p));
+
 self.addEventListener('fetch', (event) => {
-  if (event.request.mode === 'navigate') {
+  const { request } = event;
+  const url = request.url;
+
+  // Skip non-GET requests
+  if (request.method !== 'GET') return;
+
+  // Network-first for API calls
+  if (isMatch(url, CACHE_STRATEGIES.networkFirst)) {
     event.respondWith(
-      fetch(event.request).catch(() => {
-        return caches.match(OFFLINE_URL);
+      fetch(request)
+        .then((response) => {
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(DYNAMIC_CACHE).then((cache) => cache.put(request, clone));
+          }
+          return response;
+        })
+        .catch(() => caches.match(request))
+    );
+    return;
+  }
+
+  // Cache-first for static assets
+  if (isMatch(url, CACHE_STRATEGIES.cacheFirst) || isMatch(url, CACHE_STRATEGIES.static)) {
+    event.respondWith(
+      caches.match(request).then((cached) => {
+        if (cached) return cached;
+        return fetch(request).then((response) => {
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(STATIC_CACHE).then((cache) => cache.put(request, clone));
+          }
+          return response;
+        });
       })
     );
+    return;
   }
+
+  // Stale-while-revalidate for navigation
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      caches.match(request).then((cached) => {
+        const fetchPromise = fetch(request).then((response) => {
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(DYNAMIC_CACHE).then((cache) => cache.put(request, clone));
+          }
+          return response;
+        }).catch(() => cached || caches.match('/'));
+        return cached || fetchPromise;
+      })
+    );
+    return;
+  }
+});
+
+// Background sync for offline actions
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'sync-pipelines') {
+    event.waitUntil(syncPipelines());
+  }
+});
+
+// Push notifications
+self.addEventListener('push', (event) => {
+  if (!event.data) return;
+  const data = event.data.json();
+  event.waitUntil(
+    self.registration.showNotification(data.title || 'FlashFusion', {
+      body: data.body || 'You have a new notification',
+      icon: 'https://api.dicebear.com/7.x/shapes/svg?seed=flashfusion&backgroundColor=ff7b00',
+      badge: 'https://api.dicebear.com/7.x/shapes/svg?seed=flashfusion&backgroundColor=ff7b00',
+      tag: data.tag || 'default',
+      data: data.url || '/'
+    })
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(
+    clients.openWindow(event.notification.data)
+  );
 });
 `;
 
