@@ -213,10 +213,15 @@ export default function Layout({ children }) {
       description: "Multi-agent collaboration for intelligent automation workflows.",
     },
     {
-      title: "Developer Tools",
-      href: createPageUrl("DeveloperTools"),
-      description: "CLI, VS Code extension, and API playground for local dev.",
-    },
+        title: "Developer Tools",
+        href: createPageUrl("DeveloperTools"),
+        description: "CLI, VS Code extension, and API playground for local dev.",
+      },
+      {
+        title: "API Documentation",
+        href: createPageUrl("APIDocumentation"),
+        description: "Full API reference and SDK for external integrations.",
+      },
   ];
 
   const navItems = user ? authenticatedNavItems : publicNavItems;
