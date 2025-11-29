@@ -6,16 +6,48 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Bot, Zap, GitBranch, Shield, Brain, ArrowRight, Plus, Play, 
-  Settings, MessageSquare, Network, Workflow, Sparkles, Clock
+  Settings, MessageSquare, Network, Workflow, Sparkles, Clock, FileText, Wand2
 } from "lucide-react";
 import AgentCollaborationFlow from "../components/agents/AgentCollaborationFlow";
 import WorkflowBuilder from "../components/agents/WorkflowBuilder";
 import AgentConversation from "../components/agents/AgentConversation";
 import ActiveCollaborations from "../components/agents/ActiveCollaborations";
+import PromptTemplateManager from "../components/prompt-engineering/PromptTemplateManager";
+import PromptExecutor from "../components/prompt-engineering/PromptExecutor";
+import DynamicPromptGenerator from "../components/prompt-engineering/DynamicPromptGenerator";
 
 export default function AgentOrchestratorPage() {
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("collaborations");
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [selectedAgentForPrompt, setSelectedAgentForPrompt] = useState(null);
+  const [userContext, setUserContext] = useState(null);
+  const [pipelineContext, setPipelineContext] = useState(null);
+
+  // Fetch user context
+  React.useEffect(() => {
+    base44.auth.me().then(setUserContext).catch(() => {});
+  }, []);
+
+  // Fetch pipeline context
+  const { data: pipelineRuns = [] } = useQuery({
+    queryKey: ['recentPipelines'],
+    queryFn: () => base44.entities.PipelineRun?.list?.('-created_date', 5) || []
+  });
+
+  React.useEffect(() => {
+    if (pipelineRuns.length > 0) {
+      setPipelineContext({
+        recent_runs: pipelineRuns.slice(0, 3).map(r => ({
+          id: r.id,
+          status: r.status,
+          branch: r.branch,
+          duration: r.duration_seconds
+        })),
+        success_rate: pipelineRuns.filter(r => r.status === 'success').length / pipelineRuns.length * 100
+      });
+    }
+  }, [pipelineRuns]);
 
   const { data: workflows = [] } = useQuery({
     queryKey: ['agentWorkflows'],
@@ -184,6 +216,10 @@ export default function AgentOrchestratorPage() {
               <MessageSquare className="w-4 h-4 mr-2" />
               Agent Chat
             </TabsTrigger>
+            <TabsTrigger value="prompts" className="data-[state=active]:bg-purple-500/20">
+              <FileText className="w-4 h-4 mr-2" />
+              Prompt Engineering
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="collaborations">
@@ -264,6 +300,94 @@ export default function AgentOrchestratorPage() {
 
           <TabsContent value="conversation">
             <AgentConversation agents={agents} />
+          </TabsContent>
+
+          <TabsContent value="prompts">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Left: Template Manager & Generator */}
+              <div className="space-y-6">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="rounded-xl border border-white/10 p-6"
+                  style={{ background: "linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.9) 100%)" }}
+                >
+                  <PromptTemplateManager 
+                    onSelectTemplate={setSelectedTemplate}
+                    selectedAgent={selectedAgentForPrompt}
+                  />
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className="rounded-xl border border-white/10 p-6"
+                  style={{ background: "linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.9) 100%)" }}
+                >
+                  <DynamicPromptGenerator 
+                    agentId={selectedAgentForPrompt}
+                    onGenerated={(template) => setSelectedTemplate(template)}
+                  />
+                </motion.div>
+              </div>
+
+              {/* Right: Prompt Executor */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="rounded-xl border border-white/10 p-6"
+                style={{ background: "linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.9) 100%)" }}
+              >
+                <PromptExecutor 
+                  template={selectedTemplate}
+                  userContext={userContext}
+                  pipelineContext={pipelineContext}
+                  environmentContext={{ env: 'production' }}
+                />
+              </motion.div>
+            </div>
+
+            {/* Agent Quick Select */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="mt-6 rounded-xl border border-white/10 p-4"
+              style={{ background: "linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.9) 100%)" }}
+            >
+              <h4 className="text-sm font-medium text-white mb-3">Filter by Agent</h4>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => setSelectedAgentForPrompt(null)}
+                  className={`px-3 py-1.5 rounded-lg text-xs transition-all ${
+                    !selectedAgentForPrompt ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' : 'bg-white/5 text-gray-400 hover:bg-white/10'
+                  }`}
+                >
+                  All Agents
+                </button>
+                {agents.map(agent => (
+                  <button
+                    key={agent.id}
+                    onClick={() => setSelectedAgentForPrompt(agent.id)}
+                    className={`px-3 py-1.5 rounded-lg text-xs flex items-center gap-2 transition-all ${
+                      selectedAgentForPrompt === agent.id 
+                        ? 'border' 
+                        : 'bg-white/5 text-gray-400 hover:bg-white/10'
+                    }`}
+                    style={selectedAgentForPrompt === agent.id ? {
+                      background: `${agent.color}20`,
+                      color: agent.color,
+                      borderColor: `${agent.color}50`
+                    } : {}}
+                  >
+                    <agent.icon className="w-3 h-3" />
+                    {agent.name}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
           </TabsContent>
         </Tabs>
       </div>
