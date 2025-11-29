@@ -227,6 +227,11 @@ export default function Layout({ children }) {
         href: createPageUrl("APIDocumentation"),
         description: "Full API reference and SDK for external integrations.",
       },
+      {
+        title: "Integrations Hub",
+        href: createPageUrl("IntegrationsHub"),
+        description: "27 deep integrations: n8n, Zapier, Notion, Google, GitHub, OpenAI, Claude, and more.",
+      },
   ];
 
   const navItems = user ? authenticatedNavItems : publicNavItems;
