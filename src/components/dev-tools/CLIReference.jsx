@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { 
   Terminal, Copy, CheckCircle2, ChevronRight, GitBranch, Play, 
-  Eye, Lock, RefreshCw, Settings, Download, Key
+  Eye, Lock, RefreshCw, Settings, Download, Key, FileCode, Wand2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import PipelineTemplateGenerator from "./PipelineTemplateGenerator";
 
 export default function CLIReference() {
   const [copiedCommand, setCopiedCommand] = useState(null);
@@ -89,6 +91,23 @@ export default function CLIReference() {
 
   return (
     <div className="space-y-6">
+      <Tabs defaultValue="commands" className="w-full">
+        <TabsList className="bg-white/5 mb-6">
+          <TabsTrigger value="commands" className="data-[state=active]:bg-green-500/20">
+            <Terminal className="w-4 h-4 mr-2" />
+            CLI Commands
+          </TabsTrigger>
+          <TabsTrigger value="templates" className="data-[state=active]:bg-purple-500/20">
+            <FileCode className="w-4 h-4 mr-2" />
+            Pipeline Templates
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="templates">
+          <PipelineTemplateGenerator />
+        </TabsContent>
+
+        <TabsContent value="commands">
       {/* Installation */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -213,6 +232,8 @@ export default function CLIReference() {
           </motion.div>
         ))}
       </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

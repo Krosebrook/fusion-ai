@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { 
   Box, Download, CheckCircle2, Settings, GitBranch, Eye, 
-  Play, Lock, Zap, Terminal, Bell, Palette
+  Play, Lock, Zap, Terminal, Bell, Palette, FileCode, Wand2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import PipelineTemplateGenerator from "./PipelineTemplateGenerator";
 
 export default function VSCodeExtension() {
+  const [activeTab, setActiveTab] = useState("overview");
+
   const features = [
     {
       icon: GitBranch,
@@ -57,6 +61,23 @@ export default function VSCodeExtension() {
 
   return (
     <div className="space-y-6">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="bg-white/5 mb-6">
+          <TabsTrigger value="overview" className="data-[state=active]:bg-purple-500/20">
+            <Box className="w-4 h-4 mr-2" />
+            Overview
+          </TabsTrigger>
+          <TabsTrigger value="templates" className="data-[state=active]:bg-orange-500/20">
+            <FileCode className="w-4 h-4 mr-2" />
+            Pipeline Templates
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="templates">
+          <PipelineTemplateGenerator />
+        </TabsContent>
+
+        <TabsContent value="overview">
       {/* Hero */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -253,6 +274,8 @@ export default function VSCodeExtension() {
           </div>
         </div>
       </motion.div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
