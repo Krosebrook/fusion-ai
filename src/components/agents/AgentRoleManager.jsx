@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+import { useEntityList, useCreateEntity, useUpdateEntity, useDeleteEntity } from "@/hooks/useEntity";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -71,33 +72,25 @@ export default function AgentRoleManager() {
   const [showEditor, setShowEditor] = useState(false);
   const [editingAgent, setEditingAgent] = useState(null);
 
-  const { data: agents = [], isLoading } = useQuery({
-    queryKey: ['agentDefinitions'],
-    queryFn: () => base44.entities.AgentDefinition?.list?.('-created_date') || []
-  });
+  const { data: agents = [], isLoading } = useEntityList('AgentDefinition');
 
-  const saveMutation = useMutation({
-    mutationFn: async (data) => {
-      if (editingAgent?.id) {
-        return base44.entities.AgentDefinition.update(editingAgent.id, data);
-      }
-      return base44.entities.AgentDefinition.create(data);
-    },
+  const createMutation = useCreateEntity('AgentDefinition', {
     onSuccess: () => {
-      queryClient.invalidateQueries(['agentDefinitions']);
-      toast.success(editingAgent ? "Agent updated" : "Agent created");
       setShowEditor(false);
       setEditingAgent(null);
     }
   });
 
-  const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.AgentDefinition.delete(id),
+  const updateMutation = useUpdateEntity('AgentDefinition', {
     onSuccess: () => {
-      queryClient.invalidateQueries(['agentDefinitions']);
-      toast.success("Agent deleted");
+      setShowEditor(false);
+      setEditingAgent(null);
     }
   });
+
+  const deleteMutation = useDeleteEntity('AgentDefinition');
+
+  const saveMutation = editingAgent?.id ? updateMutation : createMutation;
 
   const applyPreset = (preset) => {
     setEditingAgent({
@@ -540,7 +533,7 @@ function AgentEditor({ agent, onClose, onSave, isSaving }) {
               Cancel
             </Button>
             <Button
-              onClick={() => onSave(formData)}
+              onClick={() => onSave(editingAgent?.id ? { id: editingAgent.id, data: formData } : formData)}
               disabled={isSaving}
               className="bg-gradient-to-r from-orange-500 to-pink-500"
             >

@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { User } from "@/entities/User";
-import { Project } from "@/entities/Project";
+import { useAuth } from "@/hooks/useAuth";
+import { useEntityList } from "@/hooks/useEntity";
+import { LoadingScreen, EmptyState, StatCard } from "@/components/ui-library";
 import { 
   Code, FileText, TrendingUp, Shield, ShoppingCart, Sparkles,
   Plus, Clock, CheckCircle, AlertCircle, ArrowRight, Zap
@@ -10,27 +11,14 @@ import {
 import { Button } from "@/components/ui/button";
 
 export default function DashboardPage() {
-  const [user, setUser] = useState(null);
-  const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
-    try {
-      const currentUser = await User.me();
-      setUser(currentUser);
-      
-      const userProjects = await Project.filter({ created_by: currentUser.email }, '-created_date', 10);
-      setProjects(userProjects);
-    } catch (error) {
-      console.error("Error loading dashboard:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { user } = useAuth();
+  
+  const { data: projects, isLoading, error } = useEntityList(
+    'Project',
+    user ? { created_by: user.email } : {},
+    '-created_date',
+    10
+  );
 
   const aiTools = [
     {
@@ -104,29 +92,8 @@ export default function DashboardPage() {
     }
   };
 
-  if (loading) {
-    return (
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '60vh'
-      }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{
-            width: '48px',
-            height: '48px',
-            border: '4px solid rgba(255, 123, 0, 0.2)',
-            borderTopColor: '#FF7B00',
-            borderRadius: '50%',
-            animation: 'spin 1s linear infinite',
-            margin: '0 auto 16px'
-          }} />
-          <p style={{ color: '#94A3B8' }}>Loading dashboard...</p>
-        </div>
-      </div>
-    );
-  }
+  if (isLoading) return <LoadingScreen message="Loading dashboard..." />;
+  if (error) return <EmptyState icon={AlertCircle} title="Failed to load" description={error.message} />;
 
   return (
     <div style={{ minHeight: '100vh', padding: '40px 24px' }}>
@@ -146,48 +113,16 @@ export default function DashboardPage() {
         </div>
 
         {/* Stats Cards */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-          gap: '24px',
-          marginBottom: '48px'
-        }}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {stats.map((stat, index) => (
-            <div
+            <StatCard
               key={stat.label}
-              className="ff-card"
-              style={{
-                padding: '32px',
-                animation: `fadeInUp 0.6s ease-out ${index * 0.1}s both`
-              }}
-            >
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'flex-start',
-                marginBottom: '16px'
-              }}>
-                <div>
-                  <p style={{ fontSize: '14px', color: '#94A3B8', marginBottom: '8px' }}>
-                    {stat.label}
-                  </p>
-                  <p style={{ fontSize: '32px', fontWeight: '800', color: '#FFFFFF' }}>
-                    {stat.value}
-                  </p>
-                </div>
-                <div style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: '12px',
-                  background: `${stat.color}20`,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
-                  <stat.icon size={24} style={{ color: stat.color }} />
-                </div>
-              </div>
-            </div>
+              label={stat.label}
+              value={stat.value}
+              icon={stat.icon}
+              color={stat.color}
+              delay={index * 0.1}
+            />
           ))}
         </div>
 
@@ -298,41 +233,13 @@ export default function DashboardPage() {
           </div>
 
           {projects.length === 0 ? (
-            <div className="ff-card" style={{
-              padding: '64px 32px',
-              textAlign: 'center'
-            }}>
-              <div style={{
-                width: '80px',
-                height: '80px',
-                borderRadius: '50%',
-                background: 'rgba(255, 123, 0, 0.1)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '0 auto 24px'
-              }}>
-                <Code size={40} style={{ color: '#FF7B00' }} />
-              </div>
-              <h3 style={{
-                fontSize: '20px',
-                fontWeight: '700',
-                marginBottom: '12px'
-              }}>
-                No projects yet
-              </h3>
-              <p style={{
-                color: '#94A3B8',
-                marginBottom: '32px'
-              }}>
-                Start by creating your first AI-powered project
-              </p>
-              <Link to={createPageUrl("AppBuilder")}>
-                <Button className="ff-btn-primary">
-                  Create Your First Project
-                </Button>
-              </Link>
-            </div>
+            <EmptyState
+              icon={Code}
+              title="No projects yet"
+              description="Start by creating your first AI-powered project"
+              action={() => window.location.href = createPageUrl("AppBuilder")}
+              actionLabel="Create Your First Project"
+            />
           ) : (
             <div style={{
               display: 'grid',
@@ -385,11 +292,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <style>{`
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
+
     </div>
   );
 }

@@ -24,28 +24,10 @@ export default function AgentOrchestrationPage() {
   const [selectedWorkflow, setSelectedWorkflow] = useState(null);
 
   // Fetch agents
-  const { data: agents = [] } = useQuery({
-    queryKey: ['agentDefinitions'],
-    queryFn: () => base44.entities.AgentDefinition?.list?.('-created_date') || []
-  });
-
-  // Fetch workflows
-  const { data: workflows = [] } = useQuery({
-    queryKey: ['agentWorkflows'],
-    queryFn: () => base44.entities.AgentWorkflow?.list?.('-created_date') || []
-  });
-
-  // Fetch collaborations
-  const { data: collaborations = [] } = useQuery({
-    queryKey: ['agentCollaborations'],
-    queryFn: () => base44.entities.AgentCollaboration?.list?.('-created_date', 50) || []
-  });
-
-  // Fetch tasks
-  const { data: tasks = [] } = useQuery({
-    queryKey: ['agentTasks'],
-    queryFn: () => base44.entities.AgentTask?.list?.('-created_date', 100) || []
-  });
+  const { data: agents = [] } = useEntityList('AgentDefinition');
+  const { data: workflows = [] } = useEntityList('AgentWorkflow');
+  const { data: collaborations = [] } = useEntityList('AgentCollaboration', {}, '-created_date', 50);
+  const { data: tasks = [] } = useEntityList('AgentTask', {}, '-created_date', 100);
 
   // Start collaboration
   const startCollaboration = useMutation({

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+import { useEntityList, useDeleteEntity } from "@/hooks/useEntity";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -32,18 +33,8 @@ export default function PromptTemplateManager({ onSelectTemplate, selectedAgent 
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState(null);
 
-  const { data: templates = [], isLoading } = useQuery({
-    queryKey: ['promptTemplates'],
-    queryFn: () => base44.entities.PromptTemplate.list('-created_date', 100)
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.PromptTemplate.delete(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries(['promptTemplates']);
-      toast.success("Template deleted");
-    }
-  });
+  const { data: templates = [], isLoading } = useEntityList('PromptTemplate', {}, '-created_date', 100);
+  const deleteMutation = useDeleteEntity('PromptTemplate', { successMessage: 'Template deleted' });
 
   const filteredTemplates = templates.filter(t => {
     const matchesSearch = t.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
