@@ -38,6 +38,7 @@ import DeveloperTools from './pages/DeveloperTools';
 import APIDocumentation from './pages/APIDocumentation';
 import AgentOrchestration from './pages/AgentOrchestration';
 import IntegrationsHub from './pages/IntegrationsHub';
+import MediaStudio from './pages/MediaStudio';
 import __Layout from './Layout.jsx';
 
 
@@ -82,6 +83,7 @@ export const PAGES = {
     "APIDocumentation": APIDocumentation,
     "AgentOrchestration": AgentOrchestration,
     "IntegrationsHub": IntegrationsHub,
+    "MediaStudio": MediaStudio,
 }
 
 export const pagesConfig = {

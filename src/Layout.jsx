@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { base44 } from "@/api/base44Client";
+import { AuthProvider } from "@/components/hooks/useAuth";
 import NotificationCenter from "./components/collaboration/NotificationCenter";
 import {
   NavigationMenu,
@@ -43,7 +44,7 @@ const ListItem = React.forwardRef(({ className, title, children, ...props }, ref
 });
 ListItem.displayName = "ListItem";
 
-export default function Layout({ children }) {
+function LayoutContent({ children }) {
   const location = useLocation();
   const [user, setUser] = React.useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
@@ -901,5 +902,13 @@ export default function Layout({ children }) {
         <p>© 2024 FlashFusion. Transform ideas into reality with AI.</p>
       </footer>
     </div>
+  );
+}
+
+export default function Layout({ children }) {
+  return (
+    <AuthProvider>
+      <LayoutContent>{children}</LayoutContent>
+    </AuthProvider>
   );
 }

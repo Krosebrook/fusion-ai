@@ -1,3 +1,4 @@
+
 /**
  * UI Component Library
  * Centralized exports for all reusable components
@@ -9,3 +10,6 @@ export { ProtectedRoute } from './ProtectedRoute';
 export { Card, GlassCard } from './Card';
 export { EmptyState } from './EmptyState';
 export { StatCard } from './StatCard';
+export { CinemaButton } from './CinemaButton';
+export { GlassmorphicCard } from './GlassmorphicCard';
+export { FormField } from './FormField';
