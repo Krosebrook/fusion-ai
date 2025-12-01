@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { useAuth } from "@/hooks/useAuth";
-import { useEntityList } from "@/hooks/useEntity";
+import { useAuth } from "@/components/hooks/useAuth";
+import { useEntityList } from "@/components/hooks/useEntity";
 import { LoadingScreen, EmptyState, StatCard } from "@/components/ui-library";
 import { 
   Code, FileText, TrendingUp, Shield, ShoppingCart, Sparkles,

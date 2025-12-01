@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { base44 } from "@/api/base44Client";
-import { useQueryClient } from "@tanstack/react-query";
-import { useEntityList, useDeleteEntity } from "@/hooks/useEntity";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { useEntityList, useDeleteEntity } from "@/components/hooks/useEntity";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -44,16 +44,22 @@ export default function PromptTemplateManager({ onSelectTemplate, selectedAgent 
     return matchesSearch && matchesCategory && matchesAgent;
   });
 
-  const handleDuplicate = async (template) => {
-    const { id, created_date, updated_date, created_by, ...rest } = template;
-    await base44.entities.PromptTemplate.create({
-      ...rest,
-      name: `${template.name} (Copy)`,
-      usage_count: 0
-    });
-    queryClient.invalidateQueries(['promptTemplates']);
-    toast.success("Template duplicated");
-  };
+  const duplicateMutation = useMutation({
+    mutationFn: async (template) => {
+      const { id, created_date, updated_date, created_by, ...rest } = template;
+      return base44.entities.PromptTemplate.create({
+        ...rest,
+        name: `${template.name} (Copy)`,
+        usage_count: 0
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['promptTemplates']);
+      toast.success("Template duplicated");
+    }
+  });
+
+  const handleDuplicate = (template) => duplicateMutation.mutate(template);
 
   return (
     <div className="space-y-4">
