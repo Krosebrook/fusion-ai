@@ -4,35 +4,55 @@
  */
 
 import { base44 } from '@/api/base44Client';
+import { cacheService } from './CacheService';
+import { errorService } from './ErrorService';
 
 class AIService {
   constructor() {
-    this.cache = new Map();
-    this.cacheTimeout = 5 * 60 * 1000; // 5 minutes
+    this.activeRequests = new Map();
   }
 
   /**
    * Core LLM invocation with caching
    */
   async invokeLLM({ prompt, schema, cacheKey = null, addContext = false }) {
-    if (cacheKey && this.cache.has(cacheKey)) {
-      const cached = this.cache.get(cacheKey);
-      if (Date.now() - cached.timestamp < this.cacheTimeout) {
-        return cached.data;
+    if (cacheKey) {
+      const cached = cacheService.get(cacheKey);
+      if (cached) return cached;
+
+      if (this.activeRequests.has(cacheKey)) {
+        return this.activeRequests.get(cacheKey);
       }
     }
 
-    const response = await base44.integrations.Core.InvokeLLM({
-      prompt,
-      response_json_schema: schema,
-      add_context_from_internet: addContext
-    });
+    const requestPromise = (async () => {
+      try {
+        const response = await base44.integrations.Core.InvokeLLM({
+          prompt,
+          response_json_schema: schema,
+          add_context_from_internet: addContext
+        });
+
+        if (cacheKey) {
+          cacheService.set(cacheKey, response, 300000);
+        }
+
+        return response;
+      } catch (error) {
+        errorService.handle(error, { prompt: prompt.substring(0, 100), schema });
+        throw error;
+      } finally {
+        if (cacheKey) {
+          this.activeRequests.delete(cacheKey);
+        }
+      }
+    })();
 
     if (cacheKey) {
-      this.cache.set(cacheKey, { data: response, timestamp: Date.now() });
+      this.activeRequests.set(cacheKey, requestPromise);
     }
 
-    return response;
+    return requestPromise;
   }
 
   /**
@@ -252,14 +272,14 @@ Include:
    */
   clearCache(pattern = null) {
     if (pattern) {
-      for (const key of this.cache.keys()) {
-        if (key.includes(pattern)) {
-          this.cache.delete(key);
-        }
-      }
+      cacheService.clearPattern(pattern);
     } else {
-      this.cache.clear();
+      cacheService.clear();
     }
+  }
+
+  getCacheStats() {
+    return cacheService.getStats();
   }
 }
 
