@@ -4,7 +4,7 @@ import { createPageUrl } from '@/utils';
 import { GlassmorphicCard } from '@/components/ui-library';
 import { Clock } from 'lucide-react';
 import { 
-  Code, FileText, TrendingUp, Shield, ShoppingCart, Sparkles
+  Code, FileText, TrendingUp, Shield, ShoppingCart, Sparkles, Cpu
 } from 'lucide-react';
 
 const AI_TOOLS = [
@@ -61,6 +61,15 @@ const AI_TOOLS = [
     color: '#F59E0B',
     time: '1-3 minutes',
     page: 'Orchestration'
+  },
+  {
+    id: 'ai-code-studio',
+    name: 'AI Code Studio',
+    description: 'Generate boilerplate, debug errors, refactor code with AI',
+    icon: Cpu,
+    color: '#8B5CF6',
+    time: '~1 minute',
+    page: 'AICodeGen'
   }
 ];
 

@@ -6,9 +6,9 @@ import { DebuggingAssistant } from '@/components/ai-code/DebuggingAssistant';
 import { RefactoringTool } from '@/components/ai-code/RefactoringTool';
 import { Code, Bug, Zap, Sparkles } from 'lucide-react';
 import { useAuth } from '@/components/hooks/useAuth';
-import { AuthGuard } from '@/components/auth/AuthGuard';
 
-function AICodeGenContent() {
+export default function AICodeGenPage() {
+  const { user } = useAuth();
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -72,10 +72,6 @@ function AICodeGenContent() {
   );
 }
 
-export default function AICodeGenPage() {
-  return (
-    <AuthGuard requireAuth>
-      <AICodeGenContent />
-    </AuthGuard>
-  );
-}
+  if (!user) {
+    return null;
+  }
