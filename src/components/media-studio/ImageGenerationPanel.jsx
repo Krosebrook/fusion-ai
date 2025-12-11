@@ -3,15 +3,18 @@ import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { FormField } from '@/components/ui-library/FormField';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CameraPresetSelector, CAMERA_PRESETS, LIGHTING_PRESETS } from '@/components/visual-engine/CameraPresets';
 import { GlassmorphicCard } from '@/components/ui-library/GlassmorphicCard';
-import { Sparkles, Camera, Sun, Palette, Download } from 'lucide-react';
+import { AIPresetGenerator } from './AIPresetGenerator';
+import { Sparkles, Camera, Sun, Palette, Download, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 
 export function ImageGenerationPanel() {
   const [prompt, setPrompt] = useState('');
   const [cameraPreset, setCameraPreset] = useState('cinematic');
   const [lightingPreset, setLightingPreset] = useState('golden');
+  const [aiPreset, setAiPreset] = useState(null);
   const [generatedImage, setGeneratedImage] = useState(null);
   const [generating, setGenerating] = useState(false);
 
@@ -21,14 +24,19 @@ export function ImageGenerationPanel() {
       return;
     }
 
-    const camera = CAMERA_PRESETS[cameraPreset];
-    const lighting = LIGHTING_PRESETS[lightingPreset];
+    const camera = aiPreset?.camera ? 
+      `${aiPreset.camera.lens}, ISO ${aiPreset.camera.iso}, ${aiPreset.camera.shutterSpeed}` :
+      `${CAMERA_PRESETS[cameraPreset].lens}, ${CAMERA_PRESETS[cameraPreset].description}`;
+    
+    const lighting = aiPreset?.lighting ?
+      `${aiPreset.name} lighting: ${aiPreset.description}` :
+      `${LIGHTING_PRESETS[lightingPreset].name}, ${LIGHTING_PRESETS[lightingPreset].description}`;
     
     const enhancedPrompt = `
       ${prompt}
       
-      Camera: ${camera.lens}, ${camera.description}
-      Lighting: ${lighting.name}, ${lighting.description}
+      Camera: ${camera}
+      Lighting: ${lighting}
       Style: Cinematic, professional photography, high detail, 8K resolution
     `.trim();
 
@@ -64,38 +72,63 @@ export function ImageGenerationPanel() {
             icon={Palette}
           />
 
-          <div>
-            <div className="flex items-center gap-2 mb-3">
-              <Camera className="w-4 h-4 text-gray-400" />
-              <span className="text-sm font-medium text-gray-300">Camera Preset</span>
-            </div>
-            <CameraPresetSelector selected={cameraPreset} onSelect={setCameraPreset} />
-          </div>
+          <Tabs defaultValue="presets" className="w-full">
+            <TabsList className="bg-white/5 border border-white/10">
+              <TabsTrigger value="presets">
+                <Zap className="w-4 h-4 mr-2" />
+                Quick Presets
+              </TabsTrigger>
+              <TabsTrigger value="ai">
+                <Sparkles className="w-4 h-4 mr-2" />
+                AI Generator
+              </TabsTrigger>
+            </TabsList>
 
-          <div>
-            <div className="flex items-center gap-2 mb-3">
-              <Sun className="w-4 h-4 text-gray-400" />
-              <span className="text-sm font-medium text-gray-300">Lighting Setup</span>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              {Object.entries(LIGHTING_PRESETS).map(([key, preset]) => (
-                <button
-                  key={key}
-                  onClick={() => setLightingPreset(key)}
-                  className={`
-                    p-3 rounded-lg border transition-all text-left
-                    ${lightingPreset === key 
-                      ? 'border-orange-500 bg-orange-500/10' 
-                      : 'border-white/10 bg-white/5 hover:border-white/20'
-                    }
-                  `}
-                >
-                  <span className="font-medium text-white text-sm block mb-1">{preset.name}</span>
-                  <p className="text-xs text-gray-400">{preset.description}</p>
-                </button>
-              ))}
-            </div>
-          </div>
+            <TabsContent value="presets" className="space-y-6 mt-6">
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <Camera className="w-4 h-4 text-gray-400" />
+                  <span className="text-sm font-medium text-gray-300">Camera Preset</span>
+                </div>
+                <CameraPresetSelector selected={cameraPreset} onSelect={setCameraPreset} />
+              </div>
+
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <Sun className="w-4 h-4 text-gray-400" />
+                  <span className="text-sm font-medium text-gray-300">Lighting Setup</span>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  {Object.entries(LIGHTING_PRESETS).map(([key, preset]) => (
+                    <button
+                      key={key}
+                      onClick={() => setLightingPreset(key)}
+                      className={`
+                        p-3 rounded-lg border transition-all text-left
+                        ${lightingPreset === key 
+                          ? 'border-orange-500 bg-orange-500/10' 
+                          : 'border-white/10 bg-white/5 hover:border-white/20'
+                        }
+                      `}
+                    >
+                      <span className="font-medium text-white text-sm block mb-1">{preset.name}</span>
+                      <p className="text-xs text-gray-400">{preset.description}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="ai" className="mt-6">
+              <AIPresetGenerator 
+                type="camera"
+                onPresetGenerated={(preset) => {
+                  setAiPreset(preset);
+                  toast.success('AI preset applied to generation!');
+                }}
+              />
+            </TabsContent>
+          </Tabs>
 
           <Button
             onClick={handleGenerate}
