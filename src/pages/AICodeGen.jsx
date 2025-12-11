@@ -5,7 +5,8 @@ import { CodeGenerationPanel } from '@/components/ai-code/CodeGenerationPanel';
 import { DebuggingAssistant } from '@/components/ai-code/DebuggingAssistant';
 import { RefactoringTool } from '@/components/ai-code/RefactoringTool';
 import { TestingAssistant } from '@/components/ai-code/TestingAssistant';
-import { Code, Bug, Zap, Sparkles, TestTube } from 'lucide-react';
+import { ProjectScaffolder } from '@/components/ai-code/ProjectScaffolder';
+import { Code, Bug, Zap, Sparkles, TestTube, FolderTree } from 'lucide-react';
 import { useAuth } from '@/components/hooks/useAuth';
 
 export default function AICodeGenPage() {
@@ -36,14 +37,28 @@ export default function AICodeGenPage() {
           </p>
         </motion.div>
 
-        <Tabs defaultValue="generate" className="w-full">
+        <Tabs defaultValue="scaffold" className="w-full">
           <TabsList className="bg-white/5 border border-white/10 p-1 mb-6">
+            <TabsTrigger 
+              value="scaffold" 
+              className="data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-400"
+            >
+              <FolderTree className="w-4 h-4 mr-2" />
+              Scaffold
+            </TabsTrigger>
             <TabsTrigger 
               value="generate" 
               className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400"
             >
               <Code className="w-4 h-4 mr-2" />
               Generate
+            </TabsTrigger>
+            <TabsTrigger 
+              value="testing" 
+              className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400"
+            >
+              <TestTube className="w-4 h-4 mr-2" />
+              Testing
             </TabsTrigger>
             <TabsTrigger 
               value="debug" 
@@ -59,17 +74,18 @@ export default function AICodeGenPage() {
               <Zap className="w-4 h-4 mr-2" />
               Refactor
             </TabsTrigger>
-            <TabsTrigger 
-              value="testing" 
-              className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400"
-            >
-              <TestTube className="w-4 h-4 mr-2" />
-              Testing
-            </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="scaffold">
+            <ProjectScaffolder />
+          </TabsContent>
 
           <TabsContent value="generate">
             <CodeGenerationPanel />
+          </TabsContent>
+
+          <TabsContent value="testing">
+            <TestingAssistant />
           </TabsContent>
 
           <TabsContent value="debug">
@@ -78,10 +94,6 @@ export default function AICodeGenPage() {
 
           <TabsContent value="refactor">
             <RefactoringTool />
-          </TabsContent>
-
-          <TabsContent value="testing">
-            <TestingAssistant />
           </TabsContent>
         </Tabs>
       </div>
