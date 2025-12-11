@@ -4,7 +4,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CodeGenerationPanel } from '@/components/ai-code/CodeGenerationPanel';
 import { DebuggingAssistant } from '@/components/ai-code/DebuggingAssistant';
 import { RefactoringTool } from '@/components/ai-code/RefactoringTool';
-import { Code, Bug, Zap, Sparkles } from 'lucide-react';
+import { TestingAssistant } from '@/components/ai-code/TestingAssistant';
+import { Code, Bug, Zap, Sparkles, TestTube } from 'lucide-react';
 import { useAuth } from '@/components/hooks/useAuth';
 
 export default function AICodeGenPage() {
@@ -58,6 +59,13 @@ export default function AICodeGenPage() {
               <Zap className="w-4 h-4 mr-2" />
               Refactor
             </TabsTrigger>
+            <TabsTrigger 
+              value="testing" 
+              className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400"
+            >
+              <TestTube className="w-4 h-4 mr-2" />
+              Testing
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="generate">
@@ -70,6 +78,10 @@ export default function AICodeGenPage() {
 
           <TabsContent value="refactor">
             <RefactoringTool />
+          </TabsContent>
+
+          <TabsContent value="testing">
+            <TestingAssistant />
           </TabsContent>
         </Tabs>
       </div>
