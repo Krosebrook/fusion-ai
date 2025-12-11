@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ImageGenerationPanel } from '@/components/media-studio/ImageGenerationPanel';
+import { VideoGenerationPanel } from '@/components/media-studio/VideoGenerationPanel';
 import { Camera, Film, Sparkles } from 'lucide-react';
 
 export default function MediaStudioPage() {
@@ -42,7 +43,7 @@ export default function MediaStudioPage() {
               className="data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-400"
             >
               <Film className="w-4 h-4 mr-2" />
-              Video (Coming Soon)
+              Video
             </TabsTrigger>
           </TabsList>
 
@@ -51,17 +52,7 @@ export default function MediaStudioPage() {
           </TabsContent>
 
           <TabsContent value="video">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-center py-20"
-            >
-              <Film className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-white mb-2">Video Generation Coming Soon</h3>
-              <p className="text-gray-400">
-                Professional video generation with motion presets and transitions
-              </p>
-            </motion.div>
+            <VideoGenerationPanel />
           </TabsContent>
         </Tabs>
       </div>
