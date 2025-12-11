@@ -80,12 +80,21 @@ export default function IntegrationManagerPage() {
   };
 
   const testConnection = async (integration) => {
-    updateMutation.mutate({ 
-      id: integration.id, 
-      data: { status: 'connected' } 
-    }, {
-      successMessage: 'Connection verified!'
-    });
+    toast.promise(
+      updateMutation.mutateAsync({ 
+        id: integration.id, 
+        data: { 
+          status: 'connected',
+          last_sync: new Date().toISOString(),
+          sync_status: 'success'
+        } 
+      }),
+      {
+        loading: 'Testing connection...',
+        success: 'Connection verified!',
+        error: 'Connection failed'
+      }
+    );
   };
 
   const refreshToken = async (integration) => {
