@@ -6,7 +6,8 @@ import { DebuggingAssistant } from '@/components/ai-code/DebuggingAssistant';
 import { RefactoringTool } from '@/components/ai-code/RefactoringTool';
 import { TestingAssistant } from '@/components/ai-code/TestingAssistant';
 import { ProjectScaffolder } from '@/components/ai-code/ProjectScaffolder';
-import { Code, Bug, Zap, Sparkles, TestTube, FolderTree } from 'lucide-react';
+import { IntegrationGenerator } from '@/components/ai-code/IntegrationGenerator';
+import { Code, Bug, Zap, Sparkles, TestTube, FolderTree, Link2 } from 'lucide-react';
 import { useAuth } from '@/components/hooks/useAuth';
 
 export default function AICodeGenPage() {
@@ -47,6 +48,13 @@ export default function AICodeGenPage() {
               Scaffold
             </TabsTrigger>
             <TabsTrigger 
+              value="integrations" 
+              className="data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-400"
+            >
+              <Link2 className="w-4 h-4 mr-2" />
+              Integrations
+            </TabsTrigger>
+            <TabsTrigger 
               value="generate" 
               className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400"
             >
@@ -78,6 +86,10 @@ export default function AICodeGenPage() {
 
           <TabsContent value="scaffold">
             <ProjectScaffolder />
+          </TabsContent>
+
+          <TabsContent value="integrations">
+            <IntegrationGenerator />
           </TabsContent>
 
           <TabsContent value="generate">
