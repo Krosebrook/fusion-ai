@@ -40,6 +40,7 @@ import AgentOrchestration from './pages/AgentOrchestration';
 import IntegrationsHub from './pages/IntegrationsHub';
 import MediaStudio from './pages/MediaStudio';
 import AICodeGen from './pages/AICodeGen';
+import IntegrationManager from './pages/IntegrationManager';
 import __Layout from './Layout.jsx';
 
 
@@ -86,6 +87,7 @@ export const PAGES = {
     "IntegrationsHub": IntegrationsHub,
     "MediaStudio": MediaStudio,
     "AICodeGen": AICodeGen,
+    "IntegrationManager": IntegrationManager,
 }
 
 export const pagesConfig = {

@@ -2,20 +2,113 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { integrationAPI } from '@/components/core/APIClient';
 import { GlassmorphicCard } from '@/components/ui-library/GlassmorphicCard';
-import { Bug, AlertTriangle, CheckCircle2, Lightbulb, Code } from 'lucide-react';
+import { Bug, AlertTriangle, CheckCircle2, Lightbulb, Code, Activity, Cpu, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 
 export function DebuggingAssistant() {
   const [errorLog, setErrorLog] = useState('');
   const [codeContext, setCodeContext] = useState('');
   const [testCode, setTestCode] = useState('');
+  const [heapDump, setHeapDump] = useState('');
+  const [performanceData, setPerformanceData] = useState('');
   const [isTestFailure, setIsTestFailure] = useState(false);
   const [analysis, setAnalysis] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [activeTab, setActiveTab] = useState('basic');
+
+  const analyzeHeapDump = async () => {
+    if (!heapDump.trim()) {
+      toast.error('Please provide heap dump data');
+      return;
+    }
+
+    setIsAnalyzing(true);
+    try {
+      const prompt = `Analyze this heap dump for memory leaks and performance issues:
+
+HEAP DUMP:
+${heapDump}
+
+Provide:
+{
+  "memoryLeaks": [{"object": "name", "retainedSize": "size", "suspectedCause": "explanation"}],
+  "largestObjects": [{"type": "name", "size": "size", "recommendation": "action"}],
+  "gcIssues": ["issue 1", "issue 2"],
+  "optimizations": [{"title": "optimization", "impact": "high/medium/low", "implementation": "how to fix"}]
+}`;
+
+      const result = await integrationAPI.invoke('Core', 'InvokeLLM', {
+        prompt,
+        response_json_schema: {
+          type: 'object',
+          properties: {
+            memoryLeaks: { type: 'array', items: { type: 'object' } },
+            largestObjects: { type: 'array', items: { type: 'object' } },
+            gcIssues: { type: 'array', items: { type: 'string' } },
+            optimizations: { type: 'array', items: { type: 'object' } }
+          }
+        }
+      });
+
+      setAnalysis({ type: 'heap', data: result });
+      toast.success('Heap analysis complete!');
+    } catch (error) {
+      toast.error('Analysis failed: ' + error.message);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const analyzePerformance = async () => {
+    if (!performanceData.trim()) {
+      toast.error('Please provide performance profiling data');
+      return;
+    }
+
+    setIsAnalyzing(true);
+    try {
+      const prompt = `Analyze this performance profile and provide optimization suggestions:
+
+PERFORMANCE DATA:
+${performanceData}
+
+Identify:
+{
+  "bottlenecks": [{"function": "name", "time": "ms", "severity": "critical/high/medium", "fix": "suggestion"}],
+  "concurrencyIssues": [{"type": "race condition/deadlock/etc", "location": "where", "fix": "how to resolve"}],
+  "inefficientPatterns": [{"pattern": "description", "impact": "performance impact", "solution": "better approach"}],
+  "recommendations": ["rec 1", "rec 2"]
+}`;
+
+      const result = await integrationAPI.invoke('Core', 'InvokeLLM', {
+        prompt,
+        response_json_schema: {
+          type: 'object',
+          properties: {
+            bottlenecks: { type: 'array', items: { type: 'object' } },
+            concurrencyIssues: { type: 'array', items: { type: 'object' } },
+            inefficientPatterns: { type: 'array', items: { type: 'object' } },
+            recommendations: { type: 'array', items: { type: 'string' } }
+          }
+        }
+      });
+
+      setAnalysis({ type: 'performance', data: result });
+      toast.success('Performance analysis complete!');
+    } catch (error) {
+      toast.error('Analysis failed: ' + error.message);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
 
   const handleAnalyze = async () => {
+    if (activeTab === 'heap') return analyzeHeapDump();
+    if (activeTab === 'performance') return analyzePerformance();
+
     if (!errorLog.trim()) {
       toast.error('Please paste your error log');
       return;
@@ -137,10 +230,26 @@ Provide detailed analysis in JSON format:
       <GlassmorphicCard className="p-6">
         <div className="flex items-center gap-2 mb-6">
           <Bug className="w-5 h-5 text-orange-400" />
-          <h3 className="text-lg font-semibold text-white">AI Debugging Assistant</h3>
+          <h3 className="text-lg font-semibold text-white">Advanced Debugging Assistant</h3>
         </div>
 
-        <div className="space-y-4">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="bg-white/5 border border-white/10 mb-4">
+            <TabsTrigger value="basic" className="data-[state=active]:bg-orange-500/20">
+              <Bug className="w-4 h-4 mr-2" />
+              Error Analysis
+            </TabsTrigger>
+            <TabsTrigger value="heap" className="data-[state=active]:bg-red-500/20">
+              <Activity className="w-4 h-4 mr-2" />
+              Heap Dump
+            </TabsTrigger>
+            <TabsTrigger value="performance" className="data-[state=active]:bg-purple-500/20">
+              <Zap className="w-4 h-4 mr-2" />
+              Performance
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="basic" className="space-y-4">
           <div className="flex items-center gap-3 p-3 bg-white/5 border border-white/10 rounded-lg cursor-pointer" onClick={() => setIsTestFailure(!isTestFailure)}>
             <input type="checkbox" checked={isTestFailure} onChange={(e) => setIsTestFailure(e.target.checked)} className="w-4 h-4" />
             <div>
@@ -181,27 +290,86 @@ Provide detailed analysis in JSON format:
             />
           </div>
 
-          <Button
-            onClick={handleAnalyze}
-            disabled={isAnalyzing || !errorLog.trim()}
-            className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
-          >
-            {isAnalyzing ? (
-              <>
-                <Bug className="w-4 h-4 mr-2 animate-pulse" />
-                Analyzing Error...
-              </>
-            ) : (
-              <>
-                <AlertTriangle className="w-4 h-4 mr-2" />
-                Analyze & Fix
-              </>
-            )}
-          </Button>
-        </div>
+            <Button
+              onClick={handleAnalyze}
+              disabled={isAnalyzing || !errorLog.trim()}
+              className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
+            >
+              {isAnalyzing ? (
+                <>
+                  <Bug className="w-4 h-4 mr-2 animate-pulse" />
+                  Analyzing Error...
+                </>
+              ) : (
+                <>
+                  <AlertTriangle className="w-4 h-4 mr-2" />
+                  Analyze & Fix
+                </>
+              )}
+            </Button>
+          </TabsContent>
+
+          <TabsContent value="heap" className="space-y-4">
+            <div>
+              <label className="text-sm text-gray-400 mb-2 block">Heap Dump Data</label>
+              <Textarea
+                value={heapDump}
+                onChange={(e) => setHeapDump(e.target.value)}
+                placeholder="Paste heap dump output (e.g., from Chrome DevTools, Node.js --inspect)..."
+                className="bg-white/5 border-white/10 text-white font-mono text-sm min-h-[250px] placeholder:text-gray-500"
+              />
+            </div>
+            <Button
+              onClick={analyzeHeapDump}
+              disabled={isAnalyzing || !heapDump.trim()}
+              className="w-full bg-gradient-to-r from-red-500 to-pink-500"
+            >
+              {isAnalyzing ? (
+                <>
+                  <Activity className="w-4 h-4 mr-2 animate-pulse" />
+                  Analyzing Memory...
+                </>
+              ) : (
+                <>
+                  <Activity className="w-4 h-4 mr-2" />
+                  Analyze Heap Dump
+                </>
+              )}
+            </Button>
+          </TabsContent>
+
+          <TabsContent value="performance" className="space-y-4">
+            <div>
+              <label className="text-sm text-gray-400 mb-2 block">Performance Profile Data</label>
+              <Textarea
+                value={performanceData}
+                onChange={(e) => setPerformanceData(e.target.value)}
+                placeholder="Paste performance profiling data (flamegraphs, trace logs, etc.)..."
+                className="bg-white/5 border-white/10 text-white font-mono text-sm min-h-[250px] placeholder:text-gray-500"
+              />
+            </div>
+            <Button
+              onClick={analyzePerformance}
+              disabled={isAnalyzing || !performanceData.trim()}
+              className="w-full bg-gradient-to-r from-purple-500 to-indigo-500"
+            >
+              {isAnalyzing ? (
+                <>
+                  <Cpu className="w-4 h-4 mr-2 animate-pulse" />
+                  Analyzing Performance...
+                </>
+              ) : (
+                <>
+                  <Zap className="w-4 h-4 mr-2" />
+                  Analyze Performance
+                </>
+              )}
+            </Button>
+          </TabsContent>
+        </Tabs>
       </GlassmorphicCard>
 
-      {analysis && (
+      {analysis && analysis.type === 'basic' && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -312,6 +480,71 @@ Provide detailed analysis in JSON format:
               </ul>
             </GlassmorphicCard>
           )}
+        </motion.div>
+      )}
+
+      {analysis && analysis.type === 'heap' && (
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+          <GlassmorphicCard className="p-6">
+            <h3 className="text-xl font-bold text-white mb-4">Memory Analysis</h3>
+            {analysis.data.memoryLeaks?.length > 0 && (
+              <div className="mb-6">
+                <h4 className="text-red-400 font-semibold mb-3">Memory Leaks Detected</h4>
+                {analysis.data.memoryLeaks.map((leak, i) => (
+                  <div key={i} className="p-3 bg-red-500/5 border border-red-500/20 rounded mb-2">
+                    <div className="font-mono text-sm text-white">{leak.object}</div>
+                    <div className="text-xs text-gray-400">Retained: {leak.retainedSize}</div>
+                    <div className="text-xs text-gray-300 mt-1">{leak.suspectedCause}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {analysis.data.optimizations?.length > 0 && (
+              <div>
+                <h4 className="text-green-400 font-semibold mb-3">Optimization Opportunities</h4>
+                {analysis.data.optimizations.map((opt, i) => (
+                  <div key={i} className="p-3 bg-green-500/5 border border-green-500/20 rounded mb-2">
+                    <div className="text-sm font-semibold text-white">{opt.title}</div>
+                    <div className="text-xs text-gray-400 mt-1">{opt.implementation}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </GlassmorphicCard>
+        </motion.div>
+      )}
+
+      {analysis && analysis.type === 'performance' && (
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+          <GlassmorphicCard className="p-6">
+            <h3 className="text-xl font-bold text-white mb-4">Performance Analysis</h3>
+            {analysis.data.bottlenecks?.length > 0 && (
+              <div className="mb-6">
+                <h4 className="text-orange-400 font-semibold mb-3">Performance Bottlenecks</h4>
+                {analysis.data.bottlenecks.map((bn, i) => (
+                  <div key={i} className="p-3 bg-orange-500/5 border border-orange-500/20 rounded mb-2">
+                    <div className="flex justify-between items-start">
+                      <div className="font-mono text-sm text-white">{bn.function}</div>
+                      <span className="text-xs px-2 py-1 bg-orange-500/20 text-orange-400 rounded">{bn.time}</span>
+                    </div>
+                    <div className="text-xs text-gray-300 mt-2">{bn.fix}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {analysis.data.concurrencyIssues?.length > 0 && (
+              <div className="mb-6">
+                <h4 className="text-red-400 font-semibold mb-3">Concurrency Issues</h4>
+                {analysis.data.concurrencyIssues.map((issue, i) => (
+                  <div key={i} className="p-3 bg-red-500/5 border border-red-500/20 rounded mb-2">
+                    <div className="text-sm text-white font-semibold">{issue.type}</div>
+                    <div className="text-xs text-gray-400 mt-1">Location: {issue.location}</div>
+                    <div className="text-xs text-gray-300 mt-2">Fix: {issue.fix}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </GlassmorphicCard>
         </motion.div>
       )}
     </div>

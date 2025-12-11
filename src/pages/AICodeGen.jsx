@@ -9,7 +9,8 @@ import { ProjectScaffolder } from '@/components/ai-code/ProjectScaffolder';
 import { IntegrationGenerator } from '@/components/ai-code/IntegrationGenerator';
 import { CodeReviewAssistant } from '@/components/ai-code/CodeReviewAssistant';
 import { DocumentationGenerator } from '@/components/ai-code/DocumentationGenerator';
-import { Code, Bug, Zap, Sparkles, TestTube, FolderTree, Link2, Shield, BookOpen } from 'lucide-react';
+import { WorkflowOrchestrator } from '@/components/ai-code/WorkflowOrchestrator';
+import { Code, Bug, Zap, Sparkles, TestTube, FolderTree, Link2, Shield, BookOpen, GitBranch } from 'lucide-react';
 import { useAuth } from '@/components/hooks/useAuth';
 
 export default function AICodeGenPage() {
@@ -40,8 +41,12 @@ export default function AICodeGenPage() {
           </p>
         </motion.div>
 
-        <Tabs defaultValue="scaffold" className="w-full">
+        <Tabs defaultValue="workflow" className="w-full">
           <TabsList className="bg-white/5 border border-white/10 p-1 mb-6 flex-wrap h-auto">
+            <TabsTrigger value="workflow" className="data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-400">
+              <GitBranch className="w-4 h-4 mr-2" />
+              Workflow
+            </TabsTrigger>
             <TabsTrigger value="scaffold" className="data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-400">
               <FolderTree className="w-4 h-4 mr-2" />
               Scaffold
@@ -75,6 +80,10 @@ export default function AICodeGenPage() {
               Docs
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="workflow">
+            <WorkflowOrchestrator />
+          </TabsContent>
 
           <TabsContent value="scaffold">
             <ProjectScaffolder />
