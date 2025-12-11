@@ -9,6 +9,11 @@ import { useAuth } from '@/components/hooks/useAuth';
 
 export default function AICodeGenPage() {
   const { user } = useAuth();
+
+  if (!user) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -71,7 +76,3 @@ export default function AICodeGenPage() {
     </div>
   );
 }
-
-  if (!user) {
-    return null;
-  }
