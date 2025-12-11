@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { base44 } from "@/api/base44Client";
 import { AuthProvider } from "@/components/hooks/useAuth";
+import { GlobalErrorBoundary } from "@/components/core/GlobalErrorBoundary";
 import NotificationCenter from "./components/collaboration/NotificationCenter";
 import {
   NavigationMenu,
@@ -907,8 +908,10 @@ function LayoutContent({ children }) {
 
 export default function Layout({ children }) {
   return (
-    <AuthProvider>
-      <LayoutContent>{children}</LayoutContent>
-    </AuthProvider>
+    <GlobalErrorBoundary>
+      <AuthProvider>
+        <LayoutContent>{children}</LayoutContent>
+      </AuthProvider>
+    </GlobalErrorBoundary>
   );
 }
