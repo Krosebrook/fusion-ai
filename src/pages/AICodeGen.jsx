@@ -10,7 +10,9 @@ import { IntegrationGenerator } from '@/components/ai-code/IntegrationGenerator'
 import { CodeReviewAssistant } from '@/components/ai-code/CodeReviewAssistant';
 import { DocumentationGenerator } from '@/components/ai-code/DocumentationGenerator';
 import { WorkflowOrchestrator } from '@/components/ai-code/WorkflowOrchestrator';
-import { Code, Bug, Zap, Sparkles, TestTube, FolderTree, Link2, Shield, BookOpen, GitBranch } from 'lucide-react';
+import { ComponentGenerator } from '@/components/ai-code/ComponentGenerator';
+import { AgentCollaborationSystem } from '@/components/ai-agents/AgentCollaborationSystem';
+import { Code, Bug, Zap, Sparkles, TestTube, FolderTree, Link2, Shield, BookOpen, GitBranch, Package, Users } from 'lucide-react';
 import { useAuth } from '@/components/hooks/useAuth';
 
 export default function AICodeGenPage() {
@@ -41,8 +43,16 @@ export default function AICodeGenPage() {
           </p>
         </motion.div>
 
-        <Tabs defaultValue="workflow" className="w-full">
+        <Tabs defaultValue="agents" className="w-full">
           <TabsList className="bg-white/5 border border-white/10 p-1 mb-6 flex-wrap h-auto">
+            <TabsTrigger value="agents" className="data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-400">
+              <Users className="w-4 h-4 mr-2" />
+              AI Agents
+            </TabsTrigger>
+            <TabsTrigger value="components" className="data-[state=active]:bg-pink-500/20 data-[state=active]:text-pink-400">
+              <Package className="w-4 h-4 mr-2" />
+              Components
+            </TabsTrigger>
             <TabsTrigger value="workflow" className="data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-400">
               <GitBranch className="w-4 h-4 mr-2" />
               Workflow
@@ -80,6 +90,14 @@ export default function AICodeGenPage() {
               Docs
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="agents">
+            <AgentCollaborationSystem />
+          </TabsContent>
+
+          <TabsContent value="components">
+            <ComponentGenerator />
+          </TabsContent>
 
           <TabsContent value="workflow">
             <WorkflowOrchestrator />
