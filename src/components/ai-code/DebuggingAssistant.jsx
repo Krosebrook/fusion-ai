@@ -10,6 +10,8 @@ import { toast } from 'sonner';
 export function DebuggingAssistant() {
   const [errorLog, setErrorLog] = useState('');
   const [codeContext, setCodeContext] = useState('');
+  const [testCode, setTestCode] = useState('');
+  const [isTestFailure, setIsTestFailure] = useState(false);
   const [analysis, setAnalysis] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
@@ -21,7 +23,43 @@ export function DebuggingAssistant() {
 
     setIsAnalyzing(true);
     try {
-      const prompt = `You are a senior debugging expert. Analyze this error and provide actionable fixes.
+      const prompt = isTestFailure 
+        ? `You are a senior testing and debugging expert. Analyze this test failure and provide fixes.
+
+TEST FAILURE LOG:
+${errorLog}
+
+TEST CODE:
+${testCode}
+
+ORIGINAL CODE:
+${codeContext}
+
+Analyze the test failure and provide:
+1. Root cause of the test failure
+2. Whether the issue is in the test itself or the original code
+3. Specific fixes for both test and original code if needed
+
+Return as JSON:
+{
+  "errorType": "Test failure type",
+  "severity": "critical/high/medium/low",
+  "rootCause": "Why the test failed",
+  "issueLocation": "test|original_code|both",
+  "affectedComponents": ["ComponentA", "ComponentB"],
+  "fixes": [
+    {
+      "title": "Fix description",
+      "code": "Fixed code snippet",
+      "explanation": "Why this works",
+      "target": "test|original_code"
+    }
+  ],
+  "testIssues": ["Test issue 1", "Test issue 2"],
+  "codeIssues": ["Code issue 1", "Code issue 2"],
+  "preventionTips": ["Tip 1", "Tip 2"]
+}`
+        : `You are a senior debugging expert. Analyze this error and provide actionable fixes.
 
 Error Log:
 ${errorLog}
@@ -52,6 +90,7 @@ Provide detailed analysis in JSON format:
             errorType: { type: 'string' },
             severity: { type: 'string' },
             rootCause: { type: 'string' },
+            ...(isTestFailure && { issueLocation: { type: 'string' } }),
             affectedComponents: { type: 'array', items: { type: 'string' } },
             fixes: {
               type: 'array',
@@ -60,10 +99,15 @@ Provide detailed analysis in JSON format:
                 properties: {
                   title: { type: 'string' },
                   code: { type: 'string' },
-                  explanation: { type: 'string' }
+                  explanation: { type: 'string' },
+                  ...(isTestFailure && { target: { type: 'string' } })
                 }
               }
             },
+            ...(isTestFailure && { 
+              testIssues: { type: 'array', items: { type: 'string' } },
+              codeIssues: { type: 'array', items: { type: 'string' } }
+            }),
             preventionTips: { type: 'array', items: { type: 'string' } }
           }
         }
@@ -97,22 +141,42 @@ Provide detailed analysis in JSON format:
         </div>
 
         <div className="space-y-4">
+          <div className="flex items-center gap-3 p-3 bg-white/5 border border-white/10 rounded-lg cursor-pointer" onClick={() => setIsTestFailure(!isTestFailure)}>
+            <input type="checkbox" checked={isTestFailure} onChange={(e) => setIsTestFailure(e.target.checked)} className="w-4 h-4" />
+            <div>
+              <div className="text-sm font-medium text-white">Test Failure Analysis</div>
+              <div className="text-xs text-gray-400">Enable if analyzing a failed unit test</div>
+            </div>
+          </div>
+
           <div>
-            <label className="text-sm text-gray-400 mb-2 block">Error Log or Stack Trace</label>
+            <label className="text-sm text-gray-400 mb-2 block">{isTestFailure ? 'Test Failure Log' : 'Error Log or Stack Trace'}</label>
             <Textarea
               value={errorLog}
               onChange={(e) => setErrorLog(e.target.value)}
-              placeholder="Paste your error message, stack trace, or console output..."
+              placeholder={isTestFailure ? "Paste test failure output..." : "Paste your error message, stack trace, or console output..."}
               className="bg-white/5 border-white/10 text-white font-mono text-sm min-h-[150px] placeholder:text-gray-500"
             />
           </div>
 
+          {isTestFailure && (
+            <div>
+              <label className="text-sm text-gray-400 mb-2 block">Test Code</label>
+              <Textarea
+                value={testCode}
+                onChange={(e) => setTestCode(e.target.value)}
+                placeholder="Paste the failing test code..."
+                className="bg-white/5 border-white/10 text-white font-mono text-sm min-h-[100px] placeholder:text-gray-500"
+              />
+            </div>
+          )}
+
           <div>
-            <label className="text-sm text-gray-400 mb-2 block">Code Context (Optional)</label>
+            <label className="text-sm text-gray-400 mb-2 block">{isTestFailure ? 'Original Code Being Tested' : 'Code Context (Optional)'}</label>
             <Textarea
               value={codeContext}
               onChange={(e) => setCodeContext(e.target.value)}
-              placeholder="Paste relevant code where the error occurs..."
+              placeholder={isTestFailure ? "Paste the code being tested..." : "Paste relevant code where the error occurs..."}
               className="bg-white/5 border-white/10 text-white font-mono text-sm min-h-[100px] placeholder:text-gray-500"
             />
           </div>
@@ -167,6 +231,38 @@ Provide detailed analysis in JSON format:
             )}
           </GlassmorphicCard>
 
+          {/* Test/Code Issues */}
+          {isTestFailure && (analysis.testIssues?.length > 0 || analysis.codeIssues?.length > 0) && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {analysis.testIssues?.length > 0 && (
+                <GlassmorphicCard className="p-4">
+                  <h4 className="text-sm font-semibold text-orange-400 mb-2">Test Issues</h4>
+                  <ul className="space-y-1">
+                    {analysis.testIssues.map((issue, idx) => (
+                      <li key={idx} className="text-xs text-gray-300 flex items-start gap-2">
+                        <span className="text-orange-400">•</span>
+                        {issue}
+                      </li>
+                    ))}
+                  </ul>
+                </GlassmorphicCard>
+              )}
+              {analysis.codeIssues?.length > 0 && (
+                <GlassmorphicCard className="p-4">
+                  <h4 className="text-sm font-semibold text-red-400 mb-2">Code Issues</h4>
+                  <ul className="space-y-1">
+                    {analysis.codeIssues.map((issue, idx) => (
+                      <li key={idx} className="text-xs text-gray-300 flex items-start gap-2">
+                        <span className="text-red-400">•</span>
+                        {issue}
+                      </li>
+                    ))}
+                  </ul>
+                </GlassmorphicCard>
+              )}
+            </div>
+          )}
+
           {/* Fixes */}
           <GlassmorphicCard className="p-6">
             <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
@@ -177,7 +273,16 @@ Provide detailed analysis in JSON format:
             <div className="space-y-4">
               {analysis.fixes.map((fix, idx) => (
                 <div key={idx} className="bg-white/5 rounded-xl p-4 border border-white/10">
-                  <h5 className="font-medium text-white mb-2">{idx + 1}. {fix.title}</h5>
+                  <div className="flex items-center justify-between mb-2">
+                    <h5 className="font-medium text-white">{idx + 1}. {fix.title}</h5>
+                    {isTestFailure && fix.target && (
+                      <span className={`px-2 py-1 rounded text-xs font-semibold ${
+                        fix.target === 'test' ? 'bg-orange-500/10 text-orange-400' : 'bg-blue-500/10 text-blue-400'
+                      }`}>
+                        {fix.target === 'test' ? 'TEST FIX' : 'CODE FIX'}
+                      </span>
+                    )}
+                  </div>
                   <p className="text-sm text-gray-400 mb-3">{fix.explanation}</p>
                   
                   {fix.code && (

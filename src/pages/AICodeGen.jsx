@@ -7,7 +7,9 @@ import { RefactoringTool } from '@/components/ai-code/RefactoringTool';
 import { TestingAssistant } from '@/components/ai-code/TestingAssistant';
 import { ProjectScaffolder } from '@/components/ai-code/ProjectScaffolder';
 import { IntegrationGenerator } from '@/components/ai-code/IntegrationGenerator';
-import { Code, Bug, Zap, Sparkles, TestTube, FolderTree, Link2 } from 'lucide-react';
+import { CodeReviewAssistant } from '@/components/ai-code/CodeReviewAssistant';
+import { DocumentationGenerator } from '@/components/ai-code/DocumentationGenerator';
+import { Code, Bug, Zap, Sparkles, TestTube, FolderTree, Link2, Shield, BookOpen } from 'lucide-react';
 import { useAuth } from '@/components/hooks/useAuth';
 
 export default function AICodeGenPage() {
@@ -39,48 +41,38 @@ export default function AICodeGenPage() {
         </motion.div>
 
         <Tabs defaultValue="scaffold" className="w-full">
-          <TabsList className="bg-white/5 border border-white/10 p-1 mb-6">
-            <TabsTrigger 
-              value="scaffold" 
-              className="data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-400"
-            >
+          <TabsList className="bg-white/5 border border-white/10 p-1 mb-6 flex-wrap h-auto">
+            <TabsTrigger value="scaffold" className="data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-400">
               <FolderTree className="w-4 h-4 mr-2" />
               Scaffold
             </TabsTrigger>
-            <TabsTrigger 
-              value="integrations" 
-              className="data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-400"
-            >
+            <TabsTrigger value="integrations" className="data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-400">
               <Link2 className="w-4 h-4 mr-2" />
               Integrations
             </TabsTrigger>
-            <TabsTrigger 
-              value="generate" 
-              className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400"
-            >
+            <TabsTrigger value="generate" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
               <Code className="w-4 h-4 mr-2" />
               Generate
             </TabsTrigger>
-            <TabsTrigger 
-              value="testing" 
-              className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400"
-            >
+            <TabsTrigger value="testing" className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400">
               <TestTube className="w-4 h-4 mr-2" />
               Testing
             </TabsTrigger>
-            <TabsTrigger 
-              value="debug" 
-              className="data-[state=active]:bg-orange-500/20 data-[state=active]:text-orange-400"
-            >
+            <TabsTrigger value="review" className="data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-400">
+              <Shield className="w-4 h-4 mr-2" />
+              Review
+            </TabsTrigger>
+            <TabsTrigger value="debug" className="data-[state=active]:bg-orange-500/20 data-[state=active]:text-orange-400">
               <Bug className="w-4 h-4 mr-2" />
               Debug
             </TabsTrigger>
-            <TabsTrigger 
-              value="refactor" 
-              className="data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-400"
-            >
+            <TabsTrigger value="refactor" className="data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-400">
               <Zap className="w-4 h-4 mr-2" />
               Refactor
+            </TabsTrigger>
+            <TabsTrigger value="docs" className="data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-400">
+              <BookOpen className="w-4 h-4 mr-2" />
+              Docs
             </TabsTrigger>
           </TabsList>
 
@@ -100,12 +92,20 @@ export default function AICodeGenPage() {
             <TestingAssistant />
           </TabsContent>
 
+          <TabsContent value="review">
+            <CodeReviewAssistant />
+          </TabsContent>
+
           <TabsContent value="debug">
             <DebuggingAssistant />
           </TabsContent>
 
           <TabsContent value="refactor">
             <RefactoringTool />
+          </TabsContent>
+
+          <TabsContent value="docs">
+            <DocumentationGenerator />
           </TabsContent>
         </Tabs>
       </div>
