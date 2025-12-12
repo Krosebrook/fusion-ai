@@ -43,6 +43,105 @@ class GenerationService {
   }
 
   /**
+   * Generate marketing copy
+   */
+  async generateMarketingCopy({ product, benefits, cta, tone, length }) {
+    const { aiService } = await import('./AIService');
+    
+    const result = await aiService.invokeLLM({
+      prompt: `Generate ${length} marketing copy for: ${product}
+
+Key Benefits: ${benefits}
+Call-to-Action: ${cta}
+Tone: ${tone}
+
+Create compelling, conversion-focused copy that highlights benefits and drives action.`,
+      schema: {
+        type: 'object',
+        properties: {
+          headline: { type: 'string' },
+          body: { type: 'string' },
+          bullets: { type: 'array', items: { type: 'string' } },
+          cta: { type: 'string' },
+        },
+      },
+    });
+
+    return result;
+  }
+
+  /**
+   * Generate social media posts
+   */
+  async generateSocialPosts({ topic, platform, tone, hashtags, count = 3 }) {
+    const { aiService } = await import('./AIService');
+    
+    const result = await aiService.invokeLLM({
+      prompt: `Generate ${count} ${platform} posts about: ${topic}
+
+Tone: ${tone}
+Include: ${hashtags} relevant hashtags
+
+Optimize for ${platform} best practices (character limits, engagement).`,
+      schema: {
+        type: 'object',
+        properties: {
+          posts: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                text: { type: 'string' },
+                hashtags: { type: 'array', items: { type: 'string' } },
+                characterCount: { type: 'number' },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return result.posts;
+  }
+
+  /**
+   * Generate product descriptions
+   */
+  async generateProductDescription({ productName, features, targetAudience, seoKeywords }) {
+    const { aiService } = await import('./AIService');
+    
+    const result = await aiService.invokeLLM({
+      prompt: `Generate SEO-optimized product description:
+
+Product: ${productName}
+Features: ${features}
+Target Audience: ${targetAudience}
+SEO Keywords: ${seoKeywords}
+
+Include: engaging description, key features, benefits, and SEO optimization.`,
+      schema: {
+        type: 'object',
+        properties: {
+          shortDescription: { type: 'string' },
+          fullDescription: { type: 'string' },
+          keyFeatures: { type: 'array', items: { type: 'string' } },
+          benefits: { type: 'array', items: { type: 'string' } },
+          seoMeta: {
+            type: 'object',
+            properties: {
+              title: { type: 'string' },
+              description: { type: 'string' },
+              keywords: { type: 'array', items: { type: 'string' } },
+            },
+          },
+        },
+      },
+    });
+
+    return result;
+  }
+
+  /**
    * Optimize existing content
    */
   async optimizeContent({ content, keywords, focusAreas = 'SEO, readability, tone' }) {
@@ -96,6 +195,54 @@ class GenerationService {
       errorService.handle(error, { type: 'image-generation', prompt });
       throw error;
     }
+  }
+
+  /**
+   * Generate icon
+   */
+  async generateIcon({ description, style, colorPalette, size = 512 }) {
+    const { aiService } = await import('./AIService');
+    
+    const enhancedPrompt = `Generate a ${style} style icon: ${description}
+
+Specifications:
+- Size: ${size}x${size}px
+- Color palette: ${colorPalette}
+- Style: ${style}
+- Format: Clean, scalable, modern design
+- Transparent background
+
+Professional icon design with crisp edges and balanced composition.`;
+
+    const result = await base44.integrations.Core.GenerateImage({
+      prompt: enhancedPrompt,
+    });
+
+    return { url: result.url, style, size };
+  }
+
+  /**
+   * Generate illustration
+   */
+  async generateIllustration({ concept, style, colorScheme, complexity }) {
+    const { aiService } = await import('./AIService');
+    
+    const enhancedPrompt = `Create ${complexity} illustration: ${concept}
+
+Art Direction:
+- Style: ${style}
+- Color scheme: ${colorScheme}
+- Complexity: ${complexity}
+- Composition: Balanced, visually appealing
+- Quality: High-resolution, professional
+
+${style} illustration with attention to detail and artistic composition.`;
+
+    const result = await base44.integrations.Core.GenerateImage({
+      prompt: enhancedPrompt,
+    });
+
+    return { url: result.url, style, concept };
   }
 
   /**

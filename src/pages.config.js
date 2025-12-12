@@ -44,6 +44,7 @@ import IntegrationManager from './pages/IntegrationManager';
 import AgentManagement from './pages/AgentManagement';
 import CinematicDemo from './pages/CinematicDemo';
 import PromptLibrary from './pages/PromptLibrary';
+import AIStudio from './pages/AIStudio';
 import __Layout from './Layout.jsx';
 
 
@@ -94,6 +95,7 @@ export const PAGES = {
     "AgentManagement": AgentManagement,
     "CinematicDemo": CinematicDemo,
     "PromptLibrary": PromptLibrary,
+    "AIStudio": AIStudio,
 }
 
 export const pagesConfig = {
