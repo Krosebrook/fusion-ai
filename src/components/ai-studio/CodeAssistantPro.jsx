@@ -112,7 +112,7 @@ export function CodeAssistantPro() {
                 <Bug className="w-4 h-4 mr-2" />
                 Debug
               </TabsTrigger>
-            </Tabs>
+            </TabsList>
 
             {/* Generate */}
             <TabsContent value="generate" className="space-y-4">
