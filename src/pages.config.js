@@ -43,6 +43,7 @@ import AICodeGen from './pages/AICodeGen';
 import IntegrationManager from './pages/IntegrationManager';
 import AgentManagement from './pages/AgentManagement';
 import CinematicDemo from './pages/CinematicDemo';
+import PromptLibrary from './pages/PromptLibrary';
 import __Layout from './Layout.jsx';
 
 
@@ -92,6 +93,7 @@ export const PAGES = {
     "IntegrationManager": IntegrationManager,
     "AgentManagement": AgentManagement,
     "CinematicDemo": CinematicDemo,
+    "PromptLibrary": PromptLibrary,
 }
 
 export const pagesConfig = {

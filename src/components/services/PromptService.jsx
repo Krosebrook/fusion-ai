@@ -265,6 +265,265 @@ Return:
   }
 
   /**
+   * Save custom template to entity
+   */
+  async saveTemplate({ name, description, template, variables, category, tags, schema }) {
+    const { base44 } = await import('@/api/base44Client');
+    
+    const templateData = {
+      name,
+      description,
+      template,
+      variables: variables || this.extractVariables(template),
+      category: category || 'custom',
+      tags: tags || [],
+      schema,
+      usage_count: 0,
+    };
+
+    const result = await base44.entities.PromptTemplate.create(templateData);
+    this.templates.set(result.id, templateData);
+    return result;
+  }
+
+  /**
+   * Update custom template
+   */
+  async updateTemplate(templateId, updates) {
+    const { base44 } = await import('@/api/base44Client');
+    
+    const result = await base44.entities.PromptTemplate.update(templateId, updates);
+    
+    if (this.templates.has(templateId)) {
+      this.templates.set(templateId, { ...this.templates.get(templateId), ...updates });
+    }
+    
+    return result;
+  }
+
+  /**
+   * Delete custom template
+   */
+  async deleteTemplate(templateId) {
+    const { base44 } = await import('@/api/base44Client');
+    
+    await base44.entities.PromptTemplate.delete(templateId);
+    this.templates.delete(templateId);
+  }
+
+  /**
+   * Load user templates from database
+   */
+  async loadUserTemplates() {
+    const { base44 } = await import('@/api/base44Client');
+    
+    const userTemplates = await base44.entities.PromptTemplate.list();
+    
+    userTemplates.forEach(template => {
+      this.templates.set(template.id, {
+        name: template.name,
+        template: template.template,
+        variables: template.variables,
+        schema: template.output_schema,
+        category: template.category,
+        tags: template.tags,
+      });
+    });
+
+    return userTemplates;
+  }
+
+  /**
+   * Search templates
+   */
+  async searchTemplates({ query, category, tags }) {
+    const { base44 } = await import('@/api/base44Client');
+    
+    const filters = {};
+    if (category && category !== 'all') filters.category = category;
+    
+    const templates = await base44.entities.PromptTemplate.filter(filters);
+    
+    let results = templates;
+    
+    // Text search
+    if (query) {
+      const lowerQuery = query.toLowerCase();
+      results = results.filter(t => 
+        t.name.toLowerCase().includes(lowerQuery) ||
+        t.description?.toLowerCase().includes(lowerQuery) ||
+        t.tags?.some(tag => tag.toLowerCase().includes(lowerQuery))
+      );
+    }
+    
+    // Tag filter
+    if (tags && tags.length > 0) {
+      results = results.filter(t => 
+        tags.some(tag => t.tags?.includes(tag))
+      );
+    }
+    
+    return results;
+  }
+
+  /**
+   * Get popular templates
+   */
+  async getPopularTemplates(limit = 10) {
+    const { base44 } = await import('@/api/base44Client');
+    
+    const templates = await base44.entities.PromptTemplate.list('-usage_count', limit);
+    return templates;
+  }
+
+  /**
+   * Increment usage count
+   */
+  async incrementUsage(templateId) {
+    const { base44 } = await import('@/api/base44Client');
+    
+    try {
+      const template = await base44.entities.PromptTemplate.filter({ id: templateId });
+      if (template[0]) {
+        await base44.entities.PromptTemplate.update(templateId, {
+          usage_count: (template[0].usage_count || 0) + 1,
+        });
+      }
+    } catch (error) {
+      console.warn('Failed to increment usage count:', error);
+    }
+  }
+
+  /**
+   * Extract variables from template string
+   */
+  extractVariables(template) {
+    const matches = template.match(/{{(\w+)}}/g);
+    if (!matches) return [];
+    return [...new Set(matches.map(m => m.replace(/{{|}}/g, '')))];
+  }
+
+  /**
+   * AI-powered prompt optimization
+   */
+  async optimizePromptAI(templateId) {
+    const template = await this.getTemplateById(templateId);
+    if (!template) throw new Error('Template not found');
+
+    const { aiService } = await import('./AIService');
+    
+    const analysis = await aiService.invokeLLM({
+      prompt: `Analyze and improve this prompt template for better AI results:
+
+Template: ${template.template}
+Purpose: ${template.description || 'General purpose'}
+Category: ${template.category}
+
+Provide optimization:
+{
+  "score": 0-100,
+  "issues": [{"issue": "string", "severity": "high|medium|low", "suggestion": "string"}],
+  "improved": "optimized template with {{variables}}",
+  "reasoning": "why these changes improve results",
+  "suggestions": ["additional improvement ideas"]
+}`,
+      schema: {
+        type: 'object',
+        properties: {
+          score: { type: 'number' },
+          issues: { type: 'array', items: { type: 'object' } },
+          improved: { type: 'string' },
+          reasoning: { type: 'string' },
+          suggestions: { type: 'array', items: { type: 'string' } },
+        },
+      },
+    });
+
+    return analysis;
+  }
+
+  /**
+   * Generate template variations
+   */
+  async generateVariationsAI(templateId, count = 3) {
+    const template = await this.getTemplateById(templateId);
+    if (!template) throw new Error('Template not found');
+
+    const { aiService } = await import('./AIService');
+    
+    const variations = await aiService.invokeLLM({
+      prompt: `Generate ${count} variations of this prompt template with different approaches:
+
+Original: ${template.template}
+Purpose: ${template.description || 'General purpose'}
+
+Return variations that:
+- Maintain the same variables
+- Use different phrasing/approaches
+- Target different output styles
+
+{
+  "variations": [
+    {
+      "name": "string",
+      "approach": "brief description of this approach",
+      "template": "template with {{variables}}"
+    }
+  ]
+}`,
+      schema: {
+        type: 'object',
+        properties: {
+          variations: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                name: { type: 'string' },
+                approach: { type: 'string' },
+                template: { type: 'string' },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return variations.variations;
+  }
+
+  /**
+   * Get template by ID
+   */
+  async getTemplateById(templateId) {
+    const { base44 } = await import('@/api/base44Client');
+    
+    const templates = await base44.entities.PromptTemplate.filter({ id: templateId });
+    return templates[0] || null;
+  }
+
+  /**
+   * Duplicate template
+   */
+  async duplicateTemplate(templateId) {
+    const template = await this.getTemplateById(templateId);
+    if (!template) throw new Error('Template not found');
+
+    const duplicate = {
+      ...template,
+      name: `${template.name} (Copy)`,
+      usage_count: 0,
+    };
+
+    delete duplicate.id;
+    delete duplicate.created_date;
+    delete duplicate.updated_date;
+    delete duplicate.created_by;
+
+    return this.saveTemplate(duplicate);
+  }
+
+  /**
    * Clear template cache
    */
   clearCache() {
