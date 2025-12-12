@@ -4,7 +4,7 @@
  */
 
 import { AIService } from '@/components/services/AIService';
-import { CacheService } from '@/components/services/CacheService';
+import { cacheService } from '@/components/services/CacheService';
 
 class CinematicInteractionEngine {
   constructor() {
@@ -67,7 +67,7 @@ class CinematicInteractionEngine {
 
   async analyzeAndAdjust() {
     const cacheKey = 'cinematic-behavior-analysis';
-    const cached = CacheService.get(cacheKey);
+    const cached = cacheService.get(cacheKey);
     
     if (cached) {
       this.applyBehaviorProfile(cached);
@@ -102,7 +102,7 @@ Recommend adjustments to speed (0.5-2), intensity (0.5-2), and complexity (minim
         }
       });
 
-      CacheService.set(cacheKey, analysis, 300000); // 5 min cache
+      cacheService.set(cacheKey, analysis, 300000); // 5 min cache
       this.applyBehaviorProfile(analysis);
     } catch (error) {
       console.error('Cinematic analysis failed:', error);
@@ -124,7 +124,7 @@ Recommend adjustments to speed (0.5-2), intensity (0.5-2), and complexity (minim
   // Content Importance Analysis
   async analyzeContentImportance(elements) {
     const cacheKey = `content-importance-${elements.map(e => e.id).join('-')}`;
-    const cached = CacheService.get(cacheKey);
+    const cached = cacheService.get(cacheKey);
     
     if (cached) return cached;
 
@@ -163,7 +163,7 @@ Consider: visual hierarchy, content type, user goals, and contextual relevance.`
         });
       });
 
-      CacheService.set(cacheKey, analysis, 600000); // 10 min cache
+      cacheService.set(cacheKey, analysis, 600000); // 10 min cache
       return analysis;
     } catch (error) {
       console.error('Content analysis failed:', error);
