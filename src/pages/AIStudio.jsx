@@ -56,7 +56,7 @@ export default function AIStudioPage() {
               <Code className="w-4 h-4 mr-2" />
               Code
             </TabsTrigger>
-          </Tabs>
+          </TabsList>
 
           <TabsContent value="content">
             <ContentGeneratorPro />
