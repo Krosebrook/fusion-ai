@@ -42,6 +42,7 @@ import MediaStudio from './pages/MediaStudio';
 import AICodeGen from './pages/AICodeGen';
 import IntegrationManager from './pages/IntegrationManager';
 import AgentManagement from './pages/AgentManagement';
+import CinematicDemo from './pages/CinematicDemo';
 import __Layout from './Layout.jsx';
 
 
@@ -90,6 +91,7 @@ export const PAGES = {
     "AICodeGen": AICodeGen,
     "IntegrationManager": IntegrationManager,
     "AgentManagement": AgentManagement,
+    "CinematicDemo": CinematicDemo,
 }
 
 export const pagesConfig = {
