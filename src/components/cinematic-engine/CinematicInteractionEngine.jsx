@@ -3,7 +3,7 @@
  * AI-powered system for dynamic UI behaviors and camera controls
  */
 
-import { AIService } from '@/components/services/AIService';
+import { aiService } from '@/components/services/AIService';
 import { cacheService } from '@/components/services/CacheService';
 
 class CinematicInteractionEngine {
@@ -90,7 +90,7 @@ Current Animation Profile:
 - Complexity: ${this.animationProfile.complexity}
 
 Recommend adjustments to speed (0.5-2), intensity (0.5-2), and complexity (minimal/balanced/rich).`,
-        response_json_schema: {
+          schema: {
           type: 'object',
           properties: {
             speed: { type: 'number' },
@@ -129,14 +129,14 @@ Recommend adjustments to speed (0.5-2), intensity (0.5-2), and complexity (minim
     if (cached) return cached;
 
     try {
-      const analysis = await AIService.invoke({
+      const analysis = await aiService.invokeLLM({
         prompt: `Analyze these UI elements and rank their importance for user attention:
 
 Elements:
 ${elements.map(e => `- ${e.id}: ${e.type} (${e.content?.substring(0, 100) || 'no content'})`).join('\n')}
 
 Consider: visual hierarchy, content type, user goals, and contextual relevance.`,
-        response_json_schema: {
+          schema: {
           type: 'object',
           properties: {
             rankings: {
@@ -199,7 +199,7 @@ Consider: visual hierarchy, content type, user goals, and contextual relevance.`
 
   async generateStorytellingSequence(context, userGoal) {
     try {
-      const narrative = await AIService.invoke({
+      const narrative = await aiService.invokeLLM({
         prompt: `Generate a UI storytelling sequence for this context:
 
 User Goal: ${userGoal}
@@ -207,7 +207,7 @@ Context: ${context}
 Available Elements: ${Array.from(this.contentPriority.keys()).join(', ')}
 
 Create a cinematic sequence that guides user attention through the interface.`,
-        response_json_schema: {
+          schema: {
           type: 'object',
           properties: {
             sequence: {
