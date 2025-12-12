@@ -75,7 +75,7 @@ class CinematicInteractionEngine {
     }
 
     try {
-      const analysis = await AIService.invoke({
+      const analysis = await aiService.invokeLLM({
         prompt: `Analyze user interaction patterns and recommend optimal UI animation profile:
         
 Behavior Data:
