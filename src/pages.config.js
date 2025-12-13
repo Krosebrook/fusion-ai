@@ -46,6 +46,10 @@ import CinematicDemo from './pages/CinematicDemo';
 import PromptLibrary from './pages/PromptLibrary';
 import AIStudio from './pages/AIStudio';
 import PromptHub from './pages/PromptHub';
+import MyGenerations from './pages/MyGenerations';
+import Profile from './pages/Profile';
+import Settings from './pages/Settings';
+import Share from './pages/Share';
 import __Layout from './Layout.jsx';
 
 
@@ -98,6 +102,10 @@ export const PAGES = {
     "PromptLibrary": PromptLibrary,
     "AIStudio": AIStudio,
     "PromptHub": PromptHub,
+    "MyGenerations": MyGenerations,
+    "Profile": Profile,
+    "Settings": Settings,
+    "Share": Share,
 }
 
 export const pagesConfig = {
