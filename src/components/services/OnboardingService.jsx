@@ -6,7 +6,6 @@
 import { base44 } from '@/api/base44Client';
 import { aiService } from './AIService';
 import { errorService } from './ErrorService';
-import { logger } from '../core/logger';
 
 class OnboardingService {
   constructor() {
@@ -73,7 +72,7 @@ class OnboardingService {
 
   async analyzeUserIntent(input) {
     try {
-      logger.info('Analyzing user intent for onboarding', { input });
+      console.log('Analyzing user intent for onboarding', input);
 
       const prompt = `Analyze this user profile and recommend a personalized onboarding experience:
 
@@ -148,9 +147,9 @@ Return JSON:
         personalization_data: profile.personalizationInsights,
       });
 
-      logger.info('Refined personalization', { userId, userType: profile.userType });
+      console.log('Refined personalization', userId, profile.userType);
     } catch (error) {
-      logger.error('Failed to refine personalization', { error, userId });
+      console.error('Failed to refine personalization', error, userId);
     }
   }
 
@@ -168,7 +167,7 @@ Return JSON:
         time_spent_seconds: timeSpent,
       });
 
-      logger.info('Onboarding completed', { userId, timeSpent });
+      console.log('Onboarding completed', userId, timeSpent);
     } catch (error) {
       errorService.handle(error, { action: 'completeOnboarding', userId }, 'medium');
     }
