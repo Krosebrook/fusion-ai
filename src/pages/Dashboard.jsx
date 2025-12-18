@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { useAuth } from "@/components/hooks/useAuth";
@@ -6,6 +6,8 @@ import { useEntityList } from "@/components/hooks/useEntity";
 import { LoadingScreen, EmptyState, GlassmorphicCard } from "@/components/ui-library";
 import { DashboardStats } from "@/components/dashboard/DashboardStats";
 import { AIToolsGrid } from "@/components/dashboard/AIToolsGrid";
+import { OnboardingWizard } from "@/components/onboarding/OnboardingWizard";
+import { onboardingService } from "@/components/services/OnboardingService";
 import { 
   Code, Plus, CheckCircle, AlertCircle, ArrowRight, Clock
 } from "lucide-react";
@@ -13,6 +15,8 @@ import { Button } from "@/components/ui/button";
 
 export default function DashboardPage() {
   const { user } = useAuth();
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [checkingOnboarding, setCheckingOnboarding] = useState(true);
   
   const { data: projects, isLoading, error } = useEntityList(
     'Project',
@@ -21,7 +25,22 @@ export default function DashboardPage() {
     10
   );
 
+  useEffect(() => {
+    checkOnboardingStatus();
+  }, [user]);
 
+  const checkOnboardingStatus = async () => {
+    try {
+      if (user) {
+        const onboarding = await onboardingService.getOrCreateOnboarding(user.id);
+        setShowOnboarding(onboarding.status === 'not_started');
+      }
+    } catch (error) {
+      console.error('Failed to check onboarding status', error);
+    } finally {
+      setCheckingOnboarding(false);
+    }
+  };
 
   const getStatusIcon = (status) => {
     switch (status) {
@@ -32,8 +51,18 @@ export default function DashboardPage() {
     }
   };
 
-  if (isLoading) return <LoadingScreen message="Loading dashboard..." />;
+  if (checkingOnboarding || isLoading) return <LoadingScreen message="Loading dashboard..." />;
   if (error) return <EmptyState icon={AlertCircle} title="Failed to load" description={error.message} />;
+
+  if (showOnboarding) {
+    return (
+      <OnboardingWizard
+        onComplete={() => {
+          setShowOnboarding(false);
+        }}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen p-10 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">

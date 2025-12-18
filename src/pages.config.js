@@ -1,111 +1,111 @@
-import Home from './pages/Home';
-import Dashboard from './pages/Dashboard';
-import Tools from './pages/Tools';
-import AppBuilder from './pages/AppBuilder';
-import ContentStudio from './pages/ContentStudio';
-import Analytics from './pages/Analytics';
-import Security from './pages/Security';
-import Commerce from './pages/Commerce';
-import Orchestration from './pages/Orchestration';
-import APIGenerator from './pages/APIGenerator';
-import MarketingSuite from './pages/MarketingSuite';
-import Workflows from './pages/Workflows';
-import Copilot from './pages/Copilot';
-import WebsiteCloner from './pages/WebsiteCloner';
-import Auth from './pages/Auth';
-import Onboarding from './pages/Onboarding';
-import Integrations from './pages/Integrations';
-import EnhancedAnalytics from './pages/EnhancedAnalytics';
-import AITemplates from './pages/AITemplates';
-import AIDeployment from './pages/AIDeployment';
+import AICodeAgent from './pages/AICodeAgent';
+import AICodeGen from './pages/AICodeGen';
 import AICodeReview from './pages/AICodeReview';
+import AIDeployment from './pages/AIDeployment';
 import AIDocumentation from './pages/AIDocumentation';
 import AIFeaturePlanner from './pages/AIFeaturePlanner';
-import AICodeAgent from './pages/AICodeAgent';
-import CICDAutomation from './pages/CICDAutomation';
-import CICDAnalytics from './pages/CICDAnalytics';
-import AccessControl from './pages/AccessControl';
-import Secrets from './pages/Secrets';
-import PipelineOptimization from './pages/PipelineOptimization';
 import AIPipelineGenerator from './pages/AIPipelineGenerator';
-import APIIntegration from './pages/APIIntegration';
-import AdvancedAnalytics from './pages/AdvancedAnalytics';
-import DeploymentCenter from './pages/DeploymentCenter';
-import SecretsVault from './pages/SecretsVault';
-import AgentOrchestrator from './pages/AgentOrchestrator';
-import ExtendedAnalytics from './pages/ExtendedAnalytics';
-import DeveloperTools from './pages/DeveloperTools';
-import APIDocumentation from './pages/APIDocumentation';
-import AgentOrchestration from './pages/AgentOrchestration';
-import IntegrationsHub from './pages/IntegrationsHub';
-import MediaStudio from './pages/MediaStudio';
-import AICodeGen from './pages/AICodeGen';
-import IntegrationManager from './pages/IntegrationManager';
-import AgentManagement from './pages/AgentManagement';
-import CinematicDemo from './pages/CinematicDemo';
-import PromptLibrary from './pages/PromptLibrary';
 import AIStudio from './pages/AIStudio';
-import PromptHub from './pages/PromptHub';
+import AITemplates from './pages/AITemplates';
+import APIDocumentation from './pages/APIDocumentation';
+import APIGenerator from './pages/APIGenerator';
+import APIIntegration from './pages/APIIntegration';
+import AccessControl from './pages/AccessControl';
+import AdvancedAnalytics from './pages/AdvancedAnalytics';
+import AgentManagement from './pages/AgentManagement';
+import AgentOrchestration from './pages/AgentOrchestration';
+import AgentOrchestrator from './pages/AgentOrchestrator';
+import Analytics from './pages/Analytics';
+import AppBuilder from './pages/AppBuilder';
+import Auth from './pages/Auth';
+import CICDAnalytics from './pages/CICDAnalytics';
+import CICDAutomation from './pages/CICDAutomation';
+import CinematicDemo from './pages/CinematicDemo';
+import Commerce from './pages/Commerce';
+import ContentStudio from './pages/ContentStudio';
+import Copilot from './pages/Copilot';
+import Dashboard from './pages/Dashboard';
+import DeploymentCenter from './pages/DeploymentCenter';
+import DeveloperTools from './pages/DeveloperTools';
+import EnhancedAnalytics from './pages/EnhancedAnalytics';
+import ExtendedAnalytics from './pages/ExtendedAnalytics';
+import Home from './pages/Home';
+import IntegrationManager from './pages/IntegrationManager';
+import Integrations from './pages/Integrations';
+import IntegrationsHub from './pages/IntegrationsHub';
+import MarketingSuite from './pages/MarketingSuite';
+import MediaStudio from './pages/MediaStudio';
 import MyGenerations from './pages/MyGenerations';
+import Onboarding from './pages/Onboarding';
+import Orchestration from './pages/Orchestration';
+import PipelineOptimization from './pages/PipelineOptimization';
 import Profile from './pages/Profile';
+import PromptHub from './pages/PromptHub';
+import PromptLibrary from './pages/PromptLibrary';
+import Secrets from './pages/Secrets';
+import SecretsVault from './pages/SecretsVault';
+import Security from './pages/Security';
 import Settings from './pages/Settings';
 import Share from './pages/Share';
+import Tools from './pages/Tools';
+import WebsiteCloner from './pages/WebsiteCloner';
+import Workflows from './pages/Workflows';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "Home": Home,
-    "Dashboard": Dashboard,
-    "Tools": Tools,
-    "AppBuilder": AppBuilder,
-    "ContentStudio": ContentStudio,
-    "Analytics": Analytics,
-    "Security": Security,
-    "Commerce": Commerce,
-    "Orchestration": Orchestration,
-    "APIGenerator": APIGenerator,
-    "MarketingSuite": MarketingSuite,
-    "Workflows": Workflows,
-    "Copilot": Copilot,
-    "WebsiteCloner": WebsiteCloner,
-    "Auth": Auth,
-    "Onboarding": Onboarding,
-    "Integrations": Integrations,
-    "EnhancedAnalytics": EnhancedAnalytics,
-    "AITemplates": AITemplates,
-    "AIDeployment": AIDeployment,
+    "AICodeAgent": AICodeAgent,
+    "AICodeGen": AICodeGen,
     "AICodeReview": AICodeReview,
+    "AIDeployment": AIDeployment,
     "AIDocumentation": AIDocumentation,
     "AIFeaturePlanner": AIFeaturePlanner,
-    "AICodeAgent": AICodeAgent,
-    "CICDAutomation": CICDAutomation,
-    "CICDAnalytics": CICDAnalytics,
-    "AccessControl": AccessControl,
-    "Secrets": Secrets,
-    "PipelineOptimization": PipelineOptimization,
     "AIPipelineGenerator": AIPipelineGenerator,
-    "APIIntegration": APIIntegration,
-    "AdvancedAnalytics": AdvancedAnalytics,
-    "DeploymentCenter": DeploymentCenter,
-    "SecretsVault": SecretsVault,
-    "AgentOrchestrator": AgentOrchestrator,
-    "ExtendedAnalytics": ExtendedAnalytics,
-    "DeveloperTools": DeveloperTools,
-    "APIDocumentation": APIDocumentation,
-    "AgentOrchestration": AgentOrchestration,
-    "IntegrationsHub": IntegrationsHub,
-    "MediaStudio": MediaStudio,
-    "AICodeGen": AICodeGen,
-    "IntegrationManager": IntegrationManager,
-    "AgentManagement": AgentManagement,
-    "CinematicDemo": CinematicDemo,
-    "PromptLibrary": PromptLibrary,
     "AIStudio": AIStudio,
-    "PromptHub": PromptHub,
+    "AITemplates": AITemplates,
+    "APIDocumentation": APIDocumentation,
+    "APIGenerator": APIGenerator,
+    "APIIntegration": APIIntegration,
+    "AccessControl": AccessControl,
+    "AdvancedAnalytics": AdvancedAnalytics,
+    "AgentManagement": AgentManagement,
+    "AgentOrchestration": AgentOrchestration,
+    "AgentOrchestrator": AgentOrchestrator,
+    "Analytics": Analytics,
+    "AppBuilder": AppBuilder,
+    "Auth": Auth,
+    "CICDAnalytics": CICDAnalytics,
+    "CICDAutomation": CICDAutomation,
+    "CinematicDemo": CinematicDemo,
+    "Commerce": Commerce,
+    "ContentStudio": ContentStudio,
+    "Copilot": Copilot,
+    "Dashboard": Dashboard,
+    "DeploymentCenter": DeploymentCenter,
+    "DeveloperTools": DeveloperTools,
+    "EnhancedAnalytics": EnhancedAnalytics,
+    "ExtendedAnalytics": ExtendedAnalytics,
+    "Home": Home,
+    "IntegrationManager": IntegrationManager,
+    "Integrations": Integrations,
+    "IntegrationsHub": IntegrationsHub,
+    "MarketingSuite": MarketingSuite,
+    "MediaStudio": MediaStudio,
     "MyGenerations": MyGenerations,
+    "Onboarding": Onboarding,
+    "Orchestration": Orchestration,
+    "PipelineOptimization": PipelineOptimization,
     "Profile": Profile,
+    "PromptHub": PromptHub,
+    "PromptLibrary": PromptLibrary,
+    "Secrets": Secrets,
+    "SecretsVault": SecretsVault,
+    "Security": Security,
     "Settings": Settings,
     "Share": Share,
+    "Tools": Tools,
+    "WebsiteCloner": WebsiteCloner,
+    "Workflows": Workflows,
 }
 
 export const pagesConfig = {
