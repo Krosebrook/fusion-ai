@@ -12,6 +12,7 @@ import { base44 } from "@/api/base44Client";
 import { AuthProvider } from "@/components/hooks/useAuth";
 import { GlobalErrorBoundary } from "@/components/core/GlobalErrorBoundary";
 import NotificationCenter from "./components/collaboration/NotificationCenter";
+import { AuroraBackground } from "./components/effects/AuroraBackground";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -250,14 +251,20 @@ function LayoutContent({ children }) {
   const stickyHeaderHeight = user ? '73px' : '113px';
 
   return (
-    <div style={{
+    <div className="aurora-shell" style={{
       minHeight: '100vh',
-      backgroundColor: '#0F172A',
-      color: '#FFFFFF',
+      position: 'relative',
+      overflow: 'hidden',
+      background: `
+        radial-gradient(1200px 800px at 20% 10%, rgba(138,92,255,0.18), transparent 60%),
+        radial-gradient(900px 600px at 80% 0%, rgba(255,59,212,0.14), transparent 55%),
+        linear-gradient(180deg, #04040c, #07071a)
+      `,
+      color: 'rgba(255,255,255,0.92)',
       fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif"
     }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700;800&display=swap');
         
         * {
           margin: 0;
@@ -266,13 +273,22 @@ function LayoutContent({ children }) {
         }
         
         body {
-          background: #0F172A;
-          color: #FFFFFF;
+          background: #060612;
+          color: rgba(255,255,255,0.92);
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+          font-size: 16px;
+          line-height: 1.5;
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
           overscroll-behavior: none;
           -webkit-tap-highlight-color: transparent;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+          font-family: 'Space Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+          font-weight: 700;
+          letter-spacing: -0.02em;
+          line-height: 1.1;
         }
 
         /* PWA Safe Areas */
@@ -888,6 +904,9 @@ function LayoutContent({ children }) {
           )}
         </nav>
       </div>
+
+      {/* Aurora Background Layer */}
+      <AuroraBackground />
 
       {/* Spacer for fixed nav */}
       <div style={{ height: stickyHeaderHeight }} />

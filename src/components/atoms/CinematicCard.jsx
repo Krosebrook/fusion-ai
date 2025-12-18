@@ -10,77 +10,61 @@ import { cn } from '@/lib/utils';
 
 export function CinematicCard({
   children,
-  variant = 'default',
+  variant = 'glass',
   hover = true,
   glow = false,
   glowColor = 'orange',
-  depth = 'md',
-  blur = 'md',
   className,
   ...props
 }) {
-  const depths = {
-    sm: tokens.shadows.sm,
-    md: tokens.shadows.md,
-    lg: tokens.shadows.lg,
-    xl: tokens.shadows.xl,
-  };
-
-  const blurs = {
-    sm: 'backdrop-blur-sm',
-    md: 'backdrop-blur-md',
-    lg: 'backdrop-blur-lg',
-    xl: 'backdrop-blur-xl',
-  };
-
   const glowColors = {
-    orange: tokens.shadows.glow.orange,
-    cyan: tokens.shadows.glow.cyan,
-    magenta: tokens.shadows.glow.magenta,
-    purple: tokens.shadows.glow.purple,
+    orange: '0 0 40px rgba(255,123,0,0.4)',
+    cyan: '0 0 40px rgba(36,255,215,0.4)',
+    magenta: '0 0 40px rgba(255,59,212,0.4)',
+    purple: '0 0 40px rgba(138,92,255,0.4)',
   };
 
   const variants = {
-    default: 'bg-white/5 border-white/10',
-    solid: 'bg-slate-800 border-slate-700',
-    gradient: 'bg-gradient-to-br from-white/10 to-white/5 border-white/10',
+    glass: 'bg-gradient-to-b from-white/[0.10] to-white/[0.07] border-white/[0.18]',
+    solid: 'bg-slate-800/90 border-slate-700/50',
+    minimal: 'bg-white/[0.05] border-white/[0.12]',
   };
 
   return (
     <motion.div
       className={cn(
-        'relative rounded-2xl border',
+        'relative rounded-[18px] border overflow-hidden',
+        'backdrop-blur-[18px] backdrop-saturate-[1.3]',
+        'shadow-[0_18px_55px_rgba(0,0,0,0.45)]',
         'transition-all duration-300',
-        blurs[blur],
         variants[variant],
-        hover && 'hover:border-white/20',
+        hover && 'hover:border-white/[0.30]',
         className
       )}
-      style={{
-        boxShadow: depths[depth],
-      }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={hover ? {
         y: -4,
-        boxShadow: glow ? glowColors[glowColor] : depths.xl,
-        transition: { duration: 0.2, ease: tokens.easing.easeOut },
+        boxShadow: glow ? glowColors[glowColor] : '0 22px 65px rgba(0,0,0,0.50)',
+        transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] },
       } : {}}
       transition={{
         duration: 0.5,
-        ease: tokens.easing.easeInOut,
+        ease: [0.4, 0, 0.2, 1],
       }}
       {...props}
     >
-      {/* Inner glow */}
-      {glow && (
-        <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
-      )}
+      {/* Inner glass highlight */}
+      <div 
+        className="absolute -top-1/2 -left-1/4 h-[140%] w-[140%] rotate-[-12deg] opacity-55 pointer-events-none"
+        style={{
+          background: 'radial-gradient(closest-side, rgba(255,255,255,0.18), transparent 70%)',
+        }}
+      />
       
-      {children}
-
-      {/* Corner accent */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-orange-500/20 to-transparent rounded-2xl blur-2xl -z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      <div className="relative z-10">
+        {children}
+      </div>
     </motion.div>
   );
 }

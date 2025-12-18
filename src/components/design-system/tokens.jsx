@@ -5,6 +5,32 @@
  */
 
 export const tokens = {
+  // Aurora Mesh + Glass UI Color System
+  colors: {
+    void: '#060612',
+    voidDeep: '#04040c',
+    voidLight: '#07071a',
+    teal: '#24ffd7',
+    tealDim: 'rgba(36,255,215,0.75)',
+    violet: '#8a5cff',
+    violetDim: 'rgba(138,92,255,0.70)',
+    magenta: '#ff3bd4',
+    magentaDim: 'rgba(255,59,212,0.62)',
+    white: 'rgba(255,255,255,0.92)',
+    whiteDim: 'rgba(255,255,255,0.78)',
+    whiteSubtle: 'rgba(255,255,255,0.55)',
+  },
+
+  // Glass morphism design tokens
+  glass: {
+    fill: 'rgba(255,255,255,0.10)',
+    fillSecondary: 'rgba(255,255,255,0.07)',
+    border: 'rgba(255,255,255,0.18)',
+    borderHover: 'rgba(255,255,255,0.30)',
+    shadow: '0 18px 55px rgba(0,0,0,0.45)',
+    blur: '18px',
+    saturation: '1.3',
+  },
   // Color System - Cinematic Palette
   colors: {
     // Primary Gradient

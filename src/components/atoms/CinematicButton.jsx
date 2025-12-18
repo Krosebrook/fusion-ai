@@ -11,9 +11,14 @@ import { cn } from '@/lib/utils';
 
 const variants = {
   primary: {
-    base: 'bg-gradient-to-r from-orange-500 to-pink-600 text-white',
+    base: 'bg-gradient-to-r from-orange-500 to-pink-600 text-white shadow-[0_4px_20px_rgba(255,123,0,0.3)]',
     hover: 'from-orange-600 to-pink-700',
-    glow: tokens.shadows.glow.orange,
+    glow: '0 6px 32px rgba(255,123,0,0.5)',
+  },
+  glass: {
+    base: 'bg-white/[0.10] border border-white/[0.22] text-white/90 backdrop-blur-[12px]',
+    hover: 'bg-white/[0.14] border-white/[0.35]',
+    glow: 'none',
   },
   secondary: {
     base: 'bg-white/5 border border-white/10 text-white backdrop-blur-md',
