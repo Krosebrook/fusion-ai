@@ -10,7 +10,7 @@ import { CinematicButton } from '../atoms/CinematicButton';
 import { CinematicInput } from '../atoms/CinematicInput';
 import { CinematicBadge } from '../atoms/CinematicBadge';
 import { 
-  X, Plus, Trash2, Code, Key, ArrowRight, Sparkles, Copy 
+  X, Plus, Trash2, Code, Key, ArrowRight, Sparkles, Copy, Lock, RefreshCw, Search 
 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
@@ -35,6 +35,8 @@ export function APINodeConfigPanel({ nodeData, onSave, onClose }) {
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [newHeaderKey, setNewHeaderKey] = useState('');
   const [newHeaderValue, setNewHeaderValue] = useState('');
+  const [showEndpointDiscovery, setShowEndpointDiscovery] = useState(false);
+  const [discoveredEndpoints, setDiscoveredEndpoints] = useState([]);
 
   const handleTemplateSelect = (connectorKey, actionId) => {
     const connector = apiConnectorTemplates[connectorKey];
@@ -96,6 +98,39 @@ export function APINodeConfigPanel({ nodeData, onSave, onClose }) {
       ...config,
       dataMapping: config.dataMapping.filter((_, i) => i !== index),
     });
+  };
+
+  const handleDiscoverEndpoints = async () => {
+    if (!config.endpoint) return;
+    
+    setShowEndpointDiscovery(true);
+    
+    // Simulate API discovery - in production, this would call OpenAPI/Swagger endpoints
+    try {
+      const baseUrl = new URL(config.endpoint).origin;
+      
+      // Mock discovered endpoints based on common patterns
+      const mockEndpoints = [
+        { path: '/api/v1/users', method: 'GET', description: 'List users' },
+        { path: '/api/v1/users', method: 'POST', description: 'Create user' },
+        { path: '/api/v1/users/{id}', method: 'GET', description: 'Get user by ID' },
+        { path: '/api/v1/users/{id}', method: 'PUT', description: 'Update user' },
+        { path: '/api/v1/users/{id}', method: 'DELETE', description: 'Delete user' },
+      ];
+      
+      setDiscoveredEndpoints(mockEndpoints.map(e => ({ ...e, url: `${baseUrl}${e.path}` })));
+    } catch (error) {
+      console.error('Failed to discover endpoints', error);
+    }
+  };
+
+  const handleSelectDiscoveredEndpoint = (endpoint) => {
+    setConfig({
+      ...config,
+      endpoint: endpoint.url,
+      method: endpoint.method,
+    });
+    setShowEndpointDiscovery(false);
   };
 
   const handleSave = () => {
@@ -175,6 +210,19 @@ export function APINodeConfigPanel({ nodeData, onSave, onClose }) {
 
           {/* Endpoint Configuration */}
           <div className="space-y-6 mb-8">
+            {/* Authentication Type */}
+            {selectedTemplate && apiConnectorTemplates[selectedTemplate.connector]?.authType === 'oauth2' && (
+              <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/30">
+                <div className="flex items-center gap-3 mb-2">
+                  <Lock className="w-5 h-5 text-blue-400" />
+                  <span className="text-white font-semibold">OAuth 2.0 Authentication</span>
+                </div>
+                <p className="text-sm text-white/70">
+                  This connector uses OAuth 2.0. Configure your OAuth credentials in the workflow settings.
+                </p>
+              </div>
+            )}
+
             <div>
               <Label className="text-white mb-2 block">Method</Label>
               <Select value={config.method} onValueChange={(v) => setConfig({ ...config, method: v })}>
@@ -191,13 +239,61 @@ export function APINodeConfigPanel({ nodeData, onSave, onClose }) {
               </Select>
             </div>
 
-            <CinematicInput
-              label="Endpoint URL"
-              placeholder="https://api.example.com/endpoint"
-              value={config.endpoint}
-              onChange={(e) => setConfig({ ...config, endpoint: e.target.value })}
-              hint="Use {{variable}} to inject workflow data"
-            />
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <Label className="text-white">Endpoint URL</Label>
+                <CinematicButton
+                  variant="glass"
+                  size="sm"
+                  icon={Search}
+                  onClick={handleDiscoverEndpoints}
+                  disabled={!config.endpoint}
+                >
+                  Discover
+                </CinematicButton>
+              </div>
+              <CinematicInput
+                placeholder="https://api.example.com/endpoint"
+                value={config.endpoint}
+                onChange={(e) => setConfig({ ...config, endpoint: e.target.value })}
+                hint="Use {{variable}} to inject workflow data"
+              />
+            </div>
+
+            {/* Endpoint Discovery Panel */}
+            <AnimatePresence>
+              {showEndpointDiscovery && discoveredEndpoints.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="space-y-2"
+                >
+                  <Label className="text-white text-sm">Discovered Endpoints</Label>
+                  <div className="max-h-48 overflow-y-auto space-y-2">
+                    {discoveredEndpoints.map((endpoint, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => handleSelectDiscoveredEndpoint(endpoint)}
+                        className="w-full text-left p-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-500/50 transition-all"
+                      >
+                        <div className="flex items-center gap-3">
+                          <CinematicBadge variant={endpoint.method === 'GET' ? 'success' : 'info'} size="sm">
+                            {endpoint.method}
+                          </CinematicBadge>
+                          <code className="text-sm text-white/80 font-mono flex-1">
+                            {endpoint.path}
+                          </code>
+                        </div>
+                        {endpoint.description && (
+                          <p className="text-xs text-white/60 mt-1">{endpoint.description}</p>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Headers */}
