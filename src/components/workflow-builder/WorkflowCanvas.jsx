@@ -15,7 +15,8 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import { motion } from 'framer-motion';
 import { CinematicButton } from '../atoms/CinematicButton';
-import { Plus, Play, Save, Settings } from 'lucide-react';
+import { Plus, Play, Save, Settings, Package, Layers } from 'lucide-react';
+import { toast } from 'sonner';
 import { TriggerNode } from './nodes/TriggerNode';
 import { AITaskNode } from './nodes/AITaskNode';
 import { APICallNode } from './nodes/APICallNode';
@@ -55,6 +56,9 @@ export function WorkflowCanvas({ workflow, onSave, onExecute }) {
   const [nodes, setNodes, onNodesChange] = useNodesState(workflow?.nodes || []);
   const [edges, setEdges, onEdgesChange] = useEdgesState(workflow?.edges || []);
   const [showNodeMenu, setShowNodeMenu] = useState(false);
+  const [selectedNodes, setSelectedNodes] = useState([]);
+  const [showComponentLibrary, setShowComponentLibrary] = useState(false);
+  const [showCreateComponent, setShowCreateComponent] = useState(false);
   const reactFlowWrapper = useRef(null);
 
   const onConnect = useCallback(
@@ -124,6 +128,24 @@ export function WorkflowCanvas({ workflow, onSave, onExecute }) {
     setShowNodeMenu(false);
   };
 
+  const onSelectionChange = useCallback(({ nodes }) => {
+    setSelectedNodes(nodes);
+  }, []);
+
+  const handleCreateComponent = () => {
+    if (selectedNodes.length === 0) {
+      toast.error('Select nodes to create a component');
+      return;
+    }
+
+    const selectedNodeIds = selectedNodes.map(n => n.id);
+    const selectedEdgesForComponent = edges.filter(e => 
+      selectedNodeIds.includes(e.source) && selectedNodeIds.includes(e.target)
+    );
+
+    setShowCreateComponent(true);
+  };
+
   const nodeMenuItems = [
     { type: 'trigger', label: 'Trigger', icon: '▶️' },
     { type: 'ai_task', label: 'AI Task', icon: '🤖' },
@@ -175,6 +197,25 @@ export function WorkflowCanvas({ workflow, onSave, onExecute }) {
 
           <CinematicButton
             variant="glass"
+            icon={Package}
+            onClick={() => setShowComponentLibrary(true)}
+          >
+            Library
+          </CinematicButton>
+
+          <CinematicButton
+            variant="glass"
+            icon={Layers}
+            onClick={handleCreateComponent}
+            disabled={selectedNodes.length === 0}
+          >
+            Component
+          </CinematicButton>
+
+          <div className="w-px h-8 bg-white/10" />
+
+          <CinematicButton
+            variant="glass"
             icon={Save}
             onClick={handleSave}
           >
@@ -202,6 +243,7 @@ export function WorkflowCanvas({ workflow, onSave, onExecute }) {
           onConnect={onConnect}
           onDrop={onDrop}
           onDragOver={onDragOver}
+          onSelectionChange={onSelectionChange}
           nodeTypes={nodeTypes}
           defaultEdgeOptions={defaultEdgeOptions}
           fitView
@@ -238,6 +280,25 @@ export function WorkflowCanvas({ workflow, onSave, onExecute }) {
           />
         </ReactFlow>
       </div>
+
+      {showComponentLibrary && (
+        <ComponentLibrary
+          onAddComponent={(comp) => console.log('Add', comp)}
+          onClose={() => setShowComponentLibrary(false)}
+        />
+      )}
+
+      {showCreateComponent && (
+        <CreateComponentDialog
+          selectedNodes={selectedNodes}
+          selectedEdges={edges.filter(e => 
+            selectedNodes.some(n => n.id === e.source) && 
+            selectedNodes.some(n => n.id === e.target)
+          )}
+          onClose={() => setShowCreateComponent(false)}
+          onCreated={() => setSelectedNodes([])}
+        />
+      )}
     </div>
   );
 }
