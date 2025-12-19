@@ -50,6 +50,7 @@ import Share from './pages/Share';
 import Tools from './pages/Tools';
 import WebsiteCloner from './pages/WebsiteCloner';
 import Workflows from './pages/Workflows';
+import WorkflowBuilder from './pages/WorkflowBuilder';
 import __Layout from './Layout.jsx';
 
 
@@ -106,6 +107,7 @@ export const PAGES = {
     "Tools": Tools,
     "WebsiteCloner": WebsiteCloner,
     "Workflows": Workflows,
+    "WorkflowBuilder": WorkflowBuilder,
 }
 
 export const pagesConfig = {
