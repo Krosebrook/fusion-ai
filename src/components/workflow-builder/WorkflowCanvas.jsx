@@ -22,6 +22,9 @@ import { APICallNode } from './nodes/APICallNode';
 import { ConditionNode } from './nodes/ConditionNode';
 import { TransformNode } from './nodes/TransformNode';
 import { EndNode } from './nodes/EndNode';
+import { ComponentNode } from './nodes/ComponentNode';
+import { ComponentLibrary } from './ComponentLibrary';
+import { CreateComponentDialog } from './CreateComponentDialog';
 
 const nodeTypes = {
   trigger: TriggerNode,
@@ -30,6 +33,7 @@ const nodeTypes = {
   condition: ConditionNode,
   transform: TransformNode,
   end: EndNode,
+  component: ComponentNode,
 };
 
 const defaultEdgeOptions = {
