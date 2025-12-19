@@ -131,6 +131,9 @@ class WorkflowExecutionService {
       case 'transform':
         return await this.executeTransform(node, context);
 
+      case 'component':
+        return await this.executeComponent(node, context);
+
       case 'end':
         return context;
 
@@ -427,6 +430,57 @@ class WorkflowExecutionService {
     } catch (error) {
       console.error('Failed to update workflow stats', error);
     }
+  }
+
+  async executeComponent(node, context) {
+    const componentId = node.data.componentId;
+    if (!componentId) {
+      throw new Error('Component ID not specified');
+    }
+
+    const component = await base44.entities.WorkflowComponent.filter({ id: componentId });
+    if (!component || component.length === 0) {
+      throw new Error('Component not found');
+    }
+
+    const componentDef = component[0];
+
+    // Map inputs
+    const componentContext = { ...context };
+    if (componentDef.inputs) {
+      componentDef.inputs.forEach((input) => {
+        if (context[input.name]) {
+          componentContext[input.name] = context[input.name];
+        } else if (input.default) {
+          componentContext[input.name] = input.default;
+        }
+      });
+    }
+
+    // Execute component nodes sequentially
+    let currentContext = componentContext;
+    
+    for (const compNode of componentDef.nodes) {
+      const nodeResult = await this.executeNode(compNode, currentContext);
+      currentContext = { ...currentContext, ...nodeResult };
+    }
+
+    // Extract outputs
+    const result = {};
+    if (componentDef.outputs) {
+      componentDef.outputs.forEach((output) => {
+        if (currentContext[output.name]) {
+          result[output.name] = currentContext[output.name];
+        }
+      });
+    }
+
+    // Increment usage count
+    await base44.entities.WorkflowComponent.update(componentId, {
+      usage_count: (componentDef.usage_count || 0) + 1,
+    });
+
+    return result;
   }
 }
 
