@@ -5,8 +5,9 @@
  */
 
 export const tokens = {
-  // Aurora Mesh + Glass UI Color System
+  // Color System - Aurora Mesh + Cinematic Palette
   colors: {
+    // Aurora colors
     void: '#060612',
     voidDeep: '#04040c',
     voidLight: '#07071a',
@@ -19,20 +20,7 @@ export const tokens = {
     white: 'rgba(255,255,255,0.92)',
     whiteDim: 'rgba(255,255,255,0.78)',
     whiteSubtle: 'rgba(255,255,255,0.55)',
-  },
-
-  // Glass morphism design tokens
-  glass: {
-    fill: 'rgba(255,255,255,0.10)',
-    fillSecondary: 'rgba(255,255,255,0.07)',
-    border: 'rgba(255,255,255,0.18)',
-    borderHover: 'rgba(255,255,255,0.30)',
-    shadow: '0 18px 55px rgba(0,0,0,0.45)',
-    blur: '18px',
-    saturation: '1.3',
-  },
-  // Color System - Cinematic Palette
-  colors: {
+    
     // Primary Gradient
     primary: {
       orange: '#FF7B00',
@@ -71,6 +59,17 @@ export const tokens = {
       bronze: '#CD7F32',
       neon: '#00FF88',
     },
+  },
+
+  // Glass morphism design tokens
+  glass: {
+    fill: 'rgba(255,255,255,0.10)',
+    fillSecondary: 'rgba(255,255,255,0.07)',
+    border: 'rgba(255,255,255,0.18)',
+    borderHover: 'rgba(255,255,255,0.30)',
+    shadow: '0 18px 55px rgba(0,0,0,0.45)',
+    blur: '18px',
+    saturation: '1.3',
   },
 
   // Typography - Studio Grade
