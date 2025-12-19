@@ -158,10 +158,28 @@ class WorkflowExecutionService {
   async executeAPICall(node, context) {
     const config = node.data.config;
     
-    const url = this.interpolateVariables(config.endpoint || '', context);
+    // Apply data mapping to context
+    const mappedData = this.applyDataMapping(config.dataMapping || [], context);
+    
+    // Interpolate endpoint with context
+    let url = this.interpolateVariables(config.endpoint || '', { ...context, ...mappedData });
+    
+    // Add query parameters
+    if (config.queryParams && Object.keys(config.queryParams).length > 0) {
+      const params = new URLSearchParams();
+      Object.entries(config.queryParams).forEach(([key, value]) => {
+        params.append(key, this.interpolateVariables(value, context));
+      });
+      url += `?${params.toString()}`;
+    }
+
     const method = config.method || 'GET';
-    const headers = config.headers || {};
-    const body = config.body ? this.interpolateVariables(JSON.stringify(config.body), context) : null;
+    
+    // Interpolate headers
+    const headers = {};
+    Object.entries(config.headers || {}).forEach(([key, value]) => {
+      headers[key] = this.interpolateVariables(value, context);
+    });
 
     const options = {
       method,
@@ -171,17 +189,98 @@ class WorkflowExecutionService {
       },
     };
 
-    if (body && method !== 'GET') {
-      options.body = body;
+    // Apply body with mapped data
+    if (config.body && method !== 'GET') {
+      const bodyData = this.interpolateObject(config.body, { ...context, ...mappedData });
+      options.body = JSON.stringify(bodyData);
     }
 
+    console.log('Executing API call', { url, method, headers, body: options.body });
+
     const response = await fetch(url, options);
-    const data = await response.json();
+    
+    let responseData;
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      responseData = await response.json();
+    } else {
+      responseData = await response.text();
+    }
+
+    // Apply response mapping if configured
+    const mappedResponse = this.applyResponseMapping(
+      config.responseMapping || [],
+      responseData
+    );
 
     return {
-      [config.outputVariable || 'api_result']: data,
+      [config.outputVariable || 'api_result']: responseData,
+      ...mappedResponse,
       api_status: response.status,
+      api_ok: response.ok,
     };
+  }
+
+  applyDataMapping(mappings, context) {
+    const result = {};
+    
+    mappings.forEach((mapping) => {
+      if (!mapping.from || !mapping.to) return;
+      
+      let value = context[mapping.from];
+      
+      // Apply transform if specified
+      if (mapping.transform) {
+        try {
+          const transformFunc = new Function('value', 'context', `return ${mapping.transform}`);
+          value = transformFunc(value, context);
+        } catch (error) {
+          console.error('Failed to apply transform', mapping.transform, error);
+        }
+      }
+      
+      result[mapping.to] = value;
+    });
+    
+    return result;
+  }
+
+  applyResponseMapping(mappings, response) {
+    const result = {};
+    
+    mappings.forEach((mapping) => {
+      if (!mapping.from || !mapping.to) return;
+      
+      // Simple path traversal (e.g., "data.user.name")
+      const value = this.getNestedValue(response, mapping.from);
+      result[mapping.to] = value;
+    });
+    
+    return result;
+  }
+
+  getNestedValue(obj, path) {
+    return path.split('.').reduce((acc, part) => acc?.[part], obj);
+  }
+
+  interpolateObject(obj, context) {
+    if (typeof obj === 'string') {
+      return this.interpolateVariables(obj, context);
+    }
+    
+    if (Array.isArray(obj)) {
+      return obj.map(item => this.interpolateObject(item, context));
+    }
+    
+    if (obj && typeof obj === 'object') {
+      const result = {};
+      Object.entries(obj).forEach(([key, value]) => {
+        result[key] = this.interpolateObject(value, context);
+      });
+      return result;
+    }
+    
+    return obj;
   }
 
   async executeCondition(node, context) {
