@@ -269,7 +269,7 @@ export function APINodeConfigPanel({ nodeData, onSave, onClose }) {
                 placeholder='{"key": "{{variable}}"}'
               />
               <p className="text-xs text-white/60 mt-2">
-                Use {{'{{'}}variable{{'}}'}} syntax to inject workflow data
+                Use {`{{variable}}`} syntax to inject workflow data
               </p>
             </div>
           )}
