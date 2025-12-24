@@ -15,8 +15,9 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import { motion } from 'framer-motion';
 import { CinematicButton } from '../atoms/CinematicButton';
-import { Plus, Play, Save, Settings, Package, Layers } from 'lucide-react';
+import { Plus, Play, Save, Settings, Package, Layers, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
+import { base44 } from '@/api/base44Client';
 import { TriggerNode } from './nodes/TriggerNode';
 import { AITaskNode } from './nodes/AITaskNode';
 import { APICallNode } from './nodes/APICallNode';
@@ -26,6 +27,7 @@ import { EndNode } from './nodes/EndNode';
 import { ComponentNode } from './nodes/ComponentNode';
 import { ComponentLibrary } from './ComponentLibrary';
 import { CreateComponentDialog } from './CreateComponentDialog';
+import { AIComponentBuilder } from './AIComponentBuilder';
 
 const nodeTypes = {
   trigger: TriggerNode,
@@ -59,6 +61,7 @@ export function WorkflowCanvas({ workflow, onSave, onExecute }) {
   const [selectedNodes, setSelectedNodes] = useState([]);
   const [showComponentLibrary, setShowComponentLibrary] = useState(false);
   const [showCreateComponent, setShowCreateComponent] = useState(false);
+  const [showAIBuilder, setShowAIBuilder] = useState(false);
   const reactFlowWrapper = useRef(null);
 
   const onConnect = useCallback(
@@ -146,6 +149,50 @@ export function WorkflowCanvas({ workflow, onSave, onExecute }) {
     setShowCreateComponent(true);
   };
 
+  const handleAIGenerate = async (componentDef) => {
+    try {
+      const created = await base44.entities.WorkflowComponent.create({
+        name: componentDef.name,
+        description: componentDef.description,
+        category: componentDef.category,
+        icon: componentDef.icon,
+        color: componentDef.color,
+        nodes: componentDef.nodes,
+        edges: componentDef.edges,
+        inputs: componentDef.inputs,
+        outputs: componentDef.outputs,
+        tags: componentDef.tags,
+        version: '1.0.0',
+        usage_count: 0,
+      });
+
+      toast.success(`Component "${componentDef.name}" created!`);
+      
+      // Add component to canvas
+      const position = {
+        x: Math.random() * 300,
+        y: Math.random() * 200,
+      };
+
+      const newNode = {
+        id: `component-${Date.now()}`,
+        type: 'component',
+        position,
+        data: {
+          label: componentDef.name,
+          componentId: created.id,
+          inputs: componentDef.inputs,
+          outputs: componentDef.outputs,
+        },
+      };
+
+      setNodes((nds) => nds.concat(newNode));
+    } catch (error) {
+      console.error('Failed to create AI component', error);
+      toast.error('Failed to create component');
+    }
+  };
+
   const nodeMenuItems = [
     { type: 'trigger', label: 'Trigger', icon: '▶️' },
     { type: 'ai_task', label: 'AI Task', icon: '🤖' },
@@ -194,6 +241,14 @@ export function WorkflowCanvas({ workflow, onSave, onExecute }) {
           </div>
 
           <div className="w-px h-8 bg-white/10" />
+
+          <CinematicButton
+            variant="glass"
+            icon={Sparkles}
+            onClick={() => setShowAIBuilder(true)}
+          >
+            AI Build
+          </CinematicButton>
 
           <CinematicButton
             variant="glass"
@@ -280,6 +335,13 @@ export function WorkflowCanvas({ workflow, onSave, onExecute }) {
           />
         </ReactFlow>
       </div>
+
+      {showAIBuilder && (
+        <AIComponentBuilder
+          onGenerate={handleAIGenerate}
+          onClose={() => setShowAIBuilder(false)}
+        />
+      )}
 
       {showComponentLibrary && (
         <ComponentLibrary
