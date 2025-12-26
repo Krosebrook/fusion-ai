@@ -150,28 +150,33 @@ export function WorkflowCanvas({ workflow, onSave, onExecute }) {
   };
 
   const handleAIGenerate = async (componentDef) => {
+    if (!componentDef?.name || !componentDef?.nodes) {
+      toast.error('Invalid component definition');
+      return;
+    }
+
     try {
       const created = await base44.entities.WorkflowComponent.create({
         name: componentDef.name,
-        description: componentDef.description,
-        category: componentDef.category,
-        icon: componentDef.icon,
-        color: componentDef.color,
+        description: componentDef.description || '',
+        category: componentDef.category || 'custom',
+        icon: componentDef.icon || '📦',
+        color: componentDef.color || 'from-purple-500 to-pink-600',
         nodes: componentDef.nodes,
-        edges: componentDef.edges,
-        inputs: componentDef.inputs,
-        outputs: componentDef.outputs,
-        tags: componentDef.tags,
+        edges: componentDef.edges || [],
+        inputs: componentDef.inputs || [],
+        outputs: componentDef.outputs || [],
+        tags: componentDef.tags || [],
         version: '1.0.0',
         usage_count: 0,
       });
 
-      toast.success(`Component "${componentDef.name}" created!`);
+      toast.success(`✨ "${componentDef.name}" added to canvas`);
       
-      // Add component to canvas
+      // Add component to canvas at center
       const position = {
-        x: Math.random() * 300,
-        y: Math.random() * 200,
+        x: 250 + Math.random() * 100,
+        y: 150 + Math.random() * 100,
       };
 
       const newNode = {
@@ -181,15 +186,16 @@ export function WorkflowCanvas({ workflow, onSave, onExecute }) {
         data: {
           label: componentDef.name,
           componentId: created.id,
-          inputs: componentDef.inputs,
-          outputs: componentDef.outputs,
+          inputs: componentDef.inputs || [],
+          outputs: componentDef.outputs || [],
         },
       };
 
       setNodes((nds) => nds.concat(newNode));
+      setShowAIBuilder(false);
     } catch (error) {
       console.error('Failed to create AI component', error);
-      toast.error('Failed to create component');
+      toast.error(`Failed to save component: ${error.message || 'Unknown error'}`);
     }
   };
 

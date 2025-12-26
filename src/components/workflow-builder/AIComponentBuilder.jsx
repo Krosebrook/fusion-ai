@@ -19,18 +19,36 @@ export function AIComponentBuilder({ onGenerate, onClose }) {
   const [generating, setGenerating] = useState(false);
   const [preview, setPreview] = useState(null);
 
+  const validateDescription = (desc) => {
+    const trimmed = desc.trim();
+    if (!trimmed) return { valid: false, error: 'Description cannot be empty' };
+    if (trimmed.length < 10) return { valid: false, error: 'Please provide more detail (minimum 10 characters)' };
+    if (trimmed.length > 1000) return { valid: false, error: 'Description too long (maximum 1000 characters)' };
+    return { valid: true };
+  };
+
   const handleGenerate = async () => {
-    if (!description.trim()) {
-      toast.error('Please describe what the component should do');
+    const validation = validateDescription(description);
+    if (!validation.valid) {
+      toast.error(validation.error);
       return;
     }
 
     setGenerating(true);
+    setPreview(null);
 
     try {
       const prompt = `You are a workflow automation expert. Generate a reusable workflow component based on this description:
 
 "${description}"
+
+CRITICAL REQUIREMENTS:
+- Create a logical flow with 2-5 nodes maximum
+- Each node must have a valid type: trigger, ai_task, api_call, condition, transform, or end
+- Position nodes in a clear left-to-right flow (x spacing: 200px, y spacing: 100px)
+- Start with x:0, y:100 for first node
+- Define clear, typed inputs and outputs
+- Use descriptive labels and realistic configurations
 
 Return a JSON object with this structure:
 {
@@ -86,11 +104,13 @@ Return a JSON object with this structure:
 
 Guidelines:
 - Create 2-5 nodes that accomplish the described task
-- Position nodes in a logical flow (x: 0-400, y: 0-300, spaced ~150px)
+- Position nodes in a logical flow (x: 0-400, y: 0-300, spaced ~200px horizontally)
+- First node should be at x:0, y:100
 - Use appropriate node types for the task
-- Define clear inputs and outputs
-- Add descriptive labels and configs
-- Choose relevant category and icon`;
+- Define clear inputs and outputs with proper types
+- Add descriptive labels and realistic configs
+- Choose relevant category and icon emoji
+- Add 2-4 relevant tags`;
 
       const result = await aiService.invokeLLM({
         prompt,
@@ -111,21 +131,62 @@ Guidelines:
         },
       });
 
-      setPreview(result);
-      toast.success('Component generated successfully!');
+      // Validate generated component
+      if (!result.name || !result.nodes || result.nodes.length === 0) {
+        throw new Error('Invalid component structure generated');
+      }
+
+      // Sanitize and validate nodes
+      const validNodeTypes = ['trigger', 'ai_task', 'api_call', 'condition', 'transform', 'end'];
+      const sanitizedNodes = result.nodes.filter(node => 
+        node && node.id && validNodeTypes.includes(node.type)
+      );
+
+      if (sanitizedNodes.length === 0) {
+        throw new Error('No valid nodes generated');
+      }
+
+      const sanitizedResult = {
+        ...result,
+        nodes: sanitizedNodes,
+        edges: result.edges || [],
+        inputs: result.inputs || [],
+        outputs: result.outputs || [],
+        tags: result.tags || [],
+      };
+
+      setPreview(sanitizedResult);
+      toast.success('✨ Component generated successfully!');
     } catch (error) {
       console.error('Failed to generate component', error);
-      toast.error('Failed to generate component. Please try again.');
+      const errorMsg = error.message?.includes('Invalid') 
+        ? error.message 
+        : 'AI generation failed. Please try rephrasing your description.';
+      toast.error(errorMsg);
     } finally {
       setGenerating(false);
     }
   };
 
   const handleUseComponent = () => {
-    if (preview) {
-      onGenerate(preview);
-      onClose();
+    if (!preview) {
+      toast.error('No component to use');
+      return;
     }
+
+    // Final validation before use
+    if (!preview.name || !preview.nodes || preview.nodes.length === 0) {
+      toast.error('Invalid component structure');
+      return;
+    }
+
+    onGenerate(preview);
+    onClose();
+  };
+
+  const handleRegenerate = () => {
+    setPreview(null);
+    handleGenerate();
   };
 
   return (
@@ -161,9 +222,13 @@ Guidelines:
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                       placeholder="Example: 'Fetch user data from an API, enrich it with AI-generated insights, then send a formatted notification email with the results.'"
-                      className="min-h-[200px] bg-white/5 border-white/10 text-white resize-none"
+                      className="min-h-[200px] bg-white/5 border-white/10 text-white resize-none focus:border-purple-500/50 transition-colors"
                       disabled={generating}
+                      maxLength={1000}
                     />
+                    <div className="text-right text-xs text-white/40 mt-1">
+                      {description.length}/1000 characters
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -277,7 +342,7 @@ Guidelines:
               {preview && (
                 <CinematicButton
                   variant="secondary"
-                  onClick={() => setPreview(null)}
+                  onClick={handleRegenerate}
                   disabled={generating}
                 >
                   Regenerate
