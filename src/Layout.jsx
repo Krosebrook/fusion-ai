@@ -917,8 +917,7 @@ function LayoutContent({ children }) {
         {children}
       </main>
 
-      {/* PWA Install Prompt */}
-      <PWAInstaller />
+
 
       {/* Footer */}
       <footer style={{
