@@ -13,6 +13,7 @@ import { QuickActionsWidget } from '@/components/dashboard/widgets/QuickActionsW
 import { RecentActivityWidget } from '@/components/dashboard/widgets/RecentActivityWidget';
 import { StatsWidget } from '@/components/dashboard/widgets/StatsWidget';
 import { RecommendationsWidget } from '@/components/dashboard/widgets/RecommendationsWidget';
+import { CustomPluginDashboard } from '@/components/plugins/CustomPluginDashboard';
 import { onboardingService } from '@/components/services/OnboardingService';
 import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
@@ -121,6 +122,11 @@ export default function DashboardPage() {
             console.log('Dashboard layout updated', layout);
           }}
         />
+
+        {/* Plugin Dashboards */}
+        <div className="mt-8">
+          <CustomPluginDashboard userId={user.id} />
+        </div>
       </div>
     </div>
   );
