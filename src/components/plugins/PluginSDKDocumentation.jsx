@@ -9,9 +9,9 @@ import { Code, BookOpen, Key, Webhook, Zap } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 
 const sdkDocs = `
-# FlashFusion Plugin SDK
+# FlashFusion Plugin SDK v2.0
 
-Build powerful extensions for FlashFusion workflows, pipelines, and analytics.
+Build powerful extensions for FlashFusion workflows, pipelines, and analytics with advanced capabilities.
 
 ## Getting Started
 
@@ -85,37 +85,123 @@ POST /api/pluginAPI/analytics
 }
 \`\`\`
 
+### Trigger Workflow
+\`\`\`javascript
+POST /api/pluginAPI/trigger-workflow
+{
+  "workflow_id": "wf_123",
+  "input_data": { "param1": "value1" },
+  "priority": "high"
+}
+\`\`\`
+
+### Update Pipeline
+\`\`\`javascript
+POST /api/pluginAPI/update-pipeline
+{
+  "pipeline_id": "pipe_123",
+  "updates": {
+    "build_command": "npm run build:optimized",
+    "notifications": true
+  }
+}
+\`\`\`
+
+### Security Scan
+\`\`\`javascript
+POST /api/pluginAPI/security-scan
+{
+  "target_type": "pipeline",
+  "target_id": "pipe_123",
+  "scan_type": "vulnerability"
+}
+\`\`\`
+
 ## Custom AI Model Integration
 
-### Define Your Model
-
-\`\`\`json
+### Standard Model Types
+\`\`\`javascript
+// Supported: "llm", "vision", "embedding", "classification"
 {
   "ai_model_config": {
     "model_type": "llm",
     "api_endpoint": "https://api.myplugin.com/generate",
-    "authentication_type": "api_key",
-    "input_schema": {
-      "type": "object",
-      "properties": {
-        "prompt": { "type": "string" },
-        "max_tokens": { "type": "number" }
-      }
+    "authentication_type": "api_key"
+  }
+}
+\`\`\`
+
+### Register Custom Model Type
+\`\`\`javascript
+POST /api/pluginAPI/register-ai-model
+{
+  "model_type": "custom",
+  "custom_type_name": "code_optimizer",
+  "capabilities": ["code-refactoring", "bug-detection", "performance-tuning"],
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "code": { "type": "string" },
+      "language": { "type": "string" },
+      "optimization_level": { "type": "string", "enum": ["basic", "aggressive"] }
     },
-    "output_schema": {
-      "type": "object",
-      "properties": {
-        "text": { "type": "string" },
-        "tokens": { "type": "number" }
-      }
+    "required": ["code", "language"]
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "optimized_code": { "type": "string" },
+      "improvements": { "type": "array" },
+      "performance_gain": { "type": "number" }
     }
   }
 }
 \`\`\`
 
 ### Usage in Workflows
+Your AI model appears in AI Task nodes with your custom capabilities exposed to users.
 
-Once installed, your AI model appears as an option in AI Task nodes, allowing users to select it alongside built-in models.
+## Custom UI Components
+
+### Define Embeddable UI
+\`\`\`json
+{
+  "ui_components": [
+    {
+      "id": "config-dashboard",
+      "name": "Configuration Dashboard",
+      "type": "dashboard",
+      "iframe_url": "https://plugin.com/dashboard.html",
+      "height": "600px",
+      "sandbox_permissions": ["allow-forms"]
+    },
+    {
+      "id": "settings-form",
+      "name": "Settings Form",
+      "type": "config_form",
+      "iframe_url": "https://plugin.com/config.html",
+      "height": "400px"
+    }
+  ]
+}
+\`\`\`
+
+### Communication Protocol
+\`\`\`javascript
+// Plugin receives config on load
+window.addEventListener('message', (event) => {
+  if (event.data.type === 'CONFIG') {
+    const { config, pluginId } = event.data;
+    // Initialize your UI with config
+  }
+});
+
+// Send data back to FlashFusion
+window.parent.postMessage({
+  type: 'UPDATE',
+  data: { setting1: 'value1' }
+}, '*');
+\`\`\`
 
 ## Webhooks
 
@@ -161,6 +247,8 @@ Request only the permissions you need:
 | \`write_pipelines\` | Modify pipeline configurations |
 | \`read_analytics\` | Access execution logs and analytics |
 | \`ai_model_access\` | Register as custom AI model provider |
+| \`security_analysis\` | Trigger security scans and access results |
+| \`custom_ui\` | Embed custom UI components in FlashFusion |
 
 ## Security Best Practices
 

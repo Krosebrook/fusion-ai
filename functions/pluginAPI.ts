@@ -53,11 +53,23 @@ Deno.serve(async (req) => {
       case 'execute-workflow':
         return await handleExecuteWorkflow(base44, permissions, body);
       
+      case 'trigger-workflow':
+        return await handleTriggerWorkflow(base44, permissions, body);
+      
       case 'pipelines':
         return await handlePipelines(base44, permissions, body);
       
+      case 'update-pipeline':
+        return await handleUpdatePipeline(base44, permissions, body);
+      
+      case 'security-scan':
+        return await handleSecurityScan(base44, permissions, body);
+      
       case 'analytics':
         return await handleAnalytics(base44, permissions, body);
+      
+      case 'register-ai-model':
+        return await handleRegisterAIModel(base44, installation, plugin, body);
       
       case 'webhook':
         return await handleWebhook(base44, installation, body);
@@ -190,6 +202,103 @@ async function handleAnalytics(base44, permissions, body) {
   };
 
   return Response.json({ executions, stats });
+}
+
+async function handleTriggerWorkflow(base44, permissions, body) {
+  if (!permissions.execute_workflows) {
+    return Response.json({ error: 'Permission denied' }, { status: 403 });
+  }
+
+  const { workflow_id, input_data, priority } = body;
+
+  if (!workflow_id) {
+    return Response.json({ error: 'workflow_id required' }, { status: 400 });
+  }
+
+  const execution = await base44.asServiceRole.entities.WorkflowExecution.create({
+    workflow_id,
+    status: 'running',
+    input_data: input_data || {},
+    trigger_data: { source: 'plugin', priority: priority || 'normal' },
+    started_at: new Date().toISOString(),
+  });
+
+  return Response.json({ 
+    success: true,
+    execution_id: execution.id,
+    status: 'triggered'
+  });
+}
+
+async function handleUpdatePipeline(base44, permissions, body) {
+  if (!permissions.write_pipelines) {
+    return Response.json({ error: 'Permission denied' }, { status: 403 });
+  }
+
+  const { pipeline_id, updates } = body;
+
+  if (!pipeline_id || !updates) {
+    return Response.json({ error: 'pipeline_id and updates required' }, { status: 400 });
+  }
+
+  await base44.asServiceRole.entities.PipelineConfig.update(pipeline_id, updates);
+
+  return Response.json({ success: true, message: 'Pipeline updated' });
+}
+
+async function handleSecurityScan(base44, permissions, body) {
+  if (!permissions.security_analysis) {
+    return Response.json({ error: 'Permission denied' }, { status: 403 });
+  }
+
+  const { target_type, target_id, scan_type } = body;
+
+  if (!target_type || !target_id || !scan_type) {
+    return Response.json({ 
+      error: 'target_type, target_id, and scan_type required' 
+    }, { status: 400 });
+  }
+
+  const scan = await base44.asServiceRole.entities.SecurityScan.create({
+    scan_type,
+    target_type,
+    target_id,
+    status: 'queued',
+    triggered_by: 'plugin',
+  });
+
+  return Response.json({ 
+    success: true,
+    scan_id: scan.id,
+    status: 'queued'
+  });
+}
+
+async function handleRegisterAIModel(base44, installation, plugin, body) {
+  const { model_type, custom_type_name, capabilities, input_schema, output_schema } = body;
+
+  if (!model_type) {
+    return Response.json({ error: 'model_type required' }, { status: 400 });
+  }
+
+  const updatedConfig = {
+    ...plugin.ai_model_config,
+    model_type,
+    custom_type_name: custom_type_name || model_type,
+    capabilities: capabilities || [],
+    input_schema: input_schema || {},
+    output_schema: output_schema || {},
+  };
+
+  await base44.asServiceRole.entities.Plugin.update(plugin.id, {
+    ai_model_config: updatedConfig,
+  });
+
+  return Response.json({ 
+    success: true,
+    message: 'AI model type registered',
+    model_type: custom_type_name || model_type
+  });
 }
 
 async function handleWebhook(base44, installation, body) {
