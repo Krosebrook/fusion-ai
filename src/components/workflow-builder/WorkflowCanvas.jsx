@@ -369,6 +369,18 @@ export function WorkflowCanvas({ workflow, onSave, onExecute }) {
         />
       )}
 
+      {showOptimization && (
+        <OptimizationPanel
+          workflow={{ nodes, edges }}
+          onApplyOptimization={(optimizedWorkflow) => {
+            setNodes(optimizedWorkflow.nodes || []);
+            setEdges(optimizedWorkflow.edges || []);
+            setShowOptimization(false);
+          }}
+          onClose={() => setShowOptimization(false)}
+        />
+      )}
+
       {showCreateComponent && (
         <CreateComponentDialog
           selectedNodes={selectedNodes}

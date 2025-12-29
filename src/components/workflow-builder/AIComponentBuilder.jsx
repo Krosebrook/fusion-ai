@@ -178,6 +178,23 @@ Guidelines:
     }
   };
 
+  const analyzeOptimizations = async (component) => {
+    try {
+      const analysis = await workflowOptimizationService.analyzeWorkflow(component);
+      setOptimizations(analysis);
+      
+      // Auto-show if there are high/critical suggestions
+      const hasCritical = analysis.suggestions?.some(s => 
+        s.severity === 'high' || s.severity === 'critical'
+      );
+      if (hasCritical) {
+        setShowOptimizations(true);
+      }
+    } catch (error) {
+      console.error('Failed to analyze optimizations', error);
+    }
+  };
+
   const handleUseComponent = () => {
     if (!preview) {
       toast.error('No component to use');
