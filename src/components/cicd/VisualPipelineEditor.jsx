@@ -17,6 +17,7 @@ import 'reactflow/dist/style.css';
 import { motion } from 'framer-motion';
 import { CinematicButton } from '../atoms/CinematicButton';
 import { CinematicCard } from '../atoms/CinematicCard';
+import { SecurityAnalysisPanel } from './SecurityAnalysisPanel';
 import {
   Plus,
   Sparkles,
@@ -28,6 +29,7 @@ import {
   Rocket,
   Server,
   Code,
+  Shield,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { aiService } from '../services/AIService';
@@ -44,6 +46,7 @@ export function VisualPipelineEditor({ projectType = 'react', onSave }) {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [generating, setGenerating] = useState(false);
+  const [showSecurity, setShowSecurity] = useState(false);
 
   const onConnect = useCallback(
     (params) => {
@@ -219,6 +222,13 @@ Return JSON:
             >
               {generating ? 'Generating...' : 'AI Generate'}
             </CinematicButton>
+            <CinematicButton
+              variant="outline"
+              icon={Shield}
+              onClick={() => setShowSecurity(true)}
+            >
+              Security Scan
+            </CinematicButton>
             <CinematicButton variant="primary" icon={Save} onClick={handleSave} glow>
               Save Pipeline
             </CinematicButton>
@@ -253,6 +263,18 @@ Return JSON:
           <MiniMap className="!bg-slate-900/90 !border-white/20" nodeColor="#8a5cff" />
         </ReactFlow>
       </div>
+
+      {showSecurity && (
+        <SecurityAnalysisPanel
+          pipeline={{ nodes, edges, triggers: {}, projectType }}
+          onClose={() => setShowSecurity(false)}
+          onApplyFix={(updatedPipeline) => {
+            setNodes(updatedPipeline.nodes || nodes);
+            setEdges(updatedPipeline.edges || edges);
+            setShowSecurity(false);
+          }}
+        />
+      )}
     </div>
   );
 }

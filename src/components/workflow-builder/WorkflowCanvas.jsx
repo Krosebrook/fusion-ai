@@ -15,7 +15,7 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import { motion } from 'framer-motion';
 import { CinematicButton } from '../atoms/CinematicButton';
-import { Plus, Play, Save, Settings, Package, Layers, Sparkles, TrendingUp } from 'lucide-react';
+import { Plus, Play, Save, Settings, Package, Layers, Sparkles, TrendingUp, BarChart3 } from 'lucide-react';
 import { toast } from 'sonner';
 import { base44 } from '@/api/base44Client';
 import { TriggerNode } from './nodes/TriggerNode';
@@ -29,6 +29,7 @@ import { ComponentLibrary } from './ComponentLibrary';
 import { CreateComponentDialog } from './CreateComponentDialog';
 import { AIComponentBuilder } from './AIComponentBuilder';
 import { OptimizationPanel } from './OptimizationPanel';
+import { WorkflowAnalyticsPanel } from './WorkflowAnalyticsPanel';
 
 const nodeTypes = {
   trigger: TriggerNode,
@@ -64,6 +65,7 @@ export function WorkflowCanvas({ workflow, onSave, onExecute }) {
   const [showCreateComponent, setShowCreateComponent] = useState(false);
   const [showAIBuilder, setShowAIBuilder] = useState(false);
   const [showOptimization, setShowOptimization] = useState(false);
+  const [showAnalytics, setShowAnalytics] = useState(false);
   const reactFlowWrapper = useRef(null);
 
   const onConnect = useCallback(
@@ -286,6 +288,15 @@ export function WorkflowCanvas({ workflow, onSave, onExecute }) {
             Optimize
           </CinematicButton>
 
+          <CinematicButton
+            variant="glass"
+            icon={BarChart3}
+            onClick={() => setShowAnalytics(true)}
+            disabled={!workflow?.id}
+          >
+            Analytics
+          </CinematicButton>
+
           <div className="w-px h-8 bg-white/10" />
 
           <CinematicButton
@@ -378,6 +389,17 @@ export function WorkflowCanvas({ workflow, onSave, onExecute }) {
             setShowOptimization(false);
           }}
           onClose={() => setShowOptimization(false)}
+        />
+      )}
+
+      {showAnalytics && workflow?.id && (
+        <WorkflowAnalyticsPanel
+          workflow={workflow}
+          onClose={() => setShowAnalytics(false)}
+          onApplyFix={() => {
+            setShowAnalytics(false);
+            onSave?.({ nodes, edges });
+          }}
         />
       )}
 
