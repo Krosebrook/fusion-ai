@@ -18,6 +18,9 @@ import { motion } from 'framer-motion';
 import { CinematicButton } from '../atoms/CinematicButton';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { SecurityAnalysisPanel } from './SecurityAnalysisPanel';
+import { DependencySecurityPanel } from './DependencySecurityPanel';
+import { DynamicSecretsManager } from './DynamicSecretsManager';
+import { RealTimeSecurityMonitor } from './RealTimeSecurityMonitor';
 import {
   Plus,
   Sparkles,
@@ -47,6 +50,8 @@ export function VisualPipelineEditor({ projectType = 'react', onSave }) {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [generating, setGenerating] = useState(false);
   const [showSecurity, setShowSecurity] = useState(false);
+  const [dynamicSecrets, setDynamicSecrets] = useState([]);
+  const [mockPipelineRunId, setMockPipelineRunId] = useState(null);
 
   const onConnect = useCallback(
     (params) => {
@@ -265,15 +270,40 @@ Return JSON:
       </div>
 
       {showSecurity && (
-        <SecurityAnalysisPanel
-          pipeline={{ nodes, edges, triggers: {}, projectType }}
-          onClose={() => setShowSecurity(false)}
-          onApplyFix={(updatedPipeline) => {
-            setNodes(updatedPipeline.nodes || nodes);
-            setEdges(updatedPipeline.edges || edges);
-            setShowSecurity(false);
-          }}
-        />
+        <div className="absolute top-0 right-0 w-[500px] h-full bg-slate-900/95 border-l border-white/10 z-50 overflow-y-auto p-6 space-y-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-white">Security Suite</h2>
+            <CinematicButton
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowSecurity(false)}
+            >
+              Close
+            </CinematicButton>
+          </div>
+
+          <DependencySecurityPanel
+            pipelineId="test_pipeline"
+            dependencies={{
+              react: "^17.0.0",
+              lodash: "^4.17.15",
+              express: "^4.16.0"
+            }}
+          />
+
+          <DynamicSecretsManager
+            pipelineId="test_pipeline"
+            secrets={dynamicSecrets}
+            onSecretsChange={setDynamicSecrets}
+          />
+
+          <RealTimeSecurityMonitor
+            pipelineRunId={mockPipelineRunId}
+            onSecurityIssue={(stage) => {
+              toast.error(`Security issue in ${stage.name}`);
+            }}
+          />
+        </div>
       )}
     </div>
   );
