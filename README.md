@@ -26,9 +26,11 @@ FlashFusion is a comprehensive, AI-powered development platform that revolutioni
 
 This repository includes comprehensive documentation:
 
+- **[AUDIT_SUMMARY.md](./AUDIT_SUMMARY.md)** - 🌟 Quick overview of audit findings and next steps
+- **[RECOMMENDATIONS_2025.md](./RECOMMENDATIONS_2025.md)** - 2025 best practices & implementation roadmap
+- **[CODEBASE_AUDIT.md](./CODEBASE_AUDIT.md)** - Detailed technical audit and analysis
 - **[PRODUCT_REQUIREMENTS_DOCUMENT.md](./PRODUCT_REQUIREMENTS_DOCUMENT.md)** - Complete PRD with specifications
 - **[FEATURE_MAP.md](./FEATURE_MAP.md)** - Visual feature map and categorization  
-- **[CODEBASE_AUDIT.md](./CODEBASE_AUDIT.md)** - Technical audit and recommendations
 - **[QUICK_REFERENCE.md](./QUICK_REFERENCE.md)** - Navigation guide
 
 ## 🛠️ Technology Stack
@@ -138,7 +140,21 @@ fusion-ai/
 | Testing | C- | ⚠️ Needs Work |
 | Documentation | B- | ⚠️ Needs Work |
 
-See [CODEBASE_AUDIT.md](./CODEBASE_AUDIT.md) for detailed analysis.
+See [AUDIT_SUMMARY.md](./AUDIT_SUMMARY.md) for quick overview or [CODEBASE_AUDIT.md](./CODEBASE_AUDIT.md) for detailed analysis.
+
+### 🎯 Priority Improvements
+
+**Critical (Immediate):**
+- 🔴 Implement testing infrastructure (Vitest + React Testing Library + Playwright)
+- 🔴 Set up CI/CD pipelines (GitHub Actions)
+- 🔴 Restrict CORS for production environments
+
+**High Priority (Month 1):**
+- 🟡 Expand documentation (Diátaxis framework)
+- 🟡 TypeScript migration (frontend)
+- 🟡 Security hardening (CSP, scanning automation)
+
+See [RECOMMENDATIONS_2025.md](./RECOMMENDATIONS_2025.md) for complete roadmap and implementation details.
 
 ## 🎨 Design System
 
