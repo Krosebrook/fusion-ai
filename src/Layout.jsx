@@ -13,6 +13,7 @@ import { AuthProvider } from "@/components/hooks/useAuth";
 import { GlobalErrorBoundary } from "@/components/core/GlobalErrorBoundary";
 import NotificationCenter from "./components/collaboration/NotificationCenter";
 import { AuroraBackground } from "./components/effects/AuroraBackground";
+import { PWAInstaller } from "./components/pwa/PWAInstaller";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -915,6 +916,9 @@ function LayoutContent({ children }) {
       <main>
         {children}
       </main>
+
+      {/* PWA Install Prompt */}
+      <PWAInstaller />
 
       {/* Footer */}
       <footer style={{

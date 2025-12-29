@@ -49,8 +49,9 @@ import Settings from './pages/Settings';
 import Share from './pages/Share';
 import Tools from './pages/Tools';
 import WebsiteCloner from './pages/WebsiteCloner';
-import Workflows from './pages/Workflows';
 import WorkflowBuilder from './pages/WorkflowBuilder';
+import Workflows from './pages/Workflows';
+import VisualPipelineBuilder from './pages/VisualPipelineBuilder';
 import __Layout from './Layout.jsx';
 
 
@@ -106,8 +107,9 @@ export const PAGES = {
     "Share": Share,
     "Tools": Tools,
     "WebsiteCloner": WebsiteCloner,
-    "Workflows": Workflows,
     "WorkflowBuilder": WorkflowBuilder,
+    "Workflows": Workflows,
+    "VisualPipelineBuilder": VisualPipelineBuilder,
 }
 
 export const pagesConfig = {

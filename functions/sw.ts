@@ -59,23 +59,41 @@ self.addEventListener('fetch', (event) => {
           }
           return response;
         })
-        .catch(() => caches.match(request))
+        .catch(() => {
+          // Check if this is an AI service request
+          if (url.includes('/integrations/Core/InvokeLLM') || url.includes('/ai/')) {
+            return new Response(
+              JSON.stringify({
+                status: 'offline',
+                message: 'You are offline. Reconnect to access AI features.',
+                error: 'NETWORK_ERROR'
+              }),
+              {
+                status: 503,
+                headers: { 'Content-Type': 'application/json' }
+              }
+            );
+          }
+          return caches.match(request);
+        })
     );
     return;
   }
 
-  // Cache-first for static assets
+  // Stale-while-revalidate for static assets
   if (isMatch(url, CACHE_STRATEGIES.cacheFirst) || isMatch(url, CACHE_STRATEGIES.static)) {
     event.respondWith(
       caches.match(request).then((cached) => {
-        if (cached) return cached;
-        return fetch(request).then((response) => {
+        const fetchPromise = fetch(request).then((response) => {
           if (response.ok) {
             const clone = response.clone();
             caches.open(STATIC_CACHE).then((cache) => cache.put(request, clone));
           }
           return response;
-        });
+        }).catch(() => cached);
+        
+        // Return cached immediately, update in background
+        return cached || fetchPromise;
       })
     );
     return;
