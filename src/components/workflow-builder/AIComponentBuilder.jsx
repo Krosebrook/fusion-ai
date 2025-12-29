@@ -8,10 +8,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { CinematicButton } from '../atoms/CinematicButton';
 import { CinematicInput } from '../atoms/CinematicInput';
-import { Sparkles, Loader2, Zap, ArrowRight } from 'lucide-react';
+import { Sparkles, Loader2, Zap, ArrowRight, TrendingUp, ChevronDown } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { aiService } from '../services/AIService';
+import { workflowOptimizationService } from '../services/WorkflowOptimizationService';
 import { toast } from 'sonner';
 
 export function AIComponentBuilder({ onGenerate, onClose }) {
@@ -21,6 +22,8 @@ export function AIComponentBuilder({ onGenerate, onClose }) {
   const [feedbackMode, setFeedbackMode] = useState(false);
   const [feedback, setFeedback] = useState('');
   const [feedbackHistory, setFeedbackHistory] = useState([]);
+  const [optimizations, setOptimizations] = useState(null);
+  const [showOptimizations, setShowOptimizations] = useState(false);
 
   const validateDescription = (desc) => {
     const trimmed = desc.trim();
@@ -159,6 +162,10 @@ Guidelines:
       };
 
       setPreview(sanitizedResult);
+      
+      // Auto-analyze for optimizations
+      analyzeOptimizations(sanitizedResult);
+      
       toast.success('✨ Component generated successfully!');
     } catch (error) {
       console.error('Failed to generate component', error);
@@ -280,6 +287,10 @@ Return the COMPLETE UPDATED component as JSON with the same structure as before.
       setPreview(sanitizedResult);
       setFeedback('');
       setFeedbackMode(false);
+      
+      // Re-analyze for optimizations
+      analyzeOptimizations(sanitizedResult);
+      
       toast.success('✨ Component refined successfully!');
     } catch (error) {
       console.error('Failed to refine component', error);
@@ -506,6 +517,45 @@ Return the COMPLETE UPDATED component as JSON with the same structure as before.
                           ))}
                         </div>
                       </div>
+
+                      {/* Optimization Insights */}
+                      {optimizations && optimizations.suggestions?.length > 0 && (
+                        <div className="mt-6 pt-4 border-t border-white/10">
+                          <button
+                            onClick={() => setShowOptimizations(!showOptimizations)}
+                            className="w-full flex items-center justify-between p-3 rounded-lg bg-gradient-to-r from-cyan-500/10 to-blue-600/10 border border-cyan-500/20 hover:border-cyan-500/40 transition-colors"
+                          >
+                            <div className="flex items-center gap-3">
+                              <TrendingUp className="w-5 h-5 text-cyan-400" />
+                              <div className="text-left">
+                                <div className="text-white font-semibold text-sm">
+                                  {optimizations.suggestions.length} Optimization{optimizations.suggestions.length !== 1 ? 's' : ''} Available
+                                </div>
+                                <div className="text-white/60 text-xs">
+                                  Score: {optimizations.score}/100
+                                </div>
+                              </div>
+                            </div>
+                            <ChevronDown className={`w-5 h-5 text-white/40 transition-transform ${showOptimizations ? 'rotate-180' : ''}`} />
+                          </button>
+                          
+                          {showOptimizations && (
+                            <div className="mt-3 space-y-2">
+                              {optimizations.suggestions.slice(0, 3).map((suggestion, i) => (
+                                <div key={i} className="p-3 rounded-lg bg-white/5 border border-white/10">
+                                  <div className="flex items-start gap-2">
+                                    <span className="text-lg">{workflowOptimizationService.getCategoryIcon(suggestion.category)}</span>
+                                    <div className="flex-1">
+                                      <div className="text-white/80 text-sm font-medium">{suggestion.title}</div>
+                                      <div className="text-white/50 text-xs mt-1">{suggestion.estimated_impact}</div>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </CinematicCard>
                   </motion.div>
                 </AnimatePresence>

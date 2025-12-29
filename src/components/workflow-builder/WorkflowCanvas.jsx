@@ -15,7 +15,7 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import { motion } from 'framer-motion';
 import { CinematicButton } from '../atoms/CinematicButton';
-import { Plus, Play, Save, Settings, Package, Layers, Sparkles } from 'lucide-react';
+import { Plus, Play, Save, Settings, Package, Layers, Sparkles, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
 import { base44 } from '@/api/base44Client';
 import { TriggerNode } from './nodes/TriggerNode';
@@ -28,6 +28,7 @@ import { ComponentNode } from './nodes/ComponentNode';
 import { ComponentLibrary } from './ComponentLibrary';
 import { CreateComponentDialog } from './CreateComponentDialog';
 import { AIComponentBuilder } from './AIComponentBuilder';
+import { OptimizationPanel } from './OptimizationPanel';
 
 const nodeTypes = {
   trigger: TriggerNode,
@@ -62,6 +63,7 @@ export function WorkflowCanvas({ workflow, onSave, onExecute }) {
   const [showComponentLibrary, setShowComponentLibrary] = useState(false);
   const [showCreateComponent, setShowCreateComponent] = useState(false);
   const [showAIBuilder, setShowAIBuilder] = useState(false);
+  const [showOptimization, setShowOptimization] = useState(false);
   const reactFlowWrapper = useRef(null);
 
   const onConnect = useCallback(
@@ -271,6 +273,17 @@ export function WorkflowCanvas({ workflow, onSave, onExecute }) {
             disabled={selectedNodes.length === 0}
           >
             Component
+          </CinematicButton>
+
+          <div className="w-px h-8 bg-white/10" />
+
+          <CinematicButton
+            variant="glass"
+            icon={TrendingUp}
+            onClick={() => setShowOptimization(true)}
+            disabled={nodes.length === 0}
+          >
+            Optimize
           </CinematicButton>
 
           <div className="w-px h-8 bg-white/10" />
