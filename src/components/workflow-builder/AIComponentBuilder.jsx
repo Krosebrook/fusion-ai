@@ -18,6 +18,9 @@ export function AIComponentBuilder({ onGenerate, onClose }) {
   const [description, setDescription] = useState('');
   const [generating, setGenerating] = useState(false);
   const [preview, setPreview] = useState(null);
+  const [feedbackMode, setFeedbackMode] = useState(false);
+  const [feedback, setFeedback] = useState('');
+  const [feedbackHistory, setFeedbackHistory] = useState([]);
 
   const validateDescription = (desc) => {
     const trimmed = desc.trim();
@@ -186,7 +189,107 @@ Guidelines:
 
   const handleRegenerate = () => {
     setPreview(null);
+    setFeedbackHistory([]);
+    setFeedbackMode(false);
     handleGenerate();
+  };
+
+  const handleRefineComponent = async () => {
+    const validation = validateDescription(feedback);
+    if (!validation.valid) {
+      toast.error(validation.error);
+      return;
+    }
+
+    setGenerating(true);
+
+    try {
+      const refinementPrompt = `You are a workflow automation expert refining an existing component based on user feedback.
+
+CURRENT COMPONENT:
+${JSON.stringify(preview, null, 2)}
+
+USER FEEDBACK:
+"${feedback}"
+
+FEEDBACK HISTORY:
+${feedbackHistory.map((h, i) => `${i + 1}. ${h.feedback} → Applied`).join('\n')}
+
+Apply the requested changes to the component. You can:
+- Add/remove/modify nodes
+- Add/remove/modify edges (connections)
+- Update node configurations (prompts, endpoints, conditions, etc.)
+- Modify inputs/outputs
+- Update metadata (name, description, tags)
+- Add error handling
+- Change logic flow
+
+CRITICAL REQUIREMENTS:
+- Maintain component structure validity
+- Each node must have valid type: trigger, ai_task, api_call, condition, transform, or end
+- Preserve good positioning (x spacing: 200px, y spacing: 100px)
+- Keep 2-7 nodes maximum for clarity
+- Ensure all referenced nodes in edges exist
+- Make changes that align with the feedback
+
+Return the COMPLETE UPDATED component as JSON with the same structure as before.`;
+
+      const result = await aiService.invokeLLM({
+        prompt: refinementPrompt,
+        schema: {
+          type: 'object',
+          properties: {
+            name: { type: 'string' },
+            description: { type: 'string' },
+            category: { type: 'string' },
+            icon: { type: 'string' },
+            color: { type: 'string' },
+            nodes: { type: 'array' },
+            edges: { type: 'array' },
+            inputs: { type: 'array' },
+            outputs: { type: 'array' },
+            tags: { type: 'array' },
+          },
+        },
+      });
+
+      // Validate refined component
+      if (!result.name || !result.nodes || result.nodes.length === 0) {
+        throw new Error('Invalid refined component structure');
+      }
+
+      const validNodeTypes = ['trigger', 'ai_task', 'api_call', 'condition', 'transform', 'end'];
+      const sanitizedNodes = result.nodes.filter(node => 
+        node && node.id && validNodeTypes.includes(node.type)
+      );
+
+      if (sanitizedNodes.length === 0) {
+        throw new Error('No valid nodes after refinement');
+      }
+
+      const sanitizedResult = {
+        ...result,
+        nodes: sanitizedNodes,
+        edges: result.edges || [],
+        inputs: result.inputs || [],
+        outputs: result.outputs || [],
+        tags: result.tags || [],
+      };
+
+      setFeedbackHistory([...feedbackHistory, { feedback, timestamp: new Date().toISOString() }]);
+      setPreview(sanitizedResult);
+      setFeedback('');
+      setFeedbackMode(false);
+      toast.success('✨ Component refined successfully!');
+    } catch (error) {
+      console.error('Failed to refine component', error);
+      const errorMsg = error.message?.includes('Invalid') 
+        ? error.message 
+        : 'AI refinement failed. Please try rephrasing your feedback.';
+      toast.error(errorMsg);
+    } finally {
+      setGenerating(false);
+    }
   };
 
   return (
@@ -253,6 +356,83 @@ Guidelines:
                     animate={{ opacity: 1, y: 0 }}
                     className="space-y-6"
                   >
+                    {/* Feedback History */}
+                    {feedbackHistory.length > 0 && (
+                      <CinematicCard variant="glass" className="p-4">
+                        <div className="text-white/60 text-sm font-semibold mb-3 flex items-center gap-2">
+                          <Sparkles className="w-4 h-4" />
+                          Refinement History ({feedbackHistory.length})
+                        </div>
+                        <div className="space-y-2">
+                          {feedbackHistory.map((item, i) => (
+                            <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-white/5 border border-white/10">
+                              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                                {i + 1}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-white/80 text-sm">{item.feedback}</p>
+                                <p className="text-white/40 text-xs mt-1">Applied successfully</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </CinematicCard>
+                    )}
+
+                    {/* Feedback Mode Input */}
+                    {feedbackMode && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                      >
+                        <CinematicCard variant="glass" className="p-6">
+                          <Label className="text-white mb-2 block">How should we refine this component?</Label>
+                          <Textarea
+                            value={feedback}
+                            onChange={(e) => setFeedback(e.target.value)}
+                            placeholder="Example: 'Add error handling to the API call node' or 'Connect node A to node B only if the condition is true' or 'Change the output to include user email'"
+                            className="min-h-[120px] bg-white/5 border-white/10 text-white resize-none focus:border-purple-500/50 transition-colors"
+                            disabled={generating}
+                            maxLength={1000}
+                          />
+                          <div className="text-right text-xs text-white/40 mt-1">
+                            {feedback.length}/1000 characters
+                          </div>
+                          <div className="flex gap-3 mt-4">
+                            <CinematicButton
+                              variant="ghost"
+                              onClick={() => {
+                                setFeedbackMode(false);
+                                setFeedback('');
+                              }}
+                              disabled={generating}
+                              size="sm"
+                            >
+                              Cancel
+                            </CinematicButton>
+                            <CinematicButton
+                              variant="primary"
+                              icon={Zap}
+                              onClick={handleRefineComponent}
+                              disabled={generating || !feedback.trim()}
+                              size="sm"
+                              glow
+                            >
+                              {generating ? (
+                                <>
+                                  <Loader2 className="w-4 h-4 animate-spin" />
+                                  Refining...
+                                </>
+                              ) : (
+                                'Apply Refinement'
+                              )}
+                            </CinematicButton>
+                          </div>
+                        </CinematicCard>
+                      </motion.div>
+                    )}
+
                     {/* Component Preview */}
                     <CinematicCard variant="glass" className="p-6">
                       <div className="flex items-start gap-4 mb-4">
@@ -339,33 +519,45 @@ Guidelines:
               Cancel
             </CinematicButton>
             <div className="flex gap-3">
-              {preview && (
+              {preview && !feedbackMode && (
+                <>
+                  <CinematicButton
+                    variant="outline"
+                    icon={Sparkles}
+                    onClick={() => setFeedbackMode(true)}
+                    disabled={generating}
+                  >
+                    Refine with AI
+                  </CinematicButton>
+                  <CinematicButton
+                    variant="secondary"
+                    onClick={handleRegenerate}
+                    disabled={generating}
+                  >
+                    Start Over
+                  </CinematicButton>
+                </>
+              )}
+              {!feedbackMode && (
                 <CinematicButton
-                  variant="secondary"
-                  onClick={handleRegenerate}
-                  disabled={generating}
+                  variant="primary"
+                  icon={preview ? ArrowRight : Zap}
+                  onClick={preview ? handleUseComponent : handleGenerate}
+                  disabled={generating || (!preview && !description.trim())}
+                  glow
                 >
-                  Regenerate
+                  {generating ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Generating...
+                    </>
+                  ) : preview ? (
+                    'Use Component'
+                  ) : (
+                    'Generate Component'
+                  )}
                 </CinematicButton>
               )}
-              <CinematicButton
-                variant="primary"
-                icon={preview ? ArrowRight : Zap}
-                onClick={preview ? handleUseComponent : handleGenerate}
-                disabled={generating || (!preview && !description.trim())}
-                glow
-              >
-                {generating ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Generating...
-                  </>
-                ) : preview ? (
-                  'Use Component'
-                ) : (
-                  'Generate Component'
-                )}
-              </CinematicButton>
             </div>
           </div>
         </CinematicCard>
