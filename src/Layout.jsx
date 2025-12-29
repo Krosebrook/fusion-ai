@@ -237,10 +237,15 @@ function LayoutContent({ children }) {
         description: "Full API reference and SDK for external integrations.",
       },
       {
-        title: "Integrations Hub",
-        href: createPageUrl("IntegrationsHub"),
-        description: "27 deep integrations: n8n, Zapier, Notion, Google, GitHub, OpenAI, Claude, and more.",
-      },
+          title: "Integrations Hub",
+          href: createPageUrl("IntegrationsHub"),
+          description: "27 deep integrations: n8n, Zapier, Notion, Google, GitHub, OpenAI, Claude, and more.",
+        },
+        {
+          title: "Plugin Marketplace",
+          href: createPageUrl("PluginMarketplace"),
+          description: "Extend with third-party tools and custom AI models via plugin architecture.",
+        },
   ];
 
   const navItems = user ? authenticatedNavItems : publicNavItems;

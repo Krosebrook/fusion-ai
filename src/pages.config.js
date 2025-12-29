@@ -54,6 +54,7 @@ import WorkflowBuilder from './pages/WorkflowBuilder';
 import Workflows from './pages/Workflows';
 import PluginMarketplace from './pages/PluginMarketplace';
 import MyPlugins from './pages/MyPlugins';
+import PluginSDK from './pages/PluginSDK';
 import __Layout from './Layout.jsx';
 
 
@@ -114,6 +115,7 @@ export const PAGES = {
     "Workflows": Workflows,
     "PluginMarketplace": PluginMarketplace,
     "MyPlugins": MyPlugins,
+    "PluginSDK": PluginSDK,
 }
 
 export const pagesConfig = {
