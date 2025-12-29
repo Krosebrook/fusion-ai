@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CinematicButton } from '../components/atoms/CinematicButton';
-import { VisualPipelineEditor } from '../components/cicd/VisualPipelineEditor';
+import { VisualPipelineEditor } from '@/components/cicd/VisualPipelineEditor';
 import { ArrowLeft, Rocket } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { Link } from 'react-router-dom';
