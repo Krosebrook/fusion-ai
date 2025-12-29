@@ -48,10 +48,12 @@ import Security from './pages/Security';
 import Settings from './pages/Settings';
 import Share from './pages/Share';
 import Tools from './pages/Tools';
+import VisualPipelineBuilder from './pages/VisualPipelineBuilder';
 import WebsiteCloner from './pages/WebsiteCloner';
 import WorkflowBuilder from './pages/WorkflowBuilder';
 import Workflows from './pages/Workflows';
-import VisualPipelineBuilder from './pages/VisualPipelineBuilder';
+import PluginMarketplace from './pages/PluginMarketplace';
+import MyPlugins from './pages/MyPlugins';
 import __Layout from './Layout.jsx';
 
 
@@ -106,10 +108,12 @@ export const PAGES = {
     "Settings": Settings,
     "Share": Share,
     "Tools": Tools,
+    "VisualPipelineBuilder": VisualPipelineBuilder,
     "WebsiteCloner": WebsiteCloner,
     "WorkflowBuilder": WorkflowBuilder,
     "Workflows": Workflows,
-    "VisualPipelineBuilder": VisualPipelineBuilder,
+    "PluginMarketplace": PluginMarketplace,
+    "MyPlugins": MyPlugins,
 }
 
 export const pagesConfig = {
