@@ -56,6 +56,7 @@ import PluginMarketplace from './pages/PluginMarketplace';
 import MyPlugins from './pages/MyPlugins';
 import PluginSDK from './pages/PluginSDK';
 import PluginDashboards from './pages/PluginDashboards';
+import PluginDevStudio from './pages/PluginDevStudio';
 import __Layout from './Layout.jsx';
 
 
@@ -118,6 +119,7 @@ export const PAGES = {
     "MyPlugins": MyPlugins,
     "PluginSDK": PluginSDK,
     "PluginDashboards": PluginDashboards,
+    "PluginDevStudio": PluginDevStudio,
 }
 
 export const pagesConfig = {

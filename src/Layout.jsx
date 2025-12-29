@@ -246,6 +246,11 @@ function LayoutContent({ children }) {
           href: createPageUrl("PluginMarketplace"),
           description: "Extend with third-party tools and custom AI models via plugin architecture.",
         },
+        {
+          title: "Plugin Dev Studio",
+          href: createPageUrl("PluginDevStudio"),
+          description: "Build and test plugins with boilerplate generator and debugging tools.",
+        },
   ];
 
   const navItems = user ? authenticatedNavItems : publicNavItems;
