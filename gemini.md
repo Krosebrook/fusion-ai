@@ -52,6 +52,7 @@ This document provides comprehensive guidance for using Google's Gemini AI model
 
 ```typescript
 import { GoogleGenerativeAI } from 'npm:@google/generative-ai';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 
 const genAI = new GoogleGenerativeAI(Deno.env.get('GEMINI_API_KEY')!);
 
