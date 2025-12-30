@@ -203,6 +203,267 @@ window.parent.postMessage({
 }, '*');
 \`\`\`
 
+## Real-Time Analytics Dashboard
+
+Plugins can provide real-time analytics dashboards with streaming data visualization:
+
+### Analytics Configuration
+
+\`\`\`json
+{
+  "analytics_config": {
+    "enabled": true,
+    "realtime_streaming": true,
+    "streaming_endpoint": "wss://your-plugin.com/analytics/stream",
+    "data_sources": [
+      {
+        "id": "api_requests",
+        "name": "API Requests",
+        "endpoint": "/metrics/requests",
+        "refresh_interval_ms": 5000
+      }
+    ],
+    "metrics": [
+      {
+        "id": "request_count",
+        "name": "Request Count",
+        "type": "counter",
+        "unit": "requests",
+        "aggregation": "sum"
+      },
+      {
+        "id": "response_time",
+        "name": "Response Time",
+        "type": "timeseries",
+        "unit": "ms",
+        "aggregation": "avg"
+      }
+    ],
+    "visualizations": [
+      {
+        "id": "requests_over_time",
+        "name": "Requests Over Time",
+        "chart_type": "line",
+        "metric_ids": ["request_count"],
+        "layout": { "width": 600, "height": 300 }
+      }
+    ]
+  }
+}
+\`\`\`
+
+### Streaming Protocols
+
+**WebSocket:** Send real-time metric updates
+\`\`\`javascript
+// Server-side (plugin)
+wss.on('connection', (ws) => {
+  setInterval(() => {
+    ws.send(JSON.stringify({
+      metrics: [
+        { id: 'request_count', value: getCurrentCount() },
+        { id: 'response_time', value: getAvgResponseTime() }
+      ]
+    }));
+  }, 1000);
+});
+\`\`\`
+
+**Server-Sent Events (SSE):** Alternative streaming method
+\`\`\`javascript
+// Server-side (plugin)
+app.get('/analytics/stream', (req, res) => {
+  res.setHeader('Content-Type', 'text/event-stream');
+  setInterval(() => {
+    res.write(\`data: \${JSON.stringify({ metrics: [...] })}\\n\\n\`);
+  }, 1000);
+});
+\`\`\`
+
+---
+
+## Project Management Integration
+
+Enable two-way sync with external PM tools (Jira, Asana, Linear, etc.):
+
+### PM Integration Configuration
+
+\`\`\`json
+{
+  "pm_integration": {
+    "enabled": true,
+    "provider": "jira",
+    "sync_config": {
+      "bidirectional": true,
+      "sync_interval_minutes": 5,
+      "entity_mappings": [
+        {
+          "flashfusion_entity": "Task",
+          "external_resource": "issue",
+          "field_mappings": {
+            "title": "summary",
+            "description": "description",
+            "status": "status.name",
+            "assignee": "assignee.displayName"
+          },
+          "sync_direction": "bidirectional"
+        }
+      ],
+      "conflict_resolution": "latest_wins",
+      "webhook_events": ["issue.created", "issue.updated"]
+    },
+    "auth_config": {
+      "type": "oauth2",
+      "oauth_scopes": ["read:jira-work", "write:jira-work"]
+    }
+  }
+}
+\`\`\`
+
+### PM Sync API Endpoints
+
+**Import from external tool:**
+\`\`\`javascript
+POST /pm/import
+Headers: Authorization: Bearer <api_key>
+Body: {
+  "resource": "issue",
+  "field_mappings": { ... }
+}
+Response: {
+  "items": [
+    { "id": "PROJ-123", "summary": "Task title", ... }
+  ]
+}
+\`\`\`
+
+**Export to external tool:**
+\`\`\`javascript
+POST /pm/export
+Headers: Authorization: Bearer <api_key>
+Body: {
+  "resource": "issue",
+  "items": [
+    { "summary": "New task", "description": "Details", ... }
+  ]
+}
+Response: { "count": 5, "created": ["PROJ-124", ...] }
+\`\`\`
+
+### Conflict Resolution Strategies
+
+- **latest_wins:** Most recent modification wins
+- **external_wins:** External PM tool data takes precedence
+- **flashfusion_wins:** FlashFusion data takes precedence
+- **manual_review:** Flag conflicts for user resolution
+
+---
+
+## Custom AI Model Registration
+
+Register custom generative AI models for use in Media Studio and Workflow stages:
+
+### AI Model Configuration
+
+\`\`\`json
+{
+  "ai_model_config": {
+    "model_type": "custom",
+    "custom_type_name": "SuperGen AI",
+    "api_endpoint": "https://api.supergen.ai/v1/generate",
+    "authentication_type": "api_key",
+    "capabilities": [
+      "image_generation",
+      "video_generation",
+      "text_generation"
+    ],
+    "streaming_supported": true,
+    "max_tokens": 8000,
+    "pricing_per_request": 0.05,
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "prompt": { "type": "string" },
+        "style": { "type": "string", "enum": ["photorealistic", "artistic", "cinematic"] },
+        "resolution": { "type": "string", "enum": ["1024x1024", "1920x1080", "4K"] }
+      },
+      "required": ["prompt"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "media_url": { "type": "string" },
+        "metadata": { "type": "object" }
+      }
+    }
+  }
+}
+\`\`\`
+
+### Model Invocation from Media Studio
+
+Users can select your model from the Media Studio:
+
+\`\`\`javascript
+// FlashFusion will call your endpoint:
+POST https://api.supergen.ai/v1/generate
+Headers: {
+  "Authorization": "Bearer <user_plugin_api_key>",
+  "Content-Type": "application/json"
+}
+Body: {
+  "prompt": "A cinematic sunset over mountains",
+  "style": "photorealistic",
+  "resolution": "4K"
+}
+
+// Your response:
+{
+  "media_url": "https://cdn.supergen.ai/generated/abc123.jpg",
+  "metadata": {
+    "generation_time_ms": 2500,
+    "model_version": "v2.1",
+    "seed": 42
+  }
+}
+\`\`\`
+
+### Model Invocation from Workflows
+
+Custom AI models appear as workflow nodes:
+
+\`\`\`javascript
+// Workflow node configuration
+{
+  "type": "ai_generation",
+  "plugin_id": "your-plugin-id",
+  "model": "SuperGen AI",
+  "input": {
+    "prompt": "{{workflow.variables.prompt}}",
+    "style": "cinematic",
+    "resolution": "1920x1080"
+  },
+  "output_variable": "generated_media"
+}
+\`\`\`
+
+### Streaming Response Support
+
+For long-running generations, support streaming:
+
+\`\`\`javascript
+// SSE streaming response
+POST /generate?stream=true
+
+// Stream progress updates:
+data: {"status": "processing", "progress": 0.25}
+data: {"status": "processing", "progress": 0.50}
+data: {"status": "processing", "progress": 0.75}
+data: {"status": "complete", "media_url": "...", "progress": 1.0}
+\`\`\`
+
+---
+
 ## Webhooks
 
 Receive real-time events from FlashFusion:
