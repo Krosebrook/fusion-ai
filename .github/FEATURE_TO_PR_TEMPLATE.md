@@ -20,7 +20,7 @@
 ### 1. **Context-First Execution**
 - Always begin with **Step 0: Context Scan**
 - Use existing repo patterns (don't invent new ones)
-- Respect `.github/copilot-instructions.md` and related docs
+- Respect existing documentation and established conventions
 
 ### 2. **Clarify Before Coding**
 - If **anything** is ambiguous → **Ask up to 5 targeted questions**
@@ -457,7 +457,7 @@ npm run dev
 
 **Known Constraints**:
 - ⚠️ **No tests yet**: Testing infrastructure needs to be added (planned in RECOMMENDATIONS_2025.md)
-- ⚠️ **JavaScript only**: No TypeScript in frontend (migration planned for Q2 2026)
+- ⚠️ **Limited TypeScript**: Backend functions use TypeScript, but frontend is JavaScript-only (full migration planned for Q2 2026)
 - ⚠️ **Security considerations**: See CODEBASE_AUDIT.md and DEBUG.md
 - ⚠️ **100+ ESLint warnings**: Ongoing cleanup
 
@@ -472,7 +472,6 @@ npm run preview   # Preview production build
 ```
 
 **Required Reading** (check these first):
-- `.github/copilot-instructions.md` (if exists)
 - `CODEBASE_AUDIT.md` (detailed technical audit)
 - `RECOMMENDATIONS_2025.md` (2025 best practices)
 - `PRODUCT_REQUIREMENTS_DOCUMENT.md` (PRD specifications)
