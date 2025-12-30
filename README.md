@@ -24,14 +24,29 @@ FlashFusion is a comprehensive, AI-powered development platform that revolutioni
 
 ## 📚 Documentation
 
-This repository includes comprehensive documentation:
+### Getting Started
+- **[📖 Complete Documentation](./docs/)** - Comprehensive guides and tutorials
+- **[🚀 Getting Started Tutorial](./docs/tutorials/getting-started.md)** - Your first steps with FlashFusion
+- **[🔧 GitHub Integration Guide](./docs/how-to-guides/integrate-github.md)** - Connect and automate with GitHub
+- **[🏗️ Architecture Explained](./docs/explanation/architecture.md)** - Deep dive into system design
 
-- **[AUDIT_SUMMARY.md](./AUDIT_SUMMARY.md)** - 🌟 Quick overview of audit findings and next steps
-- **[RECOMMENDATIONS_2025.md](./RECOMMENDATIONS_2025.md)** - 2025 best practices & implementation roadmap
-- **[CODEBASE_AUDIT.md](./CODEBASE_AUDIT.md)** - Detailed technical audit and analysis
-- **[PRODUCT_REQUIREMENTS_DOCUMENT.md](./PRODUCT_REQUIREMENTS_DOCUMENT.md)** - Complete PRD with specifications
-- **[FEATURE_MAP.md](./FEATURE_MAP.md)** - Visual feature map and categorization  
-- **[QUICK_REFERENCE.md](./QUICK_REFERENCE.md)** - Navigation guide
+### Development Resources
+- **[CHANGELOG.md](./CHANGELOG.md)** - Version history and changes
+- **[CONTRIBUTING.md](./CONTRIBUTING.md)** - How to contribute
+- **[TESTING.md](./TESTING.md)** - Testing guidelines and best practices
+- **[ROADMAP.md](./ROADMAP.md)** - Future plans (MVP to V1.0+)
+- **[.env.example](./.env.example)** - Environment configuration template
+
+### AI Integration Guides
+- **[agents.md](./agents.md)** - AI agents documentation
+- **[claude.md](./claude.md)** - Claude AI integration guide
+- **[gemini.md](./gemini.md)** - Gemini AI integration guide
+
+### Project Management
+- **[SECURITY.md](./SECURITY.md)** - Security policy and vulnerability reporting
+- **[CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)** - Community guidelines
+- **[AUDIT_SUMMARY.md](./AUDIT_SUMMARY.md)** - Codebase audit overview
+- **[FEATURE_MAP.md](./FEATURE_MAP.md)** - Complete feature inventory
 
 ## 🛠️ Technology Stack
 
@@ -76,7 +91,39 @@ npm run lint:fix   # Auto-fix lint issues
 npm run typecheck  # Type checking
 ```
 
-## 🏗️ Project Structure
+## 🏗️ Architecture Overview
+
+### System Layers
+
+```
+┌─────────────────────────────────────────────────────┐
+│                  CLIENT LAYER                        │
+│  React 18.2 • React Router • TanStack Query • UI    │
+│  ├─ 59 Pages                                        │
+│  ├─ 47 Component Systems                            │
+│  └─ Cinema-Grade Design System                      │
+└─────────────────────────────────────────────────────┘
+                          ↓
+┌─────────────────────────────────────────────────────┐
+│                   CORE LAYER                         │
+│  API Client • Security • Performance • Cache        │
+│  ├─ Retry Logic & Caching (5min TTL)               │
+│  ├─ XSS Prevention & Rate Limiting                 │
+│  └─ Performance Monitoring                          │
+└─────────────────────────────────────────────────────┘
+                          ↓
+┌─────────────────────────────────────────────────────┐
+│                   DATA LAYER                         │
+│  Base44 SDK • Deno Functions • Integrations        │
+│  ├─ 26 Backend Functions                            │
+│  ├─ 27 External Integrations                        │
+│  └─ AI Model Orchestration                          │
+└─────────────────────────────────────────────────────┘
+```
+
+[Learn more about the architecture →](./docs/explanation/architecture.md)
+
+### Project Structure
 
 ```
 fusion-ai/
@@ -86,9 +133,13 @@ fusion-ai/
 │   ├── api/            # API clients
 │   ├── hooks/          # Custom React hooks
 │   ├── utils/          # Utility functions
-│   ├── lib/            # Core libraries
-│   └── docs/           # Additional documentation
-├── functions/          # 26 backend functions
+│   └── lib/            # Core libraries
+├── functions/          # 26 backend functions (Deno)
+├── docs/               # Documentation (Diátaxis framework)
+│   ├── tutorials/      # Learning-oriented guides
+│   ├── how-to-guides/  # Problem-solving guides
+│   ├── reference/      # Technical specifications
+│   └── explanation/    # Conceptual understanding
 ├── public/            # Static assets
 └── Configuration files
 ```
