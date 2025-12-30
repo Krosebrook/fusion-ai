@@ -4,6 +4,7 @@
  */
 
 import { base44 } from '@/api/base44Client';
+import { aiService } from './AIService';
 
 class PMIntegrationService {
   /**
@@ -35,6 +36,57 @@ class PMIntegrationService {
   }
 
   /**
+   * Resolve conflict using AI
+   */
+  async resolveConflictWithAI(conflict) {
+    const prompt = `You are a data sync conflict resolver. Analyze this conflict and suggest the best resolution:
+
+**Field:** ${conflict.field}
+**FlashFusion Value:** ${conflict.flashfusion_value}
+**External Tool Value:** ${conflict.external_value}
+**FlashFusion Last Updated:** ${conflict.flashfusion_updated}
+**External Last Updated:** ${conflict.external_updated}
+
+Consider:
+1. Timestamp proximity
+2. Data completeness
+3. Semantic meaning
+4. User intent
+
+Provide:
+1. Recommended choice ("flashfusion" or "external" or "merge")
+2. Confidence score (0-1)
+3. Brief explanation
+4. If merge suggested, provide merged value
+
+Return JSON with: { choice, confidence, explanation, merged_value }`;
+
+    try {
+      const result = await aiService.invokeLLM({
+        prompt,
+        schema: {
+          type: 'object',
+          properties: {
+            choice: { type: 'string' },
+            confidence: { type: 'number' },
+            explanation: { type: 'string' },
+            merged_value: { type: 'string' },
+          },
+        },
+      });
+
+      return result;
+    } catch (error) {
+      console.error('AI conflict resolution failed:', error);
+      return {
+        choice: 'latest_wins',
+        confidence: 0.5,
+        explanation: 'Fallback to latest_wins strategy',
+      };
+    }
+  }
+
+  /**
    * Perform two-way sync
    */
   async performSync(pluginInstallation, direction = 'bidirectional') {
@@ -49,9 +101,19 @@ class PMIntegrationService {
       imported: 0,
       exported: 0,
       conflicts: 0,
+      conflicts_resolved: 0,
       errors: [],
       timestamp: new Date().toISOString(),
+      conflict_details: [],
     };
+
+    // Create sync log
+    const syncLog = await base44.entities.PMSyncLog.create({
+      plugin_installation_id: pluginInstallation.id,
+      direction,
+      status: 'in_progress',
+      started_at: syncResults.timestamp,
+    });
 
     try {
       // Get plugin details
@@ -110,9 +172,29 @@ class PMIntegrationService {
         },
       });
 
+      // Update sync log
+      await base44.entities.PMSyncLog.update(syncLog.id, {
+        status: 'completed',
+        items_imported: syncResults.imported,
+        items_exported: syncResults.exported,
+        conflicts_detected: syncResults.conflicts,
+        conflicts_resolved: syncResults.conflicts_resolved,
+        conflicts: syncResults.conflict_details,
+        completed_at: new Date().toISOString(),
+        duration_ms: Date.now() - new Date(syncResults.timestamp).getTime(),
+      });
+
       return syncResults;
     } catch (error) {
       syncResults.errors.push(error.message);
+      
+      // Update sync log as failed
+      await base44.entities.PMSyncLog.update(syncLog.id, {
+        status: 'failed',
+        errors: [{ code: 'SYNC_ERROR', message: error.message }],
+        completed_at: new Date().toISOString(),
+      });
+      
       throw error;
     }
   }
@@ -152,13 +234,42 @@ class PMIntegrationService {
       });
 
       if (existing && existing.length > 0) {
-        // Handle conflict
-        const conflictResolution = plugin.pm_integration.sync_config.conflict_resolution;
-        if (conflictResolution === 'external_wins' || conflictResolution === 'latest_wins') {
+        // Detect conflicts
+        const hasConflicts = this._detectConflicts(existing[0], mappedData);
+        
+        if (hasConflicts.length > 0) {
+          conflicts++;
+          
+          const conflictResolution = plugin.pm_integration.sync_config.conflict_resolution;
+          
+          if (conflictResolution === 'ai_suggest') {
+            // Use AI to resolve conflicts
+            for (const conflict of hasConflicts) {
+              const aiSuggestion = await this.resolveConflictWithAI(conflict);
+              
+              if (aiSuggestion.choice === 'external' || aiSuggestion.confidence > 0.8) {
+                await base44.entities[entityName].update(existing[0].id, mappedData);
+                imported++;
+              }
+              
+              // Store conflict details
+              return {
+                count: imported,
+                conflicts,
+                conflict_details: hasConflicts.map(c => ({
+                  ...c,
+                  ai_suggestion: aiSuggestion.explanation,
+                  ai_confidence: aiSuggestion.confidence,
+                })),
+              };
+            }
+          } else if (conflictResolution === 'external_wins' || conflictResolution === 'latest_wins') {
+            await base44.entities[entityName].update(existing[0].id, mappedData);
+            imported++;
+          }
+        } else {
           await base44.entities[entityName].update(existing[0].id, mappedData);
           imported++;
-        } else {
-          conflicts++;
         }
       } else {
         await base44.entities[entityName].create({
@@ -203,6 +314,27 @@ class PMIntegrationService {
 
     const { count } = await response.json();
     return { count };
+  }
+
+  /**
+   * Detect conflicts between local and external data
+   */
+  _detectConflicts(localData, externalData) {
+    const conflicts = [];
+    
+    for (const [key, value] of Object.entries(externalData)) {
+      if (localData[key] !== undefined && localData[key] !== value) {
+        conflicts.push({
+          field: key,
+          flashfusion_value: localData[key],
+          external_value: value,
+          flashfusion_updated: localData.updated_date,
+          external_updated: externalData.updated_date || new Date().toISOString(),
+        });
+      }
+    }
+    
+    return conflicts;
   }
 
   /**
