@@ -1,915 +1,911 @@
-# Gemini AI Integration Guide for FlashFusion
+# Gemini AI Integration Documentation
 
-## Overview
+> Comprehensive guide to integrating and using Google's Gemini AI models in FlashFusion Platform
 
-This document provides comprehensive guidance for using Google's Gemini AI models within the FlashFusion platform. Gemini offers powerful multimodal capabilities, making it ideal for tasks involving text, code, images, and more.
+**Version:** 1.0  
+**Last Updated:** December 30, 2025  
+**Provider:** Google AI (Vertex AI / Google AI Studio)  
+**Status:** Production-Ready
+
+---
 
 ## Table of Contents
 
-- [Gemini Model Overview](#gemini-model-overview)
+- [Overview](#overview)
+- [Setup & Configuration](#setup--configuration)
+- [Available Models](#available-models)
 - [Integration Architecture](#integration-architecture)
-- [Multimodal Capabilities](#multimodal-capabilities)
+- [Usage Examples](#usage-examples)
 - [Best Practices](#best-practices)
-- [Use Cases](#use-cases)
-- [Prompt Engineering](#prompt-engineering)
-- [Performance Optimization](#performance-optimization)
 - [Error Handling](#error-handling)
+- [Rate Limits & Pricing](#rate-limits--pricing)
+- [Advanced Features](#advanced-features)
+- [Troubleshooting](#troubleshooting)
 
-## Gemini Model Overview
+---
 
-### Available Models
+## Overview
 
-| Model | Context Window | Best For | Multimodal | Cost |
-|-------|---------------|----------|------------|------|
-| **Gemini 1.5 Pro** | 1M tokens | Complex tasks, long context | Yes | Higher |
-| **Gemini 1.5 Flash** | 1M tokens | Fast responses, high-volume | Yes | Lower |
-| **Gemini 1.0 Pro** | 32K tokens | General purpose | Limited | Medium |
+Gemini is Google's most capable and general AI model family, built from the ground up to be multimodal. FlashFusion integrates Gemini for advanced AI capabilities including code generation, multimodal understanding, and complex reasoning.
+
+### Why Gemini?
+
+- **Multimodal Native:** Process text, images, audio, video, and code seamlessly
+- **Long Context:** Support for 1M+ token context windows (Gemini 1.5 Pro)
+- **Fast Performance:** Optimized for low latency responses
+- **Cost Effective:** Competitive pricing with generous free tier
+- **Google Integration:** Deep integration with Google Cloud ecosystem
+- **Code Execution:** Built-in Python code execution capability
+
+### Use Cases in FlashFusion
+
+1. **AI Code Agent** - Advanced code generation and modification
+2. **AI Studio** - Multimodal content generation
+3. **AI Documentation** - Technical documentation with diagrams
+4. **Visual Analysis** - Image and diagram understanding
+5. **AI Feature Planner** - Complex reasoning and planning
+6. **Data Analysis** - Process structured and unstructured data
+
+---
+
+## Setup & Configuration
+
+### Option 1: Google AI Studio (Quick Start)
+
+Best for development and prototyping.
+
+1. Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
+2. Sign in with Google account
+3. Create API key
+4. Copy the key
+
+```bash
+# .env.local
+GEMINI_API_KEY=AIza...your-key-here...
+```
+
+### Option 2: Vertex AI (Production)
+
+Recommended for production deployments.
+
+1. Create Google Cloud Project
+2. Enable Vertex AI API
+3. Set up authentication (Service Account)
+4. Configure credentials
+
+```bash
+# .env.local
+GOOGLE_CLOUD_PROJECT=your-project-id
+GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json
+VERTEX_AI_LOCATION=us-central1
+```
+
+### 3. Install SDK
+
+```bash
+npm install @google/generative-ai
+# or for Vertex AI
+npm install @google-cloud/vertexai
+```
+
+### 4. Verify Setup
+
+```typescript
+import { GoogleGenerativeAI } from '@google/generative-ai';
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+
+const result = await model.generateContent('Hello, Gemini!');
+console.log(result.response.text());
+```
+
+---
+
+## Available Models
+
+### Gemini 1.5 Family (Latest)
+
+#### Gemini 1.5 Pro
+- **Model ID:** `gemini-1.5-pro` / `gemini-1.5-pro-latest`
+- **Context:** 1M tokens (up to 2M with preview)
+- **Best For:** Complex reasoning, long documents, multimodal tasks
+- **Strengths:** 
+  - Largest context window
+  - Excellent code generation
+  - Multimodal understanding
+  - Fast performance
+- **Modalities:** Text, images, audio, video, code
+- **Cost:** Moderate
+
+#### Gemini 1.5 Flash
+- **Model ID:** `gemini-1.5-flash` / `gemini-1.5-flash-latest`
+- **Context:** 1M tokens
+- **Best For:** Fast responses, high-volume tasks
+- **Strengths:**
+  - Very fast inference
+  - Cost-effective
+  - Good quality
+  - Multimodal support
+- **Modalities:** Text, images, audio, video
+- **Cost:** Lower
+
+### Gemini 1.0 Family (Stable)
+
+#### Gemini Pro
+- **Model ID:** `gemini-pro`
+- **Context:** 32K tokens
+- **Best For:** General text tasks
+- **Modalities:** Text only
+
+#### Gemini Pro Vision
+- **Model ID:** `gemini-pro-vision`
+- **Context:** 16K tokens
+- **Best For:** Image understanding
+- **Modalities:** Text, images
 
 ### Model Selection Guidelines
 
-**Use Gemini 1.5 Pro for:**
-- Complex reasoning tasks
-- Long document analysis
-- Multimodal tasks (text + images)
-- Architecture design
-- Large codebase analysis
+```typescript
+function selectGeminiModel(task) {
+  // Long context or complex analysis
+  if (task.contextLength > 32000 || task.complexity === 'high') {
+    return 'gemini-1.5-pro';
+  }
+  
+  // Multimodal with speed priority
+  if (task.multimodal && task.speedRequired) {
+    return 'gemini-1.5-flash';
+  }
+  
+  // Image analysis
+  if (task.type === 'vision' && !task.longContext) {
+    return 'gemini-pro-vision';
+  }
+  
+  // Default for text
+  return 'gemini-pro';
+}
+```
 
-**Use Gemini 1.5 Flash for:**
-- Quick code completions
-- Real-time assistance
-- High-volume operations
-- Cost-sensitive tasks
-- Simple multimodal tasks
-
-**Use Gemini 1.0 Pro for:**
-- General text generation
-- Moderate complexity tasks
-- Legacy integration compatibility
+---
 
 ## Integration Architecture
 
-### Base Integration Pattern
+### Message Flow
+
+```
+User Request → FlashFusion API → Gemini Integration → Google AI/Vertex AI → Response → User
+```
+
+### Integration Layer
 
 ```typescript
-import { GoogleGenerativeAI } from 'npm:@google/generative-ai';
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
+// /functions/integrations/geminiIntegration.ts
 
-const genAI = new GoogleGenerativeAI(Deno.env.get('GEMINI_API_KEY')!);
+import { createClientFromRequest } from '@base44/sdk';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
-Deno.serve(async (req) => {
-  try {
-    const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const { prompt, task, model = 'gemini-1.5-flash' } = await req.json();
-
-    const geminiModel = genAI.getGenerativeModel({ model });
-    const result = await geminiModel.generateContent(
-      buildGeminiPrompt(task, prompt)
-    );
-    
-    const response = result.response;
-    const text = response.text();
-
-    return Response.json({ 
-      success: true, 
-      content: text,
-      usage: response.usageMetadata
-    });
-  } catch (error) {
-    console.error('Gemini error:', error);
-    return Response.json({ error: error.message }, { status: 500 });
+export async function geminiRequest(req) {
+  // 1. Authenticate user
+  const base44 = createClientFromRequest(req);
+  const user = await base44.auth.me();
+  
+  if (!user) {
+    return Response.json({ error: 'Unauthorized' }, { status: 401 });
   }
-});
-```
-
-### System Instruction Template for Gemini
-
-```typescript
-const GEMINI_SYSTEM_INSTRUCTION = `You are an expert AI assistant integrated into FlashFusion, 
-a comprehensive AI-powered development platform. You help developers build, analyze, and 
-optimize their code and workflows.
-
-Core Responsibilities:
-- Generate clean, production-ready code
-- Analyze and review code for quality and security
-- Design scalable architectures
-- Create comprehensive documentation
-- Solve complex technical problems
-
-Key Principles:
-- Prioritize code quality and maintainability
-- Follow language-specific best practices
-- Consider security and performance
-- Provide clear explanations
-- Ask clarifying questions when needed
-- Use structured responses`;
-```
-
-### Configuration Options
-
-```typescript
-interface GeminiConfig {
-  model: 'gemini-1.5-pro' | 'gemini-1.5-flash' | 'gemini-1.0-pro';
-  temperature?: number;        // 0.0 to 2.0 (default: 1.0)
-  topK?: number;              // Top K sampling
-  topP?: number;              // Nucleus sampling (0.0 to 1.0)
-  maxOutputTokens?: number;   // Max tokens to generate
-  stopSequences?: string[];   // Stop generation at these sequences
-  candidateCount?: number;    // Number of responses to generate
-  safetySettings?: SafetySetting[];
+  
+  // 2. Initialize Gemini client
+  const genAI = new GoogleGenerativeAI(Deno.env.get('GEMINI_API_KEY'));
+  
+  // 3. Parse request
+  const { action, data } = await req.json();
+  
+  // 4. Execute action
+  const model = genAI.getGenerativeModel({ model: data.model || 'gemini-pro' });
+  const result = await actions[action](model, data);
+  
+  // 5. Return response
+  return Response.json(result);
 }
+```
 
-const config: GeminiConfig = {
-  model: 'gemini-1.5-flash',
-  temperature: 0.7,
-  topK: 40,
-  topP: 0.95,
-  maxOutputTokens: 8192
+### Request Structure
+
+```typescript
+interface GeminiRequest {
+  action: string;
+  data: {
+    model?: string;
+    prompt?: string;
+    contents?: Array<{
+      role?: 'user' | 'model';
+      parts: Array<TextPart | ImagePart>;
+    }>;
+    generationConfig?: {
+      temperature?: number;
+      topK?: number;
+      topP?: number;
+      maxOutputTokens?: number;
+      stopSequences?: string[];
+    };
+    safetySettings?: Array<{
+      category: string;
+      threshold: string;
+    }>;
+    stream?: boolean;
+  };
+}
+```
+
+---
+
+## Usage Examples
+
+### 1. Basic Text Generation
+
+```typescript
+const response = await fetch('/api/gemini', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`,
+  },
+  body: JSON.stringify({
+    action: 'generate',
+    data: {
+      model: 'gemini-pro',
+      prompt: 'Explain the concept of neural networks',
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 800
+      }
+    }
+  })
+});
+
+const result = await response.json();
+console.log(result.text);
+```
+
+### 2. Code Generation
+
+```typescript
+const codeRequest = {
+  action: 'generateCode',
+  data: {
+    model: 'gemini-1.5-pro',
+    prompt: `
+Create a TypeScript React component that:
+- Displays a searchable, sortable table
+- Supports pagination
+- Has column filtering
+- Is responsive
+- Follows Material Design principles
+
+Include proper TypeScript types and error handling.
+    `,
+    generationConfig: {
+      temperature: 0.3,  // Lower for more consistent code
+      maxOutputTokens: 2000
+    }
+  }
 };
 ```
 
-## Multimodal Capabilities
-
-### Text + Image Analysis
+### 3. Vision Understanding
 
 ```typescript
-async function analyzeCodeScreenshot(imageData: string, task: string) {
-  const model = genAI.getGenerativeModel({ 
-    model: 'gemini-1.5-pro' 
-  });
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
-  const prompt = `
-Task: ${task}
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({ model: 'gemini-pro-vision' });
 
-Analyze this code screenshot and provide:
-1. Transcription of the visible code
-2. Code quality assessment
-3. Identified issues or bugs
-4. Improvement suggestions
-5. Best practice recommendations
+// Analyze image
+const imagePart = {
+  inlineData: {
+    data: base64Image,
+    mimeType: 'image/jpeg'
+  }
+};
 
-Be thorough and specific in your analysis.
-`;
+const result = await model.generateContent([
+  'What is in this image? Describe in detail.',
+  imagePart
+]);
 
-  const imagePart = {
-    inlineData: {
-      data: imageData,
-      mimeType: 'image/png'
+console.log(result.response.text());
+```
+
+### 4. Multi-turn Chat
+
+```typescript
+const chat = model.startChat({
+  history: [
+    {
+      role: 'user',
+      parts: [{ text: 'Hello, I need help with React hooks' }]
+    },
+    {
+      role: 'model',
+      parts: [{ text: 'I\'d be happy to help! Which hook would you like to learn about?' }]
     }
-  };
+  ],
+  generationConfig: {
+    temperature: 0.7,
+    maxOutputTokens: 1000
+  }
+});
 
-  const result = await model.generateContent([prompt, imagePart]);
-  return result.response.text();
-}
+const result = await chat.sendMessage('Tell me about useEffect');
+console.log(result.response.text());
 ```
 
-### Diagram Generation
+### 5. Long Context Analysis
 
 ```typescript
-async function generateArchitectureDiagram(description: string) {
-  const model = genAI.getGenerativeModel({ 
-    model: 'gemini-1.5-pro' 
-  });
+// Gemini 1.5 Pro can handle very long documents
+const documentAnalysis = {
+  action: 'analyze',
+  data: {
+    model: 'gemini-1.5-pro',
+    prompt: `
+Analyze this entire codebase and provide:
+1. Architecture overview
+2. Key patterns used
+3. Potential improvements
+4. Security concerns
 
-  const prompt = `
-Generate a Mermaid diagram for the following architecture:
-
-${description}
-
-Requirements:
-- Use Mermaid syntax
-- Include all major components
-- Show data flows
-- Indicate external services
-- Add descriptive labels
-
-Return only the Mermaid code, no explanations.
-`;
-
-  const result = await model.generateContent(prompt);
-  return result.response.text();
-}
-```
-
-### UI Mockup to Code
-
-```typescript
-async function generateCodeFromMockup(mockupImage: string, framework: string) {
-  const model = genAI.getGenerativeModel({ 
-    model: 'gemini-1.5-pro' 
-  });
-
-  const prompt = `
-Convert this UI mockup into ${framework} code.
-
-Requirements:
-- Create responsive, production-ready code
-- Use Tailwind CSS for styling
-- Include proper component structure
-- Add accessibility features
-- Implement state management if needed
-- Add comments for complex sections
-
-Provide complete, working code.
-`;
-
-  const imagePart = {
-    inlineData: {
-      data: mockupImage,
-      mimeType: 'image/png'
+${entireCodebase}  // Can be 100K+ tokens
+    `,
+    generationConfig: {
+      temperature: 0.4,
+      maxOutputTokens: 4000
     }
-  };
+  }
+};
+```
 
-  const result = await model.generateContent([prompt, imagePart]);
-  return result.response.text();
+### 6. Multimodal Understanding
+
+```typescript
+// Analyze multiple images with context
+const multimodalRequest = {
+  action: 'analyze',
+  data: {
+    model: 'gemini-1.5-pro',
+    contents: [{
+      role: 'user',
+      parts: [
+        { text: 'Compare these UI mockups and suggest improvements:' },
+        { inlineData: { data: mockup1Base64, mimeType: 'image/png' } },
+        { inlineData: { data: mockup2Base64, mimeType: 'image/png' } },
+        { text: 'Consider accessibility, usability, and modern design trends.' }
+      ]
+    }],
+    generationConfig: {
+      temperature: 0.6,
+      maxOutputTokens: 2000
+    }
+  }
+};
+```
+
+### 7. Code Execution
+
+```typescript
+// Gemini can execute Python code to solve problems
+const codeExecutionRequest = {
+  action: 'execute',
+  data: {
+    model: 'gemini-1.5-pro',
+    tools: [{
+      codeExecution: {}
+    }],
+    prompt: `
+Calculate the Fibonacci sequence up to n=50 and 
+create a visualization of the golden ratio.
+    `
+  }
+};
+```
+
+### 8. Streaming Responses
+
+```typescript
+const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+
+const result = await model.generateContentStream(
+  'Write a detailed explanation of microservices architecture'
+);
+
+for await (const chunk of result.stream) {
+  const chunkText = chunk.text();
+  console.log(chunkText);
+  // Update UI with streaming text
 }
 ```
+
+---
 
 ## Best Practices
 
-### 1. Structured Prompts for Gemini
+### 1. Prompt Engineering
 
 ```typescript
-function buildStructuredPrompt(task: string, context: any): string {
-  return `
-# Task
-${task}
+// ✅ Good: Clear, specific prompts
+const goodPrompt = `
+Task: Generate a REST API endpoint
 
-# Context
-Project Type: ${context.projectType}
-Framework: ${context.framework}
-Language: ${context.language}
+Requirements:
+- Language: TypeScript
+- Framework: Express.js
+- Endpoint: POST /api/users
+- Validation: Zod schema
+- Error handling: Try-catch with proper status codes
+- Documentation: JSDoc comments
 
-# Requirements
-${context.requirements.map((r: string, i: number) => `${i + 1}. ${r}`).join('\n')}
+Include:
+1. Type definitions
+2. Validation logic
+3. Error handling
+4. Success/error responses
+`;
 
-# Constraints
-${context.constraints.map((c: string, i: number) => `${i + 1}. ${c}`).join('\n')}
-
-# Expected Output Format
-${context.outputFormat}
-
-Please provide a comprehensive solution following these specifications.
-  `.trim();
-}
+// ❌ Avoid: Vague prompts
+const badPrompt = "Create an API endpoint";
 ```
 
-### 2. Function Calling
-
-Gemini supports function calling for structured outputs:
+### 2. Generation Configuration
 
 ```typescript
-const functions = {
-  generateCode: {
-    name: 'generateCode',
-    description: 'Generate code based on specifications',
-    parameters: {
-      type: 'object',
-      properties: {
-        language: {
-          type: 'string',
-          description: 'Programming language'
-        },
-        code: {
-          type: 'string',
-          description: 'The generated code'
-        },
-        explanation: {
-          type: 'string',
-          description: 'Explanation of the code'
-        },
-        dependencies: {
-          type: 'array',
-          items: { type: 'string' },
-          description: 'Required dependencies'
-        }
-      },
-      required: ['language', 'code', 'explanation']
-    }
+const configs = {
+  codeGeneration: {
+    temperature: 0.2,      // Deterministic
+    topK: 20,              // Limit vocabulary
+    topP: 0.8,             // Nucleus sampling
+    maxOutputTokens: 2000
+  },
+  
+  creativeWriting: {
+    temperature: 0.9,      // More creative
+    topK: 40,
+    topP: 0.95,
+    maxOutputTokens: 1000
+  },
+  
+  analysis: {
+    temperature: 0.4,      // Balanced
+    topK: 30,
+    topP: 0.85,
+    maxOutputTokens: 3000
   }
 };
-
-const model = genAI.getGenerativeModel({
-  model: 'gemini-1.5-pro',
-  tools: [{ functionDeclarations: [functions.generateCode] }]
-});
 ```
 
 ### 3. Safety Settings
 
-Configure content safety:
-
 ```typescript
-import { HarmCategory, HarmBlockThreshold } from 'npm:@google/generative-ai';
-
 const safetySettings = [
   {
-    category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
+    category: 'HARM_CATEGORY_HARASSMENT',
+    threshold: 'BLOCK_MEDIUM_AND_ABOVE'
   },
   {
-    category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
+    category: 'HARM_CATEGORY_HATE_SPEECH',
+    threshold: 'BLOCK_MEDIUM_AND_ABOVE'
   },
   {
-    category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
+    category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+    threshold: 'BLOCK_MEDIUM_AND_ABOVE'
   },
   {
-    category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
+    category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
+    threshold: 'BLOCK_MEDIUM_AND_ABOVE'
   }
 ];
-
-const model = genAI.getGenerativeModel({
-  model: 'gemini-1.5-pro',
-  safetySettings
-});
 ```
 
-### 4. Caching for Long Context
-
-Gemini 1.5 supports context caching:
+### 4. Context Window Management
 
 ```typescript
-async function generateWithCache(prompt: string, cachedContext: string) {
-  const model = genAI.getGenerativeModel({
-    model: 'gemini-1.5-pro',
-    systemInstruction: cachedContext
-  });
-
-  // First call caches the system instruction
-  const result = await model.generateContent(prompt);
+// For 1.5 Pro with 1M token context
+function prepareContext(documents) {
+  const maxTokens = 1000000;
+  let context = '';
+  let tokenCount = 0;
   
-  // Subsequent calls reuse the cached context
-  return result.response.text();
-}
-```
-
-## Use Cases
-
-### 1. Code Generation
-
-**Optimal Configuration:**
-```typescript
-{
-  model: 'gemini-1.5-flash',
-  temperature: 0.4,
-  maxOutputTokens: 8192
-}
-```
-
-**Implementation:**
-
-```typescript
-async function generateComponent(spec: ComponentSpec) {
-  const model = genAI.getGenerativeModel({
-    model: 'gemini-1.5-flash',
-    generationConfig: {
-      temperature: 0.4,
-      maxOutputTokens: 8192
-    }
-  });
-
-  const prompt = `
-Generate a ${spec.framework} component with these specifications:
-
-Name: ${spec.name}
-Purpose: ${spec.purpose}
-Props: ${JSON.stringify(spec.props, null, 2)}
-Features:
-${spec.features.map((f, i) => `${i + 1}. ${f}`).join('\n')}
-
-Technical Requirements:
-- Use TypeScript
-- Include prop validation
-- Add comprehensive JSDoc comments
-- Use modern ${spec.framework} patterns
-- Include error handling
-- Make it accessible (WCAG 2.1 AA)
-- Add loading and error states
-
-Provide:
-1. TypeScript interface
-2. Component implementation
-3. Usage example
-4. Unit test template
-`;
-
-  const result = await model.generateContent(prompt);
-  return parseCodeResponse(result.response.text());
-}
-```
-
-### 2. Large Codebase Analysis
-
-Leverage Gemini's 1M token context:
-
-```typescript
-async function analyzeEntireCodebase(files: FileContent[]) {
-  const model = genAI.getGenerativeModel({
-    model: 'gemini-1.5-pro'
-  });
-
-  const codebaseContext = files.map(f => `
-// File: ${f.path}
-${f.content}
-`).join('\n\n');
-
-  const prompt = `
-Analyze this entire codebase and provide:
-
-1. Architecture Overview
-   - Overall structure
-   - Design patterns used
-   - Component relationships
-
-2. Code Quality Assessment
-   - Strengths
-   - Areas for improvement
-   - Technical debt
-
-3. Security Analysis
-   - Potential vulnerabilities
-   - Security best practices status
-
-4. Performance Considerations
-   - Bottlenecks
-   - Optimization opportunities
-
-5. Recommendations
-   - Prioritized improvements
-   - Refactoring suggestions
-   - Architecture enhancements
-
-Codebase:
-${codebaseContext}
-`;
-
-  const result = await model.generateContent(prompt);
-  return result.response.text();
-}
-```
-
-### 3. Visual Code Understanding
-
-```typescript
-async function explainCodeVisualization(imageData: string) {
-  const model = genAI.getGenerativeModel({
-    model: 'gemini-1.5-pro'
-  });
-
-  const prompt = `
-Analyze this code visualization/diagram and explain:
-
-1. What architecture or system is represented
-2. The flow of data or control
-3. Key components and their roles
-4. Integration points
-5. Potential issues or improvements
-
-Provide a detailed explanation that would help a developer understand the system.
-`;
-
-  const imagePart = {
-    inlineData: {
-      data: imageData,
-      mimeType: 'image/png'
-    }
-  };
-
-  const result = await model.generateContent([prompt, imagePart]);
-  return result.response.text();
-}
-```
-
-### 4. Code Review with Multimodal Context
-
-```typescript
-async function reviewWithScreenshots(
-  code: string,
-  screenshots: string[]
-) {
-  const model = genAI.getGenerativeModel({
-    model: 'gemini-1.5-pro'
-  });
-
-  const parts = [
-    `
-Review this code along with the provided screenshots:
-
-Code:
-\`\`\`
-${code}
-\`\`\`
-
-Provide:
-1. Code quality assessment
-2. How well the code matches the visual design
-3. Accessibility review based on screenshots
-4. Responsive design considerations
-5. Improvement suggestions
-`,
-    ...screenshots.map(img => ({
-      inlineData: {
-        data: img,
-        mimeType: 'image/png'
-      }
-    }))
-  ];
-
-  const result = await model.generateContent(parts);
-  return result.response.text();
-}
-```
-
-## Prompt Engineering
-
-### 1. Role-Based Prompting
-
-```typescript
-const prompt = `
-You are a principal software engineer with expertise in ${domain}.
-
-Context:
-${context}
-
-Task:
-${task}
-
-Approach this with production-quality standards, considering:
-- Scalability
-- Maintainability
-- Security
-- Performance
-- Team collaboration
-
-Provide a comprehensive solution.
-`;
-```
-
-### 2. Chain of Thought with Gemini
-
-```typescript
-const prompt = `
-Let's solve this step by step:
-
-Problem:
-${problem}
-
-Step 1: Understand the requirements
-- What are we trying to achieve?
-- What are the constraints?
-- What are the edge cases?
-
-Step 2: Design the solution
-- What approach should we use?
-- What are the trade-offs?
-- How will we handle errors?
-
-Step 3: Implement
-- Write the code
-- Add error handling
-- Include tests
-
-Step 4: Validate
-- Check for edge cases
-- Verify performance
-- Ensure security
-
-Please work through each step explicitly.
-`;
-```
-
-### 3. Few-Shot Learning
-
-```typescript
-const prompt = `
-Here are examples of good ${task} implementations:
-
-Example 1:
-Input: ${example1.input}
-Output: ${example1.output}
-
-Example 2:
-Input: ${example2.input}
-Output: ${example2.output}
-
-Now apply the same pattern to:
-Input: ${actualInput}
-`;
-```
-
-### 4. Structured Output Requests
-
-```typescript
-const prompt = `
-Generate code following this exact structure:
-
-\`\`\`typescript
-// 1. Imports
-[your imports here]
-
-// 2. Types
-interface MyType {
-  [your type definition]
-}
-
-// 3. Constants
-const MY_CONSTANT = [your constant];
-
-// 4. Main function
-export function myFunction() {
-  [your implementation]
-}
-
-// 5. Helper functions
-function helperFunction() {
-  [your helper]
-}
-
-// 6. Exports
-export { [your exports] };
-\`\`\`
-
-Task: ${task}
-`;
-```
-
-## Performance Optimization
-
-### 1. Streaming Responses
-
-```typescript
-async function streamGeminiResponse(prompt: string) {
-  const model = genAI.getGenerativeModel({
-    model: 'gemini-1.5-flash'
-  });
-
-  const result = await model.generateContentStream(prompt);
-
-  // Stream to client
-  const encoder = new TextEncoder();
-  const stream = new ReadableStream({
-    async start(controller) {
-      for await (const chunk of result.stream) {
-        const text = chunk.text();
-        controller.enqueue(encoder.encode(text));
-      }
-      controller.close();
-    }
-  });
-
-  return new Response(stream, {
-    headers: { 'Content-Type': 'text/plain' }
-  });
-}
-```
-
-### 2. Batch Processing
-
-```typescript
-async function batchGenerateWithGemini(prompts: string[]) {
-  const model = genAI.getGenerativeModel({
-    model: 'gemini-1.5-flash'
-  });
-
-  const BATCH_SIZE = 10;
-  const results = [];
-
-  for (let i = 0; i < prompts.length; i += BATCH_SIZE) {
-    const batch = prompts.slice(i, i + BATCH_SIZE);
+  for (const doc of documents) {
+    const docTokens = estimateTokens(doc);
+    if (tokenCount + docTokens > maxTokens) break;
     
-    const batchResults = await Promise.all(
-      batch.map(prompt => 
-        model.generateContent(prompt)
-          .then(result => result.response.text())
-      )
-    );
-    
-    results.push(...batchResults);
-    
-    // Rate limiting
-    if (i + BATCH_SIZE < prompts.length) {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-    }
+    context += doc + '\n\n';
+    tokenCount += docTokens;
   }
-
-  return results;
+  
+  return context;
 }
 ```
 
-### 3. Context Reuse
+### 5. Error Handling with Retry
 
 ```typescript
-class GeminiContextManager {
-  private cachedContexts = new Map<string, any>();
-
-  async generateWithReusableContext(
-    contextKey: string,
-    context: string,
-    prompt: string
-  ) {
-    let chat = this.cachedContexts.get(contextKey);
-    
-    if (!chat) {
-      const model = genAI.getGenerativeModel({
-        model: 'gemini-1.5-pro',
-        systemInstruction: context
-      });
-      
-      chat = model.startChat({
-        history: []
-      });
-      
-      this.cachedContexts.set(contextKey, chat);
-    }
-
-    const result = await chat.sendMessage(prompt);
-    return result.response.text();
-  }
-
-  clearContext(contextKey: string) {
-    this.cachedContexts.delete(contextKey);
-  }
-}
-```
-
-## Error Handling
-
-### Retry Logic
-
-```typescript
-async function invokeGeminiWithRetry(
-  prompt: string,
-  maxRetries = 3
-): Promise<string> {
-  const model = genAI.getGenerativeModel({
-    model: 'gemini-1.5-flash'
-  });
-
-  for (let attempt = 0; attempt < maxRetries; attempt++) {
+async function geminiWithRetry(request, maxRetries = 3) {
+  for (let i = 0; i < maxRetries; i++) {
     try {
-      const result = await model.generateContent(prompt);
-      return result.response.text();
-    } catch (error: any) {
-      if (attempt === maxRetries - 1) throw error;
-
-      // Retryable errors
-      if (
-        error.message.includes('quota') ||
-        error.message.includes('503') ||
-        error.message.includes('timeout')
-      ) {
-        const delay = Math.pow(2, attempt) * 1000;
-        await new Promise(resolve => setTimeout(resolve, delay));
+      return await callGemini(request);
+    } catch (error) {
+      if (error.status === 429) {  // Rate limit
+        await sleep(Math.pow(2, i) * 1000);
         continue;
       }
-
-      throw error; // Non-retryable
+      if (error.status === 503) {  // Service unavailable
+        await sleep(5000);
+        continue;
+      }
+      throw error;
     }
   }
-
   throw new Error('Max retries exceeded');
 }
 ```
 
-### Safety Filter Handling
+### 6. Cost Optimization
 
 ```typescript
-async function handleSafetyFilters(prompt: string) {
-  const model = genAI.getGenerativeModel({
-    model: 'gemini-1.5-pro'
-  });
-
-  try {
-    const result = await model.generateContent(prompt);
-    const response = result.response;
-
-    // Check if blocked by safety filters
-    if (response.promptFeedback?.blockReason) {
-      return {
-        success: false,
-        error: 'Content blocked by safety filters',
-        reason: response.promptFeedback.blockReason,
-        safetyRatings: response.promptFeedback.safetyRatings
-      };
-    }
-
+// Use Flash for simpler tasks
+function optimizeModelAndConfig(task) {
+  if (task.complexity < 5 && !task.requiresLongContext) {
     return {
-      success: true,
-      content: response.text()
-    };
-  } catch (error) {
-    return {
-      success: false,
-      error: error.message
+      model: 'gemini-1.5-flash',
+      config: {
+        maxOutputTokens: 1000  // Limit output for cost
+      }
     };
   }
+  
+  return {
+    model: 'gemini-1.5-pro',
+    config: {
+      maxOutputTokens: 2000
+    }
+  };
 }
 ```
 
-## Gemini-Specific Features
+---
 
-### 1. Code Execution
+## Error Handling
 
-Gemini can execute Python code:
+### Common Errors
+
+```typescript
+const errorHandlers = {
+  400: (error) => {
+    // Bad request - invalid parameters
+    console.error('Invalid request:', error.message);
+    return { error: 'Invalid parameters', retryable: false };
+  },
+  
+  401: (error) => {
+    // Unauthorized - invalid API key
+    console.error('Authentication failed');
+    return { error: 'Invalid API key', retryable: false };
+  },
+  
+  403: (error) => {
+    // Forbidden - quota exceeded or safety block
+    console.error('Access denied:', error.message);
+    return { error: 'Access denied', retryable: false };
+  },
+  
+  429: (error) => {
+    // Rate limit exceeded
+    console.warn('Rate limit hit. Retrying...');
+    return { error: 'Rate limited', retryable: true, retryAfter: 60 };
+  },
+  
+  500: (error) => {
+    // Internal server error
+    console.error('API error:', error.message);
+    return { error: 'Service error', retryable: true, retryAfter: 5 };
+  },
+  
+  503: (error) => {
+    // Service unavailable
+    console.warn('Service unavailable. Retrying...');
+    return { error: 'Service busy', retryable: true, retryAfter: 10 };
+  }
+};
+```
+
+### Safety Blocking
+
+```typescript
+function handleSafetyBlock(response) {
+  const safetyRatings = response.promptFeedback?.safetyRatings;
+  
+  if (safetyRatings) {
+    const blocked = safetyRatings.filter(r => 
+      r.probability === 'HIGH' || r.probability === 'MEDIUM'
+    );
+    
+    if (blocked.length > 0) {
+      console.warn('Content blocked by safety filters:', blocked);
+      return { 
+        error: 'Content blocked', 
+        categories: blocked.map(b => b.category)
+      };
+    }
+  }
+  
+  return null;
+}
+```
+
+---
+
+## Rate Limits & Pricing
+
+### Rate Limits (Google AI Studio)
+
+| Tier | Requests/min | Tokens/min |
+|------|-------------|------------|
+| Free | 15 | 32,000 |
+| Paid | 360 | 4,000,000 |
+
+### Rate Limits (Vertex AI)
+
+Configurable based on quota and project settings.
+
+### Pricing (as of Dec 2025)
+
+#### Google AI Studio (Pay-as-you-go)
+
+| Model | Input (per 1M tokens) | Output (per 1M tokens) |
+|-------|---------------------|----------------------|
+| Gemini 1.5 Pro | $3.50 | $10.50 |
+| Gemini 1.5 Flash | $0.35 | $1.05 |
+| Gemini Pro | $0.50 | $1.50 |
+
+#### Vertex AI Pricing
+
+Similar to Google AI Studio with additional compute charges.
+
+### Free Tier
+
+- 15 requests per minute
+- 1 million tokens per month (free)
+- No credit card required for testing
+
+### Cost Calculation
+
+```typescript
+function calculateGeminiCost(model, inputTokens, outputTokens) {
+  const pricing = {
+    'gemini-1.5-pro': { input: 3.50, output: 10.50 },
+    'gemini-1.5-flash': { input: 0.35, output: 1.05 },
+    'gemini-pro': { input: 0.50, output: 1.50 }
+  };
+  
+  const rates = pricing[model];
+  const cost = (
+    (inputTokens * rates.input) + 
+    (outputTokens * rates.output)
+  ) / 1000000;
+  
+  return { 
+    cost: cost.toFixed(4), 
+    currency: 'USD',
+    breakdown: {
+      input: (inputTokens * rates.input / 1000000).toFixed(4),
+      output: (outputTokens * rates.output / 1000000).toFixed(4)
+    }
+  };
+}
+```
+
+---
+
+## Advanced Features
+
+### 1. Function Calling
+
+```typescript
+const functions = {
+  get_weather: {
+    name: 'get_weather',
+    description: 'Get current weather for a location',
+    parameters: {
+      type: 'object',
+      properties: {
+        location: {
+          type: 'string',
+          description: 'City name'
+        }
+      },
+      required: ['location']
+    }
+  }
+};
+
+const model = genAI.getGenerativeModel({
+  model: 'gemini-1.5-pro',
+  tools: [{ functionDeclarations: Object.values(functions) }]
+});
+
+const chat = model.startChat();
+const result = await chat.sendMessage('What\'s the weather in Tokyo?');
+
+// Handle function call
+const functionCall = result.response.functionCalls()[0];
+if (functionCall) {
+  const weatherData = await getWeather(functionCall.args.location);
+  const followUp = await chat.sendMessage([{
+    functionResponse: {
+      name: 'get_weather',
+      response: weatherData
+    }
+  }]);
+}
+```
+
+### 2. System Instructions
 
 ```typescript
 const model = genAI.getGenerativeModel({
   model: 'gemini-1.5-pro',
-  tools: [{ codeExecution: {} }]
+  systemInstruction: `
+You are an expert software architect specializing in scalable systems.
+Always provide:
+- Clear architectural decisions
+- Scalability considerations
+- Security best practices
+- Performance implications
+Use diagrams and examples when helpful.
+  `
 });
-
-const prompt = `
-Calculate the performance metrics for this algorithm.
-Use code execution to compute exact values.
-
-Algorithm:
-${algorithmCode}
-`;
-
-const result = await model.generateContent(prompt);
 ```
 
-### 2. JSON Mode
-
-Force JSON output:
+### 3. JSON Mode
 
 ```typescript
 const model = genAI.getGenerativeModel({
-  model: 'gemini-1.5-flash',
+  model: 'gemini-1.5-pro',
   generationConfig: {
     responseMimeType: 'application/json'
   }
 });
 
-const prompt = `
-Generate a JSON configuration for ${task}.
-Follow this schema: ${JSON.stringify(schema)}
-`;
+const result = await model.generateContent(
+  'Generate a JSON schema for a user profile with name, email, age, and preferences'
+);
 
-const result = await model.generateContent(prompt);
 const jsonResponse = JSON.parse(result.response.text());
 ```
 
-### 3. Conversational Context
+### 4. Cached Content (Coming Soon)
 
 ```typescript
-const model = genAI.getGenerativeModel({
-  model: 'gemini-1.5-flash'
+// Cache large documents for reuse
+const cachedContent = await model.cacheContent({
+  model: 'gemini-1.5-pro',
+  contents: largeDocument
 });
 
-const chat = model.startChat({
-  history: [
-    {
-      role: 'user',
-      parts: [{ text: 'I need help building a React app' }]
-    },
-    {
-      role: 'model',
-      parts: [{ text: 'I can help with that. What features do you need?' }]
-    }
-  ]
+// Use cached content in subsequent requests
+const result = await model.generateContent({
+  cachedContent: cachedContent.name,
+  contents: 'Summarize section 5'
 });
-
-// Continue conversation
-const result = await chat.sendMessage('I need authentication and a dashboard');
 ```
-
-## Integration Checklist
-
-- [ ] Set up Gemini API credentials
-- [ ] Configure error handling and retry logic
-- [ ] Implement streaming for long responses
-- [ ] Set up safety filters
-- [ ] Configure caching strategy
-- [ ] Add rate limiting
-- [ ] Implement multimodal capabilities if needed
-- [ ] Set up monitoring and logging
-- [ ] Optimize token usage
-- [ ] Test with various prompt formats
-- [ ] Add cost tracking
-
-## Best Practices Summary
-
-1. **Use the right model**: Flash for speed, Pro for complexity
-2. **Leverage multimodal**: Take advantage of image analysis
-3. **Structure prompts**: Clear formatting improves results
-4. **Implement streaming**: Better UX for long generations
-5. **Cache context**: Reuse system instructions
-6. **Handle errors**: Implement retry logic
-7. **Monitor usage**: Track tokens and costs
-8. **Use function calling**: For structured outputs
-9. **Test safety filters**: Understand content policies
-10. **Optimize for cost**: Use Flash when Pro isn't needed
 
 ---
 
-*Last Updated: 2025-12-30*
-*Version: 1.0*
+## Troubleshooting
+
+### Issue: "API key not valid"
+
+**Solution:** Verify API key is correct and not expired
+
+```typescript
+// Test API key
+const testKey = async () => {
+  try {
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    await model.generateContent('test');
+    console.log('✅ API key valid');
+  } catch (error) {
+    console.error('❌ API key invalid:', error.message);
+  }
+};
+```
+
+### Issue: Safety blocking
+
+**Solution:** Adjust safety settings or rephrase prompt
+
+```typescript
+const relaxedSafetySettings = [
+  {
+    category: 'HARM_CATEGORY_HARASSMENT',
+    threshold: 'BLOCK_ONLY_HIGH'
+  },
+  // ... other categories
+];
+```
+
+### Issue: Rate limit exceeded
+
+**Solution:** Implement exponential backoff
+
+```typescript
+async function withBackoff(fn, maxRetries = 5) {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      return await fn();
+    } catch (error) {
+      if (error.status !== 429) throw error;
+      const delay = Math.min(1000 * Math.pow(2, i), 32000);
+      await sleep(delay);
+    }
+  }
+}
+```
+
+### Issue: Empty or incomplete responses
+
+**Solution:** Increase `maxOutputTokens`
+
+```typescript
+generationConfig: {
+  maxOutputTokens: 4000  // Increase limit
+}
+```
+
+---
+
+## Integration Checklist
+
+- [ ] API key configured (Google AI Studio or Vertex AI)
+- [ ] SDK installed and imported
+- [ ] Error handling implemented
+- [ ] Rate limiting respected
+- [ ] Safety settings configured
+- [ ] Cost tracking enabled
+- [ ] Logging configured
+- [ ] User authentication verified
+- [ ] Input validation active
+- [ ] Retry logic in place
+- [ ] Monitoring enabled
+
+---
+
+## Resources
+
+- [Gemini API Documentation](https://ai.google.dev/docs)
+- [Vertex AI Documentation](https://cloud.google.com/vertex-ai/docs)
+- [Google AI Studio](https://makersuite.google.com/)
+- [Gemini Cookbook](https://github.com/google/generative-ai-docs)
+- [Pricing Calculator](https://ai.google.dev/pricing)
+- [Model Comparison](https://ai.google.dev/models/gemini)
+
+---
+
+## Support
+
+For Gemini integration issues:
+
+1. Check [Google Cloud Status](https://status.cloud.google.com/)
+2. Review error messages and logs
+3. Consult this documentation
+4. Check [Google AI Forum](https://discuss.ai.google.dev/)
+5. Open GitHub issue with `gemini` label
+
+---
+
+**Last Updated:** December 30, 2025  
+**Version:** 1.0  
+**Maintainer:** FlashFusion Team  
+**Gemini Version:** 1.5 Pro/Flash, 1.0 Pro/Pro Vision
