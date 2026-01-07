@@ -7,8 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Testing Infrastructure** (Q1 2026 Week 1 - Vitest Setup)
+  - Vitest test runner with React Testing Library
+  - Interactive test UI (`npm run test:ui`)
+  - Coverage reporting with v8 provider
+  - Watch mode for rapid development
+  - Test utilities and mocks (`src/test/`)
+  - Example tests: 27 tests passing with 100% coverage on tested files
+  - npm scripts: `test`, `test:watch`, `test:ui`, `test:coverage`
+
+### Changed
+- Updated ESLint configuration to ignore coverage directory
+- Updated `.gitignore` to exclude test coverage outputs
+
+### Fixed
+- 4 security vulnerabilities in existing dependencies (glob, js-yaml, mdast-util-to-hast)
+
+### Security
+- Dependency audit completed; remaining vulnerabilities documented (jspdf, react-quill require major upgrades)
+
 ### Planned
-- Testing infrastructure (Vitest + React Testing Library + Playwright)
+- Unit Testing (Week 2-3): Utilities, API clients, security functions, business logic
+- Component Testing (Week 3-4): UI primitives, forms, complex components
+- E2E Testing (Week 4): Playwright setup for critical user paths
 - CI/CD pipelines (GitHub Actions)
 - CORS security restrictions for production
 - TypeScript migration for frontend
