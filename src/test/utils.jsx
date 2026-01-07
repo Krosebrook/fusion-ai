@@ -19,8 +19,8 @@ export function createTestQueryClient() {
       queries: {
         // Disable retries in tests
         retry: false,
-        // Don't cache queries in tests
-        cacheTime: 0,
+        // Don't cache queries in tests (gcTime replaces cacheTime in newer versions)
+        gcTime: 0,
       },
       mutations: {
         // Disable retries in tests
