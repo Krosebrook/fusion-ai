@@ -82,13 +82,79 @@ npm run dev
 ### Available Scripts
 
 ```bash
-npm run dev        # Start development server
-npm run build      # Build for production
-npm run preview    # Preview production build
-npm run lint       # Lint code
-npm run lint:fix   # Auto-fix lint issues
-npm run typecheck  # Type checking
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run preview      # Preview production build
+npm run lint         # Lint code
+npm run lint:fix     # Auto-fix lint issues
+npm run typecheck    # Type checking
+npm test             # Run tests once
+npm run test:watch   # Run tests in watch mode
+npm run test:ui      # Open interactive test UI
+npm run test:coverage # Generate coverage report
 ```
+
+## 🧪 Testing
+
+FlashFusion now includes a comprehensive testing infrastructure powered by Vitest and React Testing Library.
+
+### Running Tests
+
+```bash
+# Run all tests once
+npm test
+
+# Run tests in watch mode (re-runs on file changes)
+npm run test:watch
+
+# Open interactive test UI in browser
+npm run test:ui
+
+# Generate coverage report
+npm run test:coverage
+```
+
+### Writing Tests
+
+Tests are co-located with source files using `.test.js` or `.test.jsx` extensions:
+
+```javascript
+// Example: src/lib/utils.test.js
+import { describe, it, expect } from 'vitest';
+import { cn } from './utils';
+
+describe('cn utility', () => {
+  it('should merge class names', () => {
+    expect(cn('foo', 'bar')).toBe('foo bar');
+  });
+});
+```
+
+### Test Utilities
+
+Use the provided test utilities for component testing:
+
+```javascript
+// Example: src/components/ui/button.test.jsx
+import { renderWithProviders, screen } from '@/test/utils';
+import { Button } from './button';
+
+it('should render button', () => {
+  renderWithProviders(<Button>Click me</Button>);
+  expect(screen.getByRole('button')).toBeInTheDocument();
+});
+```
+
+### Test Coverage
+
+Current test coverage: **27 tests passing** (initial setup)
+
+- `src/lib/utils.js` - 100% coverage (8 tests)
+- `src/components/ui/button.jsx` - 100% coverage (19 tests)
+
+Coverage reports are generated in the `coverage/` directory and excluded from git.
+
+**Target:** 40% overall coverage by Q1 2026 (Week 8)
 
 ## 🏗️ Architecture
 
