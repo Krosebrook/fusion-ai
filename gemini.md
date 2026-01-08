@@ -2,8 +2,8 @@
 
 > Comprehensive guide to integrating and using Google's Gemini AI models in FlashFusion Platform
 
-**Version:** 1.0  
-**Last Updated:** December 30, 2025  
+**Version:** 1.1  
+**Last Updated:** January 8, 2026  
 **Provider:** Google AI (Vertex AI / Google AI Studio)  
 **Status:** Production-Ready
 
@@ -905,7 +905,7 @@ For Gemini integration issues:
 
 ---
 
-**Last Updated:** December 30, 2025  
-**Version:** 1.0  
+**Last Updated:** January 8, 2026  
+**Version:** 1.1  
 **Maintainer:** FlashFusion Team  
 **Gemini Version:** 1.5 Pro/Flash, 1.0 Pro/Pro Vision

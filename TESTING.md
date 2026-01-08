@@ -767,5 +767,5 @@ export default defineConfig({
 
 ---
 
-*Last Updated: 2025-12-30*
-*Version: 1.0*
+*Last Updated: January 8, 2026*
+*Version: 1.1*

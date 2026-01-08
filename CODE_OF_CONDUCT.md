@@ -191,5 +191,5 @@ If you have questions about this Code of Conduct, please:
 
 ---
 
-*Last Updated: 2025-12-30*
+*Last Updated: January 8, 2026*
 *Version: 2.1*
