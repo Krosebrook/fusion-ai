@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { CinematicContainer } from '@/components/cinematic-engine/CinematicContainer';
 import { CameraController } from '@/components/cinematic-engine/CameraController';

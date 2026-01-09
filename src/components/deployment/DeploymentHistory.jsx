@@ -1,6 +1,5 @@
-import React from "react";
 import { motion } from "framer-motion";
-import { Clock, CheckCircle2, XCircle, ExternalLink } from "lucide-react";
+import { CheckCircle2, XCircle, ExternalLink } from "lucide-react";
 
 const mockHistory = [
   { id: 1, time: "2 hours ago", status: "success", env: "production", url: "https://app.buildbuddy.app" },

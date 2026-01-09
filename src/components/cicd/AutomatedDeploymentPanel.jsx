@@ -3,7 +3,6 @@
  * Manages staging deployments with one-click rollback
  */
 
-import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';

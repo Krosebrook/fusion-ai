@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -7,8 +7,8 @@ import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import {
-  Sparkles, Wand2, Loader2, CheckCircle2, Code, Server,
-  GitBranch, Shield, Zap, ArrowRight, Copy, Download
+  Sparkles, Wand2, Loader2, CheckCircle2, Code,
+  GitBranch, Shield, Zap, Copy, Download
 } from "lucide-react";
 import PipelineConfigurator from "../components/cicd/PipelineConfigurator";
 

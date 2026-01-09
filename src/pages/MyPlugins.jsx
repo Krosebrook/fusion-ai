@@ -2,7 +2,7 @@
  * My Plugins - Manage installed plugins
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CinematicCard } from '../components/atoms/CinematicCard';
 import { CinematicButton } from '../components/atoms/CinematicButton';

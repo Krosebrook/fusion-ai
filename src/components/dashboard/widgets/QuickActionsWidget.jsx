@@ -3,12 +3,10 @@
  * Context-aware shortcuts based on user workflow
  */
 
-import React from 'react';
 import { motion } from 'framer-motion';
 import { CinematicCard } from '../../atoms/CinematicCard';
-import { CinematicButton } from '../../atoms/CinematicButton';
 import { 
-  Code, Palette, Zap, FileText, Sparkles, Play, Plus, Upload 
+  Code, Palette, Zap, FileText, Sparkles, Plus, Upload 
 } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 

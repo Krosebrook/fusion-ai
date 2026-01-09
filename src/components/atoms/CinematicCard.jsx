@@ -3,9 +3,7 @@
  * Glassmorphic card with depth and lighting
  */
 
-import React from 'react';
 import { motion } from 'framer-motion';
-import { tokens } from '../design-system/tokens';
 import { cn } from '@/lib/utils';
 
 export function CinematicCard({

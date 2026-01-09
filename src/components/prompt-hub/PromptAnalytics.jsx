@@ -3,10 +3,9 @@
  * Performance metrics and effectiveness analysis
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { CinematicCard } from '../atoms/CinematicCard';
-import { CinematicBadge } from '../atoms/CinematicBadge';
 import { motion } from 'framer-motion';
 import { 
   TrendingUp, TrendingDown, Clock, Zap, 

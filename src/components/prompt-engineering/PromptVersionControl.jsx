@@ -1,15 +1,14 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import {
-  GitBranch, GitCommit, Clock, User, ChevronRight, RotateCcw,
-  CheckCircle2, Star, Tag, Plus, Eye, ArrowLeft, ArrowRight,
-  Diff, Copy, Loader2
+  GitBranch, GitCommit, Clock, User, RotateCcw,
+  CheckCircle2, Star, Eye, ArrowRight,
+  Diff, Loader2
 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";

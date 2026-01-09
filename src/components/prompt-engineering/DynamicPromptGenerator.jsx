@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { useMutation } from "@tanstack/react-query";
@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import {
-  Wand2, Loader2, Sparkles, Copy, Save, GitBranch, Shield, Brain, Zap, Code
+  Wand2, Loader2, Sparkles, Copy, Save
 } from "lucide-react";
 import { toast } from "sonner";
 

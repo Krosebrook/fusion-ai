@@ -3,12 +3,11 @@
  * Advanced visual asset generation
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { generationService } from '../services/GenerationService';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { CinematicButton } from '../atoms/CinematicButton';
-import { CinematicInput } from '../atoms/CinematicInput';
-import { Image, Palette, Download } from 'lucide-react';
+import { Image, Download } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';

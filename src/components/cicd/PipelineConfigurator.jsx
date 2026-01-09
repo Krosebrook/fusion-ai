@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -75,7 +75,7 @@ export default function PipelineConfigurator({ onSave, initialConfig }) {
         available_branches: initialConfig.available_branches || prev.available_branches
       }));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, []);
 
   const [showRepoSelector, setShowRepoSelector] = useState(false);

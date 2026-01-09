@@ -3,15 +3,14 @@
  * Generates starter code for plugin development
  */
 
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState } from 'react';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { CinematicButton } from '../atoms/CinematicButton';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Download, Sparkles } from 'lucide-react';
+import { Download } from 'lucide-react';
 import { toast } from 'sonner';
 
 const pluginTemplates = {

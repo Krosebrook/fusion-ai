@@ -3,8 +3,7 @@
  * AI-powered CI/CD pipeline configuration with drag-and-drop interface
  */
 
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState } from 'react';
 import { CinematicButton } from '../components/atoms/CinematicButton';
 import { VisualPipelineEditor } from '@/components/cicd/VisualPipelineEditor';
 import { ArrowLeft, Rocket } from 'lucide-react';

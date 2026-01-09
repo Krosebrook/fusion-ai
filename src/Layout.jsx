@@ -2,10 +2,8 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { cn } from "@/lib/utils";
-import { 
-  Home, LayoutDashboard, Wrench, BarChart3, Menu, X, 
-  Sparkles, PlayCircle, ArrowRight, UserPlus, Code, BookOpen, Globe, Link2,
-  Rocket, Server, Lock, GitBranch
+import { LayoutDashboard, Wrench, BarChart3, Menu, X, PlayCircle, ArrowRight, UserPlus, Code, BookOpen, Globe, Link2,
+  Rocket
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { base44 } from "@/api/base44Client";
@@ -13,7 +11,6 @@ import { AuthProvider } from "@/components/hooks/useAuth";
 import { GlobalErrorBoundary } from "@/components/core/GlobalErrorBoundary";
 import NotificationCenter from "./components/collaboration/NotificationCenter";
 import { AuroraBackground } from "./components/effects/AuroraBackground";
-import { PWAInstaller } from "./components/pwa/PWAInstaller";
 import {
   NavigationMenu,
   NavigationMenuContent,

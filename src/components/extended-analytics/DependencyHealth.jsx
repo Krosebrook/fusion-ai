@@ -1,6 +1,5 @@
-import React from "react";
 import { motion } from "framer-motion";
-import { Package, AlertTriangle, CheckCircle2, ArrowUp, Shield, ExternalLink } from "lucide-react";
+import { Package, AlertTriangle, CheckCircle2, ArrowUp, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 

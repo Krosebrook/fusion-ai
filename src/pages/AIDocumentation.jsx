@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import DocumentationPreview from "@/components/documentation/DocumentationPreview";
-import DocumentationSettings from "@/components/documentation/DocumentationSettings";
 import { 
   BookOpen, Download, FileText, Code, Users, 
-  Package, Settings, Sparkles, CheckCircle2 
+  Package, Sparkles, CheckCircle2 
 } from "lucide-react";
 
 const easeInOutCubic = [0.4, 0, 0.2, 1];

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
-  ListTodo, Plus, Play, Pause, RotateCcw, CheckCircle2,
+  ListTodo, Plus, Play, RotateCcw, CheckCircle2,
   AlertCircle, Clock, Loader2, Bot, ChevronRight, X,
   ArrowUpCircle, ArrowDownCircle, Minus
 } from "lucide-react";

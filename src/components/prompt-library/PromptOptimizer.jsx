@@ -3,14 +3,13 @@
  * AI-powered prompt refinement and improvement
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { promptService } from '../services/PromptService';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { CinematicButton } from '../atoms/CinematicButton';
 import { CinematicBadge } from '../atoms/CinematicBadge';
 import { X, Sparkles, Check, AlertCircle, TrendingUp, Lightbulb } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 
 export function PromptOptimizer({ template, onApply, onClose }) {

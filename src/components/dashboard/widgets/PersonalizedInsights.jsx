@@ -3,7 +3,7 @@
  * AI-driven suggestions based on user activity and preferences
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { CinematicCard } from '../../atoms/CinematicCard';
 import { CinematicBadge } from '../../atoms/CinematicBadge';

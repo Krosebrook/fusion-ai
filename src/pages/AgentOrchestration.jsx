@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import {
-  Bot, Users, GitBranch, MessageSquare, ListTodo, Shield,
-  Play, Zap, Network, Settings, Plus, BarChart3
+  Bot, GitBranch, MessageSquare, ListTodo, Shield,
+  Play, Zap, Network, Settings, Plus
 } from "lucide-react";
 import AgentRoleManager from "../components/agents/AgentRoleManager";
 import AgentCommunicationPanel from "../components/agents/AgentCommunicationPanel";

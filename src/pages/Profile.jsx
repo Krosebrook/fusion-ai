@@ -3,7 +3,7 @@
  * View and edit user information
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useAuth } from '../components/hooks/useAuth';
 import { ProtectedRoute } from '../components/ui-library/ProtectedRoute';
 import { base44 } from '@/api/base44Client';

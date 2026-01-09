@@ -1,6 +1,5 @@
-import React from "react";
 import { motion } from "framer-motion";
-import { Server, CheckCircle2, XCircle, Clock, Shield, ExternalLink, Activity, Settings } from "lucide-react";
+import { Server, Clock, Shield, ExternalLink, Activity, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function EnvironmentCard({ environment, onSelect, delay = 0 }) {

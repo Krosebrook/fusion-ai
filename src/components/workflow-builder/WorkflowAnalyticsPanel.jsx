@@ -3,8 +3,8 @@
  * Display AI-powered insights from execution logs
  */
 
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { CinematicButton } from '../atoms/CinematicButton';
 import {
@@ -14,7 +14,6 @@ import {
   Activity,
   X,
   Loader2,
-  CheckCircle2,
   Clock,
   BarChart3,
 } from 'lucide-react';

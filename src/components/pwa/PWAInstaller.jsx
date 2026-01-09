@@ -3,7 +3,7 @@
  * Displays install prompt for Progressive Web App
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Download, Smartphone } from 'lucide-react';
 

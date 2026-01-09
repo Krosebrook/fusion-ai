@@ -1,4 +1,3 @@
-import React from "react";
 import { motion } from "framer-motion";
 import { Calendar, CheckCircle2, AlertTriangle, Clock } from "lucide-react";
 

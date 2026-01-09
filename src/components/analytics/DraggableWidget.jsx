@@ -1,4 +1,3 @@
-import React from "react";
 import { Draggable } from "@hello-pangea/dnd";
 import { motion } from "framer-motion";
 import { GripVertical } from "lucide-react";

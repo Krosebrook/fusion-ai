@@ -2,7 +2,7 @@
  * Condition Node - Branching logic
  */
 
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { Handle, Position } from 'reactflow';
 import { GitBranch } from 'lucide-react';
 

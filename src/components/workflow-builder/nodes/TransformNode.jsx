@@ -2,7 +2,7 @@
  * Transform Node - Data transformation
  */
 
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { Handle, Position } from 'reactflow';
 import { Shuffle } from 'lucide-react';
 

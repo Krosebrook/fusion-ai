@@ -1,4 +1,3 @@
-import React from 'react';
 import { StatCard } from '@/components/ui-library';
 import { Code, Zap, TrendingUp } from 'lucide-react';
 

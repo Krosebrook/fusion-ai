@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { 
   Terminal, Copy, CheckCircle2, ChevronRight, GitBranch, Play, 
-  Eye, Lock, RefreshCw, Settings, Download, Key, FileCode, Wand2
+  Eye, Lock, Settings, Download, Key, FileCode
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

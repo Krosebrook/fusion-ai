@@ -3,7 +3,7 @@
  * History and management of all AI-generated content
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useAuth } from '../components/hooks/useAuth';
 import { ProtectedRoute } from '../components/ui-library/ProtectedRoute';
 import { useEntityList, useDeleteEntity } from '../components/hooks/useEntity';
@@ -13,9 +13,8 @@ import { CinematicInput } from '../components/atoms/CinematicInput';
 import { CinematicBadge } from '../components/atoms/CinematicBadge';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Sparkles, Search, Filter, Download, Share2, 
-  Trash2, Eye, Copy, Image, Code, FileText,
-  Clock, Calendar
+  Sparkles, Search, Download, 
+  Trash2, Eye, Copy, Image, Code, FileText
 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';

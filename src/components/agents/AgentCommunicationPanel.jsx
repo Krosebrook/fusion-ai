@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   MessageSquare, Send, Bot, ArrowRight, Clock, CheckCircle2,
-  AlertCircle, Loader2, Radio, Filter, Zap
+  AlertCircle, Loader2, Radio, Zap
 } from "lucide-react";
 
 const MESSAGE_TYPE_CONFIG = {

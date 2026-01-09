@@ -3,11 +3,10 @@
  * Cinema-grade assistant with intelligent node generation
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { CinematicButton } from '../atoms/CinematicButton';
-import { CinematicInput } from '../atoms/CinematicInput';
 import { Sparkles, Loader2, Zap, ArrowRight, TrendingUp, ChevronDown } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';

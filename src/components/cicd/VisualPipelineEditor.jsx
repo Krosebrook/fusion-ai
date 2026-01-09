@@ -3,7 +3,7 @@
  * Drag-and-drop pipeline configuration with AI suggestions
  */
 
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import ReactFlow, {
   Background,
   Controls,
@@ -14,23 +14,17 @@ import ReactFlow, {
   MarkerType,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { motion } from 'framer-motion';
 import { CinematicButton } from '../atoms/CinematicButton';
-import { CinematicCard } from '../atoms/CinematicCard';
-import { SecurityAnalysisPanel } from './SecurityAnalysisPanel';
 import { DependencySecurityPanel } from './DependencySecurityPanel';
 import { DynamicSecretsManager } from './DynamicSecretsManager';
 import { RealTimeSecurityMonitor } from './RealTimeSecurityMonitor';
 import {
-  Plus,
   Sparkles,
   Save,
-  Play,
   GitBranch,
   Hammer,
   TestTube,
   Rocket,
-  Server,
   Code,
   Shield,
 } from 'lucide-react';

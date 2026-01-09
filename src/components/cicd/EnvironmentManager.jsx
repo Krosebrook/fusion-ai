@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Server, Lock, Eye, EyeOff, Trash2, Shield, Globe, Edit2, Check, X } from "lucide-react";
+import { Plus, Server, Lock, Trash2, Shield, Globe, Edit2, Check, X } from "lucide-react";
 
 const colorOptions = {
   development: { bg: "#00B4D8", light: "rgba(0, 180, 216, 0.1)" },

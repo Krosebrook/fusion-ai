@@ -1,12 +1,11 @@
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { AlertTriangle, Clock, Zap, Server, GitBranch, TrendingDown, ChevronRight, Wrench } from "lucide-react";
+import { AlertTriangle, Clock, Zap, Server, TrendingDown, ChevronRight, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  Treemap
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from "recharts";
 
 export default function BottleneckAnalyzer({ runs, configs }) {

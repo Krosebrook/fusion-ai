@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Database, Cloud, CheckCircle2, XCircle, Settings, Link2, RefreshCw, Lock, Key, ExternalLink } from "lucide-react";
+import { Database, CheckCircle2, XCircle, Settings, Link2, RefreshCw, Key } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

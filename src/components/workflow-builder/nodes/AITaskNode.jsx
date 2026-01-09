@@ -2,7 +2,7 @@
  * AI Task Node - Execute AI model operations
  */
 
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { Handle, Position } from 'reactflow';
 import { Sparkles } from 'lucide-react';
 

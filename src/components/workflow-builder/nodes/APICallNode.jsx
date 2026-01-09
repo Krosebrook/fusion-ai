@@ -2,7 +2,7 @@
  * API Call Node - External API integration with configuration
  */
 
-import React, { memo, useState } from 'react';
+import { memo, useState } from 'react';
 import { Handle, Position } from 'reactflow';
 import { Plug, Settings } from 'lucide-react';
 import { APINodeConfigPanel } from '../APINodeConfigPanel';

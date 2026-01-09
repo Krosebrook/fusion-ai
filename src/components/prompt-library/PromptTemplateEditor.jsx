@@ -3,12 +3,12 @@
  * Create and edit custom prompt templates
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { CinematicButton } from '../atoms/CinematicButton';
 import { CinematicInput } from '../atoms/CinematicInput';
 import { CinematicBadge } from '../atoms/CinematicBadge';
-import { X, Plus, Trash2, Save } from 'lucide-react';
+import { X, Plus, Save } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';

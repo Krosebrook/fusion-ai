@@ -3,7 +3,7 @@
  * Adaptive hub with customizable widgets and AI-driven insights
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/components/hooks/useAuth';
 import { LoadingScreen } from '@/components/ui-library';
 import { OnboardingWizard } from '@/components/onboarding/OnboardingWizard';

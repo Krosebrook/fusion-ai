@@ -3,7 +3,6 @@
  * Manage and browse AI agent workflows
  */
 
-import React, { useState } from 'react';
 import { useAuth } from '@/components/hooks/useAuth';
 import { useEntityList } from '@/components/hooks/useEntity';
 import { CinematicCard } from '@/components/atoms/CinematicCard';
@@ -11,7 +10,7 @@ import { CinematicButton } from '@/components/atoms/CinematicButton';
 import { CinematicBadge } from '@/components/atoms/CinematicBadge';
 import { LoadingScreen, EmptyState } from '@/components/ui-library';
 import { motion } from 'framer-motion';
-import { Plus, Zap, Clock, CheckCircle, AlertCircle, Play, Edit } from 'lucide-react';
+import { Plus, Zap, Clock, CheckCircle, Play, Edit } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { format } from 'date-fns';
 

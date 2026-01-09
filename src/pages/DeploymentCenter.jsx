@@ -1,12 +1,11 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
+import { motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
-  Server, Rocket, GitBranch, ArrowRight, Plus, Settings, Shield,
-  CheckCircle2, XCircle, Clock, Activity, Layers, RefreshCw
+  Server, Rocket, ArrowRight, Plus, Settings, Shield, Activity, Layers
 } from "lucide-react";
 import EnvironmentCard from "../components/deployment/EnvironmentCard";
 import DeploymentStrategies from "../components/deployment/DeploymentStrategies";

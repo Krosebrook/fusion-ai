@@ -3,8 +3,6 @@
  * Slow breathing blobs with disciplined motion (42s/58s loops)
  */
 
-import React from 'react';
-import { motion } from 'framer-motion';
 
 export function AuroraBackground() {
   return (

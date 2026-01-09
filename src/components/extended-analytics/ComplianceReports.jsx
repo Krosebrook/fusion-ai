@@ -1,11 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { 
-  FileText, Download, Shield, CheckCircle2, XCircle, AlertTriangle,
-  Calendar, Filter, Eye, Printer
+  FileText, Download, Shield, CheckCircle2, XCircle, AlertTriangle, Eye
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { base44 } from "@/api/base44Client";
 import { useMutation } from "@tanstack/react-query";
 

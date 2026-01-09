@@ -1,16 +1,15 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import {
-  Zap, Search, CheckCircle2, AlertCircle, Settings, Play,
+  Zap, Search, CheckCircle2, Settings,
   Workflow, Database, Cloud, Bot, MessageSquare, ShoppingCart,
-  Mail, Code, BarChart3, Shield, Globe, GitBranch, Sparkles,
+  Mail, Shield, Globe, GitBranch, Sparkles,
   Plus, ExternalLink, Activity
 } from "lucide-react";
 import { toast } from "sonner";

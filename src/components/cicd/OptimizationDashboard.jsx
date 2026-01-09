@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Sparkles, TrendingUp, Zap, Clock, Target, CheckCircle2,
-  XCircle, Loader2, ChevronDown, Code, ArrowRight, BarChart3, Share2,
+  XCircle, Loader2, ChevronDown, Code, BarChart3, Share2,
   AlertTriangle, TrendingDown
 } from "lucide-react";
 import ShareDialog from "../collaboration/ShareDialog";

@@ -1,7 +1,6 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { GitBranch, CheckCircle2, Clock, TrendingUp, ArrowLeftRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { GitBranch, CheckCircle2, TrendingUp, ArrowLeftRight } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend,

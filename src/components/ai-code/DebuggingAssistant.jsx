@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { integrationAPI } from '@/components/core/APIClient';
 import { GlassmorphicCard } from '@/components/ui-library/GlassmorphicCard';
-import { Bug, AlertTriangle, CheckCircle2, Lightbulb, Code, Activity, Cpu, Zap } from 'lucide-react';
+import { Bug, AlertTriangle, CheckCircle2, Lightbulb, Activity, Cpu, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 
 export function DebuggingAssistant() {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCameraControl } from '@/components/hooks/useCameraControl';
 import { Button } from '@/components/ui/button';

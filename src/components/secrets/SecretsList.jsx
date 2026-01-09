@@ -1,9 +1,8 @@
-import React, { useState } from "react";
-import { AIContextualHelp } from '../help/AIContextualHelp';
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Key, Eye, EyeOff, Copy, Trash2, Edit2, Clock, Server, Shield,
-  AlertTriangle, CheckCircle2, X, Save
+  Key, Eye, EyeOff, Copy, Trash2, Clock, Server, Shield,
+  AlertTriangle, X, Save
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

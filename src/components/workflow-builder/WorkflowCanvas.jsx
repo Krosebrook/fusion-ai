@@ -2,7 +2,7 @@
  * Workflow Canvas - Visual workflow builder with ReactFlow
  */
 
-import React, { useCallback, useState, useRef } from 'react';
+import { useCallback, useState, useRef } from 'react';
 import ReactFlow, {
   Background,
   Controls,
@@ -15,7 +15,7 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import { motion } from 'framer-motion';
 import { CinematicButton } from '../atoms/CinematicButton';
-import { Plus, Play, Save, Settings, Package, Layers, Sparkles, TrendingUp, BarChart3 } from 'lucide-react';
+import { Plus, Play, Save, Package, Layers, Sparkles, TrendingUp, BarChart3 } from 'lucide-react';
 import { toast } from 'sonner';
 import { base44 } from '@/api/base44Client';
 import { TriggerNode } from './nodes/TriggerNode';

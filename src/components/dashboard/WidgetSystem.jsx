@@ -2,10 +2,9 @@
  * Widget System - Customizable dashboard layout with drag-and-drop
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CinematicCard } from '../atoms/CinematicCard';
 import { CinematicButton } from '../atoms/CinematicButton';
 import { Settings, Plus, X, GripVertical } from 'lucide-react';
 import { base44 } from '@/api/base44Client';

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import { User } from "@/entities/User";

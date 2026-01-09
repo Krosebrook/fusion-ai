@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,7 +7,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Slider } from '@/components/ui/slider';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useCreateEntity, useUpdateEntity } from '@/components/hooks/useEntity';
-import { toast } from 'sonner';
 
 const PERSONALITY_PRESETS = {
   analytical: { tone: 'technical', verbosity: 'concise', creativity: 30 },

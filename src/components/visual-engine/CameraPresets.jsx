@@ -1,4 +1,3 @@
-import React from 'react';
 import { Camera, Circle } from 'lucide-react';
 
 export const CAMERA_PRESETS = {

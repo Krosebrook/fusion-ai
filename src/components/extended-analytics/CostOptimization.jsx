@@ -1,9 +1,8 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { motion } from "framer-motion";
-import { DollarSign, TrendingDown, Clock, Zap, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { DollarSign, TrendingDown, Clock, Zap, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  LineChart, Line, BarChart, Bar, AreaChart, Area,
+import { BarChart, Bar, AreaChart, Area,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from "recharts";
 

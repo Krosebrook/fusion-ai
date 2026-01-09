@@ -3,7 +3,7 @@
  * Comprehensive code generation and assistance
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { aiService } from '../services/AIService';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { CinematicButton } from '../atoms/CinematicButton';

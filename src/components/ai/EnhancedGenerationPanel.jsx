@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Sparkles, Wand2, Settings2, Zap, Clock, CheckCircle2, Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Sparkles, Wand2, Settings2, Loader2 } from "lucide-react";
 
 const spring = {
   type: "spring",

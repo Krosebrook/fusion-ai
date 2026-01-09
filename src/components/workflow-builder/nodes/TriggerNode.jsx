@@ -2,7 +2,7 @@
  * Trigger Node - Workflow entry point
  */
 
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { Handle, Position } from 'reactflow';
 import { Play } from 'lucide-react';
 

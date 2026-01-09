@@ -3,14 +3,14 @@
  * App preferences and configuration
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../components/hooks/useAuth';
 import { ProtectedRoute } from '../components/ui-library/ProtectedRoute';
 import { CinematicCard } from '../components/atoms/CinematicCard';
 import { CinematicButton } from '../components/atoms/CinematicButton';
 import { motion } from 'framer-motion';
 import { 
-  Settings as SettingsIcon, Bell, Moon, Sun, 
+  Settings as SettingsIcon, Bell, Moon, 
   Globe, Keyboard, Zap, Save
 } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';

@@ -3,13 +3,13 @@
  * Real-time analytics visualization from plugin streams
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { Badge } from '@/components/ui/badge';
 import { pluginAnalyticsService } from '../services/PluginAnalyticsService';
-import { LineChart, Line, BarChart, Bar, PieChart, Pie, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
-import { Activity, TrendingUp, Zap } from 'lucide-react';
+import { LineChart, Line, BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Activity, Zap } from 'lucide-react';
 
 export function PluginAnalyticsDashboard({ plugin, config }) {
   const [streamData, setStreamData] = useState({});

@@ -3,7 +3,6 @@
  * Integrated documentation viewer for workflows
  */
 
-import React from 'react';
 import { DocumentationViewer } from '../documentation/DocumentationViewer';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
