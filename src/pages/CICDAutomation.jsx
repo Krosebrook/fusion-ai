@@ -11,12 +11,15 @@ import { Rocket, GitBranch, Activity, Plus, RefreshCw, Server, BarChart3, Shield
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { PermissionGuard, usePermissions } from "../components/rbac/PermissionGuard";
+import { AutomatedDeploymentPanel } from "../components/cicd/AutomatedDeploymentPanel";
 
 export default function CICDAutomationPage() {
   const navigate = useNavigate();
   const { hasPermission, isAdmin } = usePermissions();
   const [showConfig, setShowConfig] = useState(false);
   const [showEnvironments, setShowEnvironments] = useState(false);
+  const [showDeployments, setShowDeployments] = useState(false);
+  const [selectedPipelineId, setSelectedPipelineId] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
 
   const [configs, setConfigs] = useState([]);
@@ -212,6 +215,14 @@ export default function CICDAutomationPage() {
               <Code2 className="w-4 h-4 mr-2" />
               API
             </Button>
+            <Button
+              onClick={() => navigate(createPageUrl("SecurityMonitoring"))}
+              variant="outline"
+              className="border-red-500/30 text-red-400"
+            >
+              <Shield className="w-4 h-4 mr-2" />
+              Security Monitor
+            </Button>
             <PermissionGuard resource="pipelines" action="create">
               <Button
                 onClick={() => setShowConfig(!showConfig)}
@@ -318,6 +329,23 @@ export default function CICDAutomationPage() {
         >
           <DeploymentTimeline history={history} />
         </motion.div>
+
+        {/* Automated Deployment Panel */}
+        {pipelineConfigs.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+          >
+            <div className="mb-4">
+              <h2 className="text-xl font-bold text-white flex items-center gap-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                <Rocket className="w-5 h-5 text-green-400" />
+                Automated Deployments
+              </h2>
+            </div>
+            <AutomatedDeploymentPanel pipelineId={pipelineConfigs[0].id} />
+          </motion.div>
+        )}
       </div>
     </div>
   );

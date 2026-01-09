@@ -50,6 +50,7 @@ import PromptLibrary from './pages/PromptLibrary';
 import Secrets from './pages/Secrets';
 import SecretsVault from './pages/SecretsVault';
 import Security from './pages/Security';
+import SecurityMonitoring from './pages/SecurityMonitoring';
 import Settings from './pages/Settings';
 import Share from './pages/Share';
 import Tools from './pages/Tools';
@@ -57,7 +58,6 @@ import VisualPipelineBuilder from './pages/VisualPipelineBuilder';
 import WebsiteCloner from './pages/WebsiteCloner';
 import WorkflowBuilder from './pages/WorkflowBuilder';
 import Workflows from './pages/Workflows';
-import SecurityMonitoring from './pages/SecurityMonitoring';
 import __Layout from './Layout.jsx';
 
 
@@ -114,6 +114,7 @@ export const PAGES = {
     "Secrets": Secrets,
     "SecretsVault": SecretsVault,
     "Security": Security,
+    "SecurityMonitoring": SecurityMonitoring,
     "Settings": Settings,
     "Share": Share,
     "Tools": Tools,
@@ -121,7 +122,6 @@ export const PAGES = {
     "WebsiteCloner": WebsiteCloner,
     "WorkflowBuilder": WorkflowBuilder,
     "Workflows": Workflows,
-    "SecurityMonitoring": SecurityMonitoring,
 }
 
 export const pagesConfig = {
