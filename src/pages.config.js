@@ -26,6 +26,8 @@ import ContentStudio from './pages/ContentStudio';
 import Copilot from './pages/Copilot';
 import Dashboard from './pages/Dashboard';
 import DeploymentCenter from './pages/DeploymentCenter';
+import DeveloperConsole from './pages/DeveloperConsole';
+import DeveloperDashboard from './pages/DeveloperDashboard';
 import DeveloperTools from './pages/DeveloperTools';
 import EnhancedAnalytics from './pages/EnhancedAnalytics';
 import ExtendedAnalytics from './pages/ExtendedAnalytics';
@@ -58,8 +60,7 @@ import VisualPipelineBuilder from './pages/VisualPipelineBuilder';
 import WebsiteCloner from './pages/WebsiteCloner';
 import WorkflowBuilder from './pages/WorkflowBuilder';
 import Workflows from './pages/Workflows';
-import DeveloperConsole from './pages/DeveloperConsole';
-import DeveloperDashboard from './pages/DeveloperDashboard';
+import PromptStudio from './pages/PromptStudio';
 import __Layout from './Layout.jsx';
 
 
@@ -92,6 +93,8 @@ export const PAGES = {
     "Copilot": Copilot,
     "Dashboard": Dashboard,
     "DeploymentCenter": DeploymentCenter,
+    "DeveloperConsole": DeveloperConsole,
+    "DeveloperDashboard": DeveloperDashboard,
     "DeveloperTools": DeveloperTools,
     "EnhancedAnalytics": EnhancedAnalytics,
     "ExtendedAnalytics": ExtendedAnalytics,
@@ -124,8 +127,7 @@ export const PAGES = {
     "WebsiteCloner": WebsiteCloner,
     "WorkflowBuilder": WorkflowBuilder,
     "Workflows": Workflows,
-    "DeveloperConsole": DeveloperConsole,
-    "DeveloperDashboard": DeveloperDashboard,
+    "PromptStudio": PromptStudio,
 }
 
 export const pagesConfig = {
