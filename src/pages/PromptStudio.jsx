@@ -16,9 +16,13 @@ import { PromptTester } from '../components/prompt-studio/PromptTester';
 import { VersionComparison } from '../components/prompt-studio/VersionComparison';
 import { ABTestManager } from '../components/prompt-studio/ABTestManager';
 import { PromptLibrary } from '../components/prompt-studio/PromptLibrary';
+import { PromptAnalytics } from '../components/prompt-studio/PromptAnalytics';
+import { ABTestAnalytics } from '../components/prompt-studio/ABTestAnalytics';
+import { PromptDeploymentManager } from '../components/cicd/PromptDeploymentManager';
+import { PromptPromotionPipeline } from '../components/cicd/PromptPromotionPipeline';
 import { 
   Sparkles, Wand2, GitBranch, TestTube, 
-  Plus, Layers, TrendingUp 
+  Plus, Layers, TrendingUp, BarChart3, Rocket, Code
 } from 'lucide-react';
 
 export default function PromptStudioPage() {
@@ -119,26 +123,34 @@ export default function PromptStudioPage() {
 
         {/* Main Studio Interface */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="bg-slate-900/50 border border-white/10 backdrop-blur-xl p-1">
-            <TabsTrigger value="editor" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-pink-600">
-              <Wand2 className="w-4 h-4 mr-2" />
-              Prompt Editor
+          <TabsList className="bg-slate-900/50 border border-white/10 backdrop-blur-xl p-1 grid grid-cols-7 gap-1 w-full h-auto">
+            <TabsTrigger value="editor" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-pink-600 text-xs">
+              <Wand2 className="w-3 h-3 mr-1" />
+              <span className="hidden sm:inline">Editor</span>
             </TabsTrigger>
-            <TabsTrigger value="test" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-cyan-600">
-              <TestTube className="w-4 h-4 mr-2" />
-              Live Testing
+            <TabsTrigger value="test" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-cyan-600 text-xs">
+              <TestTube className="w-3 h-3 mr-1" />
+              <span className="hidden sm:inline">Test</span>
             </TabsTrigger>
-            <TabsTrigger value="versions" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-600 data-[state=active]:to-emerald-600">
-              <GitBranch className="w-4 h-4 mr-2" />
-              Versions
+            <TabsTrigger value="versions" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-600 data-[state=active]:to-emerald-600 text-xs">
+              <GitBranch className="w-3 h-3 mr-1" />
+              <span className="hidden sm:inline">Versions</span>
             </TabsTrigger>
-            <TabsTrigger value="ab-test" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:to-amber-600">
-              <TrendingUp className="w-4 h-4 mr-2" />
-              A/B Testing
+            <TabsTrigger value="ab-test" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:to-amber-600 text-xs">
+              <TrendingUp className="w-3 h-3 mr-1" />
+              <span className="hidden sm:inline">A/B</span>
             </TabsTrigger>
-            <TabsTrigger value="library" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-600 data-[state=active]:to-purple-600">
-              <Layers className="w-4 h-4 mr-2" />
-              Library
+            <TabsTrigger value="analytics" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-600 data-[state=active]:to-blue-600 text-xs">
+              <BarChart3 className="w-3 h-3 mr-1" />
+              <span className="hidden sm:inline">Analytics</span>
+            </TabsTrigger>
+            <TabsTrigger value="deploy" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-600 data-[state=active]:to-red-600 text-xs">
+              <Rocket className="w-3 h-3 mr-1" />
+              <span className="hidden sm:inline">Deploy</span>
+            </TabsTrigger>
+            <TabsTrigger value="library" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-600 data-[state=active]:to-purple-600 text-xs">
+              <Layers className="w-3 h-3 mr-1" />
+              <span className="hidden sm:inline">Lib</span>
             </TabsTrigger>
           </TabsList>
 
@@ -190,6 +202,46 @@ export default function PromptStudioPage() {
                   experiments={experiments}
                   onSelectExperiment={setSelectedExperiment}
                 />
+              </motion.div>
+            </TabsContent>
+
+            <TabsContent value="analytics" className="mt-6">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
+                <PromptAnalytics />
+              </motion.div>
+            </TabsContent>
+
+            <TabsContent value="ab-test" className="mt-6">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <ABTestManager 
+                    templates={templates}
+                    experiments={experiments}
+                    onSelectExperiment={setSelectedExperiment}
+                  />
+                  <ABTestAnalytics />
+                </div>
+              </motion.div>
+            </TabsContent>
+
+            <TabsContent value="deploy" className="mt-6">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <PromptDeploymentManager />
+                  {selectedTemplate && <PromptPromotionPipeline version={selectedTemplate} />}
+                </div>
               </motion.div>
             </TabsContent>
 
