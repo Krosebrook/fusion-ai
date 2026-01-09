@@ -3,8 +3,8 @@
  * Rich text editor for crafting prompts with dynamic variables
  */
 
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useCallback, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,7 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { 
   Plus, X, Sparkles, Save, Code, 
-  Settings, Variable, Hash 
+  Settings, Variable, Hash, AlertCircle
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -26,58 +26,63 @@ export function PromptEditor({ template, onSave }) {
   const [showVariableForm, setShowVariableForm] = useState(false);
   const [newVariable, setNewVariable] = useState({ name: '', type: 'string', description: '', default: '' });
 
-  const addVariable = () => {
-    if (!newVariable.name) {
-      toast.error('Variable name is required');
+  const addVariable = useCallback(() => {
+    if (!newVariable.name.trim()) {
+      toast.error('Variable name cannot be empty');
+      return;
+    }
+    
+    if (variables.some(v => v.name === newVariable.name)) {
+      toast.error('Variable name already exists');
       return;
     }
 
-    setVariables([...variables, { ...newVariable, required: true }]);
+    setVariables(prev => [...prev, { ...newVariable, required: true }]);
     setNewVariable({ name: '', type: 'string', description: '', default: '' });
     setShowVariableForm(false);
-    
-    // Auto-insert variable into prompt
     setPromptText(prev => prev + `{{${newVariable.name}}}`);
-  };
+  }, [newVariable, variables]);
 
-  const removeVariable = (varName) => {
-    setVariables(variables.filter(v => v.name !== varName));
-  };
+  const removeVariable = useCallback((varName) => {
+    setVariables(prev => prev.filter(v => v.name !== varName));
+  }, []);
 
-  const handleSave = async () => {
-    if (!name || !promptText) {
-      toast.error('Name and prompt text are required');
+  const insertVariable = useCallback((varName) => {
+    setPromptText(prev => prev + `{{${varName}}}`);
+  }, []);
+
+  const handleSave = useCallback(async () => {
+    if (!name.trim()) {
+      toast.error('Prompt name is required');
+      return;
+    }
+    
+    if (!promptText.trim()) {
+      toast.error('Prompt template cannot be empty');
       return;
     }
 
     try {
       const data = {
-        name,
-        description,
+        name: name.trim(),
+        description: description.trim(),
         template: promptText,
-        variables,
+        variables: variables.filter(v => v.name),
         category,
         tags: [],
         is_public: false
       };
 
-      let saved;
-      if (template?.id) {
-        saved = await base44.entities.PromptTemplate.update(template.id, data);
-      } else {
-        saved = await base44.entities.PromptTemplate.create(data);
-      }
+      const saved = template?.id
+        ? await base44.entities.PromptTemplate.update(template.id, data)
+        : await base44.entities.PromptTemplate.create(data);
 
-      toast.success('Prompt saved successfully');
+      toast.success(`Prompt ${template ? 'updated' : 'created'} successfully`);
       onSave?.(saved);
     } catch (error) {
-      toast.error('Failed to save prompt');
+      toast.error(error?.message || 'Failed to save prompt');
     }
-  };
-
-  const insertVariable = (varName) => {
-    setPromptText(prev => prev + `{{${varName}}}`);
-  };
+  }, [name, promptText, variables, category, template, onSave]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -187,10 +192,13 @@ export function PromptEditor({ template, onSave }) {
           </div>
 
           {/* New Variable Form */}
-          {showVariableForm && (
+          <AnimatePresence>
+            {showVariableForm && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
               className="mb-4 p-4 rounded-lg bg-white/5 border border-cyan-500/30 space-y-3"
             >
               <Input
@@ -226,15 +234,19 @@ export function PromptEditor({ template, onSave }) {
                 Add Variable
               </Button>
             </motion.div>
-          )}
+            )}
+          </AnimatePresence>
 
           {/* Variables List */}
           <div className="space-y-2">
-            {variables.map((variable) => (
+            <AnimatePresence mode="popLayout">
+              {variables.map((variable, idx) => (
               <motion.div
                 key={variable.name}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, x: -20, scale: 0.95 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                exit={{ opacity: 0, x: 20, scale: 0.95 }}
+                transition={{ type: 'spring', damping: 20, stiffness: 300, delay: idx * 0.02 }}
                 className="p-3 rounded-lg bg-white/5 border border-white/10 hover:border-cyan-500/30 transition-colors"
               >
                 <div className="flex items-start justify-between mb-2">
@@ -259,7 +271,8 @@ export function PromptEditor({ template, onSave }) {
                   <p className="text-white/40 text-xs mt-1">Default: {variable.default}</p>
                 )}
               </motion.div>
-            ))}
+              ))}
+            </AnimatePresence>
 
             {variables.length === 0 && (
               <div className="text-center py-8 text-white/40">
