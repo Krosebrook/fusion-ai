@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Lock, Shield, Key, RefreshCw, AlertTriangle, Clock, Eye, 
-  Database, Cloud, Settings, History, Plus
+import { Key, RefreshCw, AlertTriangle, Clock, Eye, 
+  Database, History, Plus
 } from "lucide-react";
 import SecretsList from "../components/secrets/SecretsList";
 import SecretRotation from "../components/secrets/SecretRotation";

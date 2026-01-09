@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -7,12 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import {
-  GitBranch, Plus, Trash2, Play, ArrowRight, ArrowDown, Settings,
-  Code, Zap, Sparkles, MessageSquare, Filter, RotateCcw, Copy,
-  ChevronDown, ChevronUp, Save, Loader2, AlertCircle, CheckCircle2,
+  GitBranch, Plus, Trash2, Play, ArrowDown,
+  Code, Zap, MessageSquare, ChevronUp, Save, Loader2, CheckCircle2,
   Split, Repeat, Layers
 } from "lucide-react";
 import { toast } from "sonner";

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Layers, Zap, GitBranch, CheckCircle2, AlertTriangle, ArrowRight, Settings, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";

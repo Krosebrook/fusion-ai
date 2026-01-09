@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { base44 } from "@/api/base44Client";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEntityList, useCreateEntity, useUpdateEntity, useDeleteEntity } from "@/components/hooks/useEntity";
 import { Button } from "@/components/ui/button";
@@ -11,10 +10,8 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
-  Bot, Plus, Edit3, Trash2, Shield, Zap, Brain, Code,
-  Eye, MessageSquare, Database, Globe, Save, X, Sparkles
+  Bot, Plus, Edit3, Trash2, Shield, Zap, Brain, MessageSquare, Database, Globe, Save, X, Sparkles
 } from "lucide-react";
-import { toast } from "sonner";
 
 const ROLE_PRESETS = [
   {

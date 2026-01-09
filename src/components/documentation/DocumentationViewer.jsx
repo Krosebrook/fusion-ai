@@ -2,9 +2,7 @@
  * Documentation Viewer - Display AI-generated workflow/component documentation
  */
 
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import ReactMarkdown from 'react-markdown';
+import { useState, useEffect } from 'react';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { CinematicButton } from '../atoms/CinematicButton';
 import { 

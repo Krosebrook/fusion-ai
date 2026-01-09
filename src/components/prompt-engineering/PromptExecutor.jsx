@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -8,8 +8,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  Play, Loader2, Copy, CheckCircle2, AlertCircle, Clock,
-  Code, Eye, Sparkles, ChevronDown, ChevronUp, Zap
+  Play, Loader2, Copy, CheckCircle2, Clock,
+  Code, Eye, ChevronDown, ChevronUp, Zap
 } from "lucide-react";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";

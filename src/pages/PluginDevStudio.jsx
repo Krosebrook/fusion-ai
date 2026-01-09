@@ -3,10 +3,9 @@
  * Local dev environment for building and testing plugins
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CinematicCard } from '../components/atoms/CinematicCard';
-import { CinematicButton } from '../components/atoms/CinematicButton';
 import { PluginBoilerplateGenerator } from '../components/plugins/PluginBoilerplateGenerator';
 import { PluginDebugger } from '../components/plugins/PluginDebugger';
 import { PluginDevServer } from '../components/plugins/PluginDevServer';

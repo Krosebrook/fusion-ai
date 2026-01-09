@@ -1,4 +1,3 @@
-import React from 'react';
 import { HeroSection } from '@/components/home/HeroSection';
 import { SocialProof } from '@/components/home/SocialProof';
 import { FeaturesGrid } from '@/components/home/FeaturesGrid';

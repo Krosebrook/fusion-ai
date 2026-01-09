@@ -3,7 +3,6 @@
  * AI-powered security analysis for CI/CD pipelines
  */
 
-import { base44 } from '@/api/base44Client';
 import { aiService } from './AIService';
 import { errorService } from './ErrorService';
 

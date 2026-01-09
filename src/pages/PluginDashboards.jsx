@@ -3,7 +3,7 @@
  * View all custom dashboards from installed plugins
  */
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { CustomPluginDashboard } from '../components/plugins/CustomPluginDashboard';
 import { base44 } from '@/api/base44Client';

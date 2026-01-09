@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Sparkles, TrendingUp, BarChart3 } from "lucide-react";
+import { ArrowLeft, BarChart3 } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import OptimizationDashboard from "../components/cicd/OptimizationDashboard";
 import OptimizationReport from "../components/cicd/OptimizationReport";

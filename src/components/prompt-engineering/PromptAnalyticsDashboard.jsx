@@ -2,12 +2,10 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
-  BarChart3, TrendingUp, TrendingDown, Clock, Zap, DollarSign, CheckCircle2,
-  AlertCircle, Star, ArrowUpRight, ArrowDownRight, Activity, Target
+  BarChart3, Clock, Zap, DollarSign, CheckCircle2, Star, ArrowUpRight, ArrowDownRight, Activity
 } from "lucide-react";
 import {
   LineChart, Line, BarChart, Bar, AreaChart, Area, PieChart, Pie, Cell,

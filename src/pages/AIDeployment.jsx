@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
@@ -7,8 +7,8 @@ import DeploymentPipeline from "@/components/deployment/DeploymentPipeline";
 import DeploymentHistory from "@/components/deployment/DeploymentHistory";
 import EnvironmentConfig from "@/components/deployment/EnvironmentConfig";
 import { 
-  Rocket, Globe, Server, CheckCircle2, AlertCircle, 
-  Clock, Zap, Settings, Activity, TrendingUp 
+  Rocket, Globe, CheckCircle2, 
+  Clock, Activity 
 } from "lucide-react";
 
 const easeInOutCubic = [0.4, 0, 0.2, 1];

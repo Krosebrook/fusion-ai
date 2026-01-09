@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { useCinematicBehavior } from '@/components/hooks/useCinematicBehavior';
 import { useCameraControl } from '@/components/hooks/useCameraControl';

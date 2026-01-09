@@ -2,7 +2,7 @@
  * End Node - Workflow completion
  */
 
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { Handle, Position } from 'reactflow';
 import { CheckCircle } from 'lucide-react';
 

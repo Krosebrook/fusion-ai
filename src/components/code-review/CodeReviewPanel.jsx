@@ -1,4 +1,3 @@
-import React from "react";
 import { motion } from "framer-motion";
 import { TrendingUp, Shield, Zap, Code } from "lucide-react";
 

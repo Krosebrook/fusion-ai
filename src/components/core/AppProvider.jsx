@@ -1,4 +1,3 @@
-import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from '@/components/hooks/useAuth';
 import { GlobalErrorBoundary } from '@/components/core/GlobalErrorBoundary';

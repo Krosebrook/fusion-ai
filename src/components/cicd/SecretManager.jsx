@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,8 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Lock, Plus, Edit2, Trash2, Eye, EyeOff, AlertTriangle, Shield, Clock, Copy, Check } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Lock, Plus, Edit2, Trash2, Eye, EyeOff, AlertTriangle, Clock, Copy, Check } from "lucide-react";
 
 export default function SecretManager() {
   const queryClient = useQueryClient();

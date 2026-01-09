@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { 
-  Zap, Play, Copy, CheckCircle2, Code, ChevronDown, 
+  Zap, Play, Copy, CheckCircle2, Code, 
   Key, Clock, AlertTriangle, FileText, Sparkles, Brain
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
 
 export default function APIPlayground({ apiKeys }) {
   const [selectedEndpoint, setSelectedEndpoint] = useState('trigger');

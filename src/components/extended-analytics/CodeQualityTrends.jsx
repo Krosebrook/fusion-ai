@@ -1,8 +1,6 @@
-import React from "react";
 import { motion } from "framer-motion";
-import { TrendingUp, AlertTriangle, CheckCircle2, XCircle, Code } from "lucide-react";
-import {
-  LineChart, Line, AreaChart, Area, BarChart, Bar,
+import { TrendingUp, AlertTriangle, Code } from "lucide-react";
+import { AreaChart, Area, BarChart, Bar,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from "recharts";
 

@@ -3,7 +3,7 @@
  * View shared AI generations without authentication
  */
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { CinematicCard } from '../components/atoms/CinematicCard';

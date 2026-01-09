@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useAuth } from '@/components/hooks/useAuth';
 import { LoadingScreen } from '@/components/ui-library';
 import { base44 } from '@/api/base44Client';

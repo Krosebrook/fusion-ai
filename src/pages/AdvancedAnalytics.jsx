@@ -1,17 +1,16 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { 
-  BarChart3, TrendingUp, TrendingDown, Clock, CheckCircle2, XCircle, 
-  GitBranch, Zap, AlertTriangle, Brain, Filter, Calendar, RefreshCw,
-  ArrowUpRight, ArrowDownRight, Gauge, Target, Layers
+  BarChart3, TrendingUp, Clock, CheckCircle2, XCircle, 
+  GitBranch, AlertTriangle, Brain, Filter, Calendar, RefreshCw,
+  ArrowUpRight, ArrowDownRight, Target, Layers
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
+import { Line, AreaChart, Area, BarChart, Bar,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ComposedChart
 } from "recharts";
 import PerformanceHeatmap from "../components/analytics/PerformanceHeatmap";

@@ -2,7 +2,7 @@
  * Component Node - Reusable workflow component instance
  */
 
-import React, { memo, useState } from 'react';
+import { memo, useState } from 'react';
 import { Handle, Position, useReactFlow } from 'reactflow';
 import { Package, Settings, ExternalLink } from 'lucide-react';
 import { CinematicBadge } from '../../atoms/CinematicBadge';

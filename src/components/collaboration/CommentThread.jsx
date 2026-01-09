@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { 
-  MessageCircle, Send, User, Reply, CheckCircle2, MoreVertical,
-  Trash2, Edit2, AtSign, Paperclip, Clock
+  MessageCircle, Send, User, Reply,
+  Trash2, Edit2, Clock
 } from "lucide-react";
 import moment from "moment";
 

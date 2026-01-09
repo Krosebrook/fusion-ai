@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Brain, Sparkles, TrendingUp, AlertTriangle, CheckCircle2, Loader2, RefreshCw, Zap, Target, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";

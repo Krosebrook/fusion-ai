@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
@@ -12,8 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import {
   FileText, Plus, Search, Copy, Trash2, Edit3, Sparkles, 
-  Code, Zap, GitBranch, Shield, Brain, ChevronRight, Star,
-  Clock, CheckCircle2, AlertCircle
+  Code, Zap, GitBranch, Brain, ChevronRight, CheckCircle2
 } from "lucide-react";
 import { toast } from "sonner";
 

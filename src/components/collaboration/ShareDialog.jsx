@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { 
-  Share2, Copy, Mail, Link2, Download, CheckCircle2, X
+  Share2, Copy, Link2, Download, CheckCircle2, X
 } from "lucide-react";
 
 export default function ShareDialog({ title, data, type = "config", onClose }) {

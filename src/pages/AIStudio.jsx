@@ -3,7 +3,6 @@
  * Content, Visual, and Code generation in one place
  */
 
-import React from 'react';
 import { useAuth } from '../components/hooks/useAuth';
 import { ProtectedRoute } from '../components/ui-library/ProtectedRoute';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
@@ -8,8 +8,7 @@ import IssuesList from "@/components/code-review/IssuesList";
 import SuggestionsPanel from "@/components/code-review/SuggestionsPanel";
 import RefactoringPanel from "@/components/code-review/RefactoringPanel";
 import { 
-  FileCode, AlertTriangle, CheckCircle2, Zap, 
-  TrendingUp, Target, Shield, Sparkles, ArrowLeft 
+  FileCode, AlertTriangle, CheckCircle2, Zap, Target, Shield, Sparkles, ArrowLeft 
 } from "lucide-react";
 
 const easeInOutCubic = [0.4, 0, 0.2, 1];

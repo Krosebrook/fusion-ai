@@ -3,11 +3,9 @@
  * Displays plugin-provided dashboards and widgets
  */
 
-import React from 'react';
 import { motion } from 'framer-motion';
 import { useEntity } from '../hooks/useEntity';
 import { PluginUIRenderer } from './PluginUIRenderer';
-import { CinematicCard } from '../atoms/CinematicCard';
 import { Package } from 'lucide-react';
 
 export function CustomPluginDashboard({ userId }) {

@@ -1,7 +1,6 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { 
-  Database, Cloud, Lock, Zap, MessageSquare, 
+  Database, Cloud, MessageSquare, 
   BarChart3, ShoppingCart, Code, Cpu, Globe 
 } from 'lucide-react';
 

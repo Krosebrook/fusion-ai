@@ -1,7 +1,6 @@
-import React from "react";
 import { motion } from "framer-motion";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { Flame, TrendingUp, Users } from "lucide-react";
+import { Flame, TrendingUp } from "lucide-react";
 
 const easeInOutCubic = [0.4, 0, 0.2, 1];
 

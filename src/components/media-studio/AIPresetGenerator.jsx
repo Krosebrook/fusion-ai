@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { base44 } from '@/api/base44Client';
-import { Sparkles, Camera, Sun, Loader2, Save, Download } from 'lucide-react';
+import { Sparkles, Camera, Sun, Loader2, Download } from 'lucide-react';
 import { toast } from 'sonner';
 
 export function AIPresetGenerator({ type = 'camera', onPresetGenerated }) {

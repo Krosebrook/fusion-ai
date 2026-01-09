@@ -3,9 +3,8 @@
  * Developer guide for building FlashFusion plugins
  */
 
-import React from 'react';
 import { CinematicCard } from '../atoms/CinematicCard';
-import { Code, BookOpen, Key, Webhook, Zap } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 
 const sdkDocs = `

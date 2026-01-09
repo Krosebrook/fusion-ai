@@ -3,14 +3,14 @@
  * Visual editor for API calls with data mapping
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { CinematicButton } from '../atoms/CinematicButton';
 import { CinematicInput } from '../atoms/CinematicInput';
 import { CinematicBadge } from '../atoms/CinematicBadge';
 import { 
-  X, Plus, Trash2, Code, Key, ArrowRight, Sparkles, Copy, Lock, RefreshCw, Search 
+  X, Plus, Trash2, Key, ArrowRight, Sparkles, Copy, Lock, Search 
 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';

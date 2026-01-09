@@ -3,14 +3,13 @@
  * Share and discover community-created prompts
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { CinematicButton } from '../atoms/CinematicButton';
 import { CinematicBadge } from '../atoms/CinematicBadge';
 import { motion } from 'framer-motion';
 import { 
-  Users, Heart, Star, Download, Share2, 
-  TrendingUp, Eye, MessageCircle
+  Users, Heart, Star, Download, Share2
 } from 'lucide-react';
 import { toast } from 'sonner';
 

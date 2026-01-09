@@ -3,7 +3,6 @@
  * Shows active pipelines, recent runs, and assigned tasks for each developer
  */
 
-import React from 'react';
 import { useAuth } from '@/components/hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';

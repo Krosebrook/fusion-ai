@@ -3,7 +3,7 @@
  * Browse and install plugins to extend FlashFusion
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CinematicCard } from '../components/atoms/CinematicCard';
 import { CinematicButton } from '../components/atoms/CinematicButton';
@@ -13,8 +13,7 @@ import {
   Package, 
   Search, 
   Star, 
-  Download, 
-  Filter,
+  Download,
   Zap,
   Shield,
   BarChart3,
@@ -25,7 +24,6 @@ import {
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import { base44 } from '@/api/base44Client';
 
 const categories = [
   { value: 'all', label: 'All Plugins', icon: Package },

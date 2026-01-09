@@ -3,7 +3,7 @@
  * User interface for managing custom prompt templates
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { promptService } from '../services/PromptService';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { CinematicButton } from '../atoms/CinematicButton';
@@ -11,11 +11,11 @@ import { CinematicInput } from '../atoms/CinematicInput';
 import { CinematicBadge } from '../atoms/CinematicBadge';
 import { 
   Search, Plus, Edit, Trash2, Copy, Sparkles, 
-  FileText, Image, Code, TrendingUp, Filter 
+  FileText, Image, Code, TrendingUp 
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PromptTemplateEditor } from './PromptTemplateEditor';
 import { PromptOptimizer } from './PromptOptimizer';
 

@@ -3,7 +3,7 @@
  * Browse, search, and filter prompt templates
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { usePromptTemplates } from '../hooks/usePromptTemplates';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { CinematicButton } from '../atoms/CinematicButton';

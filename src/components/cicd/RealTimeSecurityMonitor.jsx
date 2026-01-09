@@ -3,7 +3,7 @@
  * Live security scanning during pipeline execution
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { Badge } from '@/components/ui/badge';

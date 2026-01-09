@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Switch } from '@/components/ui/switch';
 import { Check } from 'lucide-react';

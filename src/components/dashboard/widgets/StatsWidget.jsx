@@ -3,7 +3,7 @@
  * Key metrics and usage statistics
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { CinematicCard } from '../../atoms/CinematicCard';
 import { 

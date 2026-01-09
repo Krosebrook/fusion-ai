@@ -1,13 +1,12 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import {
-  BarChart3, TrendingUp, Shield, DollarSign, FileText, Download,
-  Calendar, RefreshCw, AlertTriangle, CheckCircle2, Package, Gauge
+import { Shield, DollarSign, FileText,
+  Calendar, RefreshCw, Package, Gauge
 } from "lucide-react";
 import CodeQualityTrends from "../components/extended-analytics/CodeQualityTrends";
 import DependencyHealth from "../components/extended-analytics/DependencyHealth";

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useEntityList, useCreateEntity, useUpdateEntity, useDeleteEntity } from '@/components/hooks/useEntity';
+import { useState } from 'react';
+import { useEntityList } from '@/components/hooks/useEntity';
 import { useAuth } from '@/components/hooks/useAuth';
 import { GlassmorphicCard } from '@/components/ui-library';
 import { Button } from '@/components/ui/button';

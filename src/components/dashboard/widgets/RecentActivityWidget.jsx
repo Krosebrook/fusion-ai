@@ -3,11 +3,11 @@
  * Timeline of user actions across the platform
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { CinematicCard } from '../../atoms/CinematicCard';
 import { CinematicBadge } from '../../atoms/CinematicBadge';
-import { Clock, CheckCircle, Code, FileText, Image, AlertCircle } from 'lucide-react';
+import { Clock, Code, FileText, Image, AlertCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { format } from 'date-fns';
 

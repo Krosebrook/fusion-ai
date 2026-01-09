@@ -3,7 +3,7 @@
  * Aggregates logs, metrics, and performance data from all pipelines
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/components/hooks/useAuth';
@@ -14,9 +14,9 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Terminal, Activity, AlertCircle, CheckCircle, Clock, 
-  TrendingUp, Filter, Download, RefreshCw, Search, Zap
+  TrendingUp, Download, RefreshCw, Search, Zap
 } from 'lucide-react';
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function DeveloperConsolePage() {
   const { user } = useAuth();

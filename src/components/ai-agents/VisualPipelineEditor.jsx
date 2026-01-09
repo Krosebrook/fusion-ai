@@ -1,10 +1,10 @@
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { motion } from 'framer-motion';
 import { GlassmorphicCard } from '@/components/ui-library';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Bot, GitBranch, Zap, Plus, Trash2, Play, Settings } from 'lucide-react';
+import { Bot, Trash2, Play, Settings } from 'lucide-react';
 import { NodeConfigDialog } from './NodeConfigDialog';
 
 const AGENT_NODES = [

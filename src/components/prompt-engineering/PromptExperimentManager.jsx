@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -9,16 +9,14 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import {
-  FlaskConical, Plus, Play, Pause, Square, Trophy, TrendingUp, TrendingDown,
-  BarChart3, Target, Clock, Users, CheckCircle2, AlertCircle, Loader2,
-  ChevronRight, Eye, Trash2, Copy, Settings, Sparkles
+  FlaskConical, Plus, Play, Pause, Square, Trophy, TrendingUp,
+  BarChart3, CheckCircle2, Loader2,
+  ChevronRight, Trash2, Settings
 } from "lucide-react";
 import { toast } from "sonner";
-import { format } from "date-fns";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 const STATUS_CONFIG = {
   draft: { color: "#6B7280", label: "Draft", icon: Settings },

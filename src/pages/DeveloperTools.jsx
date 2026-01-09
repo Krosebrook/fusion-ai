@@ -1,14 +1,12 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
-  Terminal, Code2, Download, Copy, CheckCircle2, Settings, Key,
-  GitBranch, Play, Eye, Lock, RefreshCw, Zap, FileCode, Box
+  Terminal, Code2, Download, Copy, CheckCircle2, Zap, Box
 } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import CLIReference from "../components/dev-tools/CLIReference";
 import VSCodeExtension from "../components/dev-tools/VSCodeExtension";
 import APIPlayground from "../components/dev-tools/APIPlayground";

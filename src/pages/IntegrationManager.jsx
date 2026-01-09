@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useEntityList, useCreateEntity, useUpdateEntity, useDeleteEntity } from '@/components/hooks/useEntity';
 import { useAuth } from '@/components/hooks/useAuth';
@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
-import { Key, Link2, Plus, RefreshCw, Eye, EyeOff, Trash2, CheckCircle, AlertCircle, Code, Bell } from 'lucide-react';
+import { Key, Link2, Plus, RefreshCw, Eye, EyeOff, Trash2, CheckCircle, AlertCircle, Code } from 'lucide-react';
 
 const INTEGRATION_TYPES = [
   { id: 'openai', name: 'OpenAI', icon: '🤖', fields: ['OPENAI_API_KEY'] },

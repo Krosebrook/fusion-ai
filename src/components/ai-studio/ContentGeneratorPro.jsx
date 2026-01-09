@@ -3,13 +3,13 @@
  * Comprehensive content generation suite
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { generationService } from '../services/GenerationService';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { CinematicButton } from '../atoms/CinematicButton';
 import { CinematicInput } from '../atoms/CinematicInput';
 import { CinematicBadge } from '../atoms/CinematicBadge';
-import { FileText, Hash, Users, MessageSquare } from 'lucide-react';
+import { FileText, Hash, MessageSquare } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';

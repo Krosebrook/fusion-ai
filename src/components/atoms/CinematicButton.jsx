@@ -3,7 +3,6 @@
  * Motion-enabled button with studio-grade interactions
  */
 
-import React from 'react';
 import { motion } from 'framer-motion';
 import { tokens } from '../design-system/tokens';
 import { Loader2 } from 'lucide-react';

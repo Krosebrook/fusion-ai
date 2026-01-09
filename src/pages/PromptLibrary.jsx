@@ -3,7 +3,6 @@
  * Main page for accessing the prompt template library
  */
 
-import React from 'react';
 import { PromptTemplateLibrary } from '../components/prompt-library/PromptTemplateLibrary';
 import { useAuth } from '../components/hooks/useAuth';
 import { ProtectedRoute } from '../components/ui-library/ProtectedRoute';

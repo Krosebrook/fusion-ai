@@ -3,7 +3,7 @@
  * Displays security events, vulnerability scans, and incident alerts
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
@@ -12,9 +12,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
   Shield, AlertTriangle, CheckCircle, XCircle, Clock, 
-  RefreshCw, Bell, Key, Code, Activity, TrendingUp
+  RefreshCw, Bell, Key, Code, Activity
 } from 'lucide-react';
-import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const SEVERITY_CONFIG = {
   critical: { color: 'bg-red-500', icon: XCircle, label: 'Critical' },

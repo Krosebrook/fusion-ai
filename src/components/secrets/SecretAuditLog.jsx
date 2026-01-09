@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { History, Eye, Copy, RefreshCw, Trash2, Edit2, Filter, Download, AlertTriangle } from "lucide-react";
+import { History, Eye, RefreshCw, Trash2, Edit2, Filter, Download, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";

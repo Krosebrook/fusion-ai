@@ -3,7 +3,6 @@
  * Stylized badge with glow effects
  */
 
-import React from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 

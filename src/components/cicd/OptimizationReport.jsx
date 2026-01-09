@@ -1,9 +1,8 @@
-import React from "react";
 import { motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { TrendingUp, TrendingDown, Clock, Target, Zap, DollarSign } from "lucide-react";
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 export default function OptimizationReport({ pipelineId, optimizations }) {
   const { data: runsBeforeOpt = [] } = useQuery({

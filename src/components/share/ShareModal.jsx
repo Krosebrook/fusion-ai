@@ -3,7 +3,7 @@
  * Generate and display share links
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { CinematicButton } from '../atoms/CinematicButton';
 import { CinematicBadge } from '../atoms/CinematicBadge';

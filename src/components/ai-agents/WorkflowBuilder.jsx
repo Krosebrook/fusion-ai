@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { GlassmorphicCard } from '@/components/ui-library';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Plus, ArrowRight, Settings, Play } from 'lucide-react';
+import { ArrowRight, Settings, Play } from 'lucide-react';
 
 export function WorkflowBuilder({ agents }) {
   const [workflow, setWorkflow] = useState({ steps: [], conditions: [] });

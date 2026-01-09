@@ -3,7 +3,6 @@
  * AI-powered feature and tool recommendations
  */
 
-import React from 'react';
 import { motion } from 'framer-motion';
 import { CinematicCard } from '../../atoms/CinematicCard';
 import { CinematicButton } from '../../atoms/CinematicButton';

@@ -3,18 +3,14 @@
  * Discover, create, optimize, and share AI prompts
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useAuth } from '../components/hooks/useAuth';
 import { ProtectedRoute } from '../components/ui-library/ProtectedRoute';
-import { CinematicCard } from '../components/atoms/CinematicCard';
-import { CinematicButton } from '../components/atoms/CinematicButton';
-import { CinematicInput } from '../components/atoms/CinematicInput';
-import { CinematicBadge } from '../components/atoms/CinematicBadge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { motion } from 'framer-motion';
 import { 
-  Sparkles, Search, Plus, TrendingUp, Library, 
-  Zap, Share2, Filter, BarChart3, Users
+  Sparkles, Library, 
+  Zap, BarChart3, Users
 } from 'lucide-react';
 import { PromptDiscovery } from '../components/prompt-hub/PromptDiscovery';
 import { PromptAnalytics } from '../components/prompt-hub/PromptAnalytics';

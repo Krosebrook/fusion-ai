@@ -3,7 +3,7 @@
  * Test, iterate, and refine prompts with live preview
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { promptService } from '../services/PromptService';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { CinematicButton } from '../atoms/CinematicButton';
@@ -11,7 +11,7 @@ import { CinematicInput } from '../atoms/CinematicInput';
 import { CinematicBadge } from '../atoms/CinematicBadge';
 import { motion } from 'framer-motion';
 import { 
-  Play, Save, Sparkles, Code, FileText, 
+  Play, Save, Sparkles, 
   Clock, Zap, Copy, RefreshCw
 } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';

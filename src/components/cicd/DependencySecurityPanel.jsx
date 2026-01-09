@@ -3,7 +3,7 @@
  * AI-powered dependency vulnerability scanning and auto-fix suggestions
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { CinematicButton } from '../atoms/CinematicButton';

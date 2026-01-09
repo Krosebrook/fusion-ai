@@ -1,6 +1,4 @@
-import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Shield } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RoleManager from "../components/rbac/RoleManager";
 import UserRoleAssignment from "../components/rbac/UserRoleAssignment";

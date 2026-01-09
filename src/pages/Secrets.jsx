@@ -1,6 +1,4 @@
-import React from "react";
 import { motion } from "framer-motion";
-import { Lock } from "lucide-react";
 import SecretManager from "../components/cicd/SecretManager";
 
 export default function SecretsPage() {

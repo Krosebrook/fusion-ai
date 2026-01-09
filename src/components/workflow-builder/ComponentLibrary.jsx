@@ -2,15 +2,15 @@
  * Component Library - Reusable workflow components
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { CinematicButton } from '../atoms/CinematicButton';
 import { CinematicBadge } from '../atoms/CinematicBadge';
 import { useEntity } from '../hooks/useEntity';
-import { Package, Search, Plus, Star, TrendingUp } from 'lucide-react';
+import { Package, Search, Star, TrendingUp } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 
 export function ComponentLibrary({ onAddComponent, onClose }) {

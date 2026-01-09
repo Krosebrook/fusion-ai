@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { 
-  Key, Plus, Copy, Trash2, Eye, EyeOff, AlertCircle, 
+  Key, Plus, Copy, Trash2, Eye, AlertCircle, 
   CheckCircle2, Calendar, Activity, Lock
 } from "lucide-react";
 

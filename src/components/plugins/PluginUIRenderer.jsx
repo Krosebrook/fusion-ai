@@ -3,7 +3,7 @@
  * Safely renders plugin-provided UI components in sandboxed iframes
  */
 
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { AlertTriangle } from 'lucide-react';
 

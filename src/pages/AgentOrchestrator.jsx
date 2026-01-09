@@ -1,15 +1,12 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Bot, Zap, GitBranch, Shield, Brain, ArrowRight, Plus, Play, 
-  Settings, MessageSquare, Network, Workflow, Sparkles, Clock, FileText, Wand2,
+import { Zap, GitBranch, Shield, Brain, ArrowRight, Plus, Play, MessageSquare, Network, Workflow, Sparkles, FileText, Wand2,
   FlaskConical, BarChart3, History
 } from "lucide-react";
-import AgentCollaborationFlow from "../components/agents/AgentCollaborationFlow";
 import WorkflowBuilder from "../components/agents/WorkflowBuilder";
 import AgentConversation from "../components/agents/AgentConversation";
 import ActiveCollaborations from "../components/agents/ActiveCollaborations";

@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { GlassmorphicCard } from '@/components/ui-library';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Progress } from '@/components/ui/progress';
 import { toast } from 'sonner';
-import { Play, CheckCircle, Loader2, GitBranch, FileCode } from 'lucide-react';
+import { Play, CheckCircle, Loader2, GitBranch } from 'lucide-react';
 
 const WORKFLOW_STEPS = [
   { id: 'scaffold', name: 'Project Scaffold', icon: '🏗️', desc: 'Generate project structure' },

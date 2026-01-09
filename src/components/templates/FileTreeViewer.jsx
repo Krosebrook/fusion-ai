@@ -1,8 +1,8 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Folder, FolderOpen, FileText, FileCode, FileJson, 
-  FileImage, ChevronRight, ChevronDown
+  FileImage, ChevronRight
 } from "lucide-react";
 
 const easeInOutCubic = [0.4, 0, 0.2, 1];

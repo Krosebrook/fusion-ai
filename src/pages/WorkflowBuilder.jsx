@@ -3,7 +3,7 @@
  * Visual AI agent workflow creation and management
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/components/hooks/useAuth';
 import { useParams, useNavigate } from 'react-router-dom';
 import { WorkflowCanvas } from '@/components/workflow-builder/WorkflowCanvas';
@@ -13,7 +13,7 @@ import { LoadingScreen } from '@/components/ui-library';
 import { base44 } from '@/api/base44Client';
 import { workflowExecutionService } from '@/components/services/WorkflowExecutionService';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Settings, Play, Save, Zap } from 'lucide-react';
+import { ArrowLeft, Settings, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 import { createPageUrl } from '@/utils';
 
