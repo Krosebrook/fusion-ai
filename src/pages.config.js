@@ -36,9 +36,14 @@ import IntegrationsHub from './pages/IntegrationsHub';
 import MarketingSuite from './pages/MarketingSuite';
 import MediaStudio from './pages/MediaStudio';
 import MyGenerations from './pages/MyGenerations';
+import MyPlugins from './pages/MyPlugins';
 import Onboarding from './pages/Onboarding';
 import Orchestration from './pages/Orchestration';
 import PipelineOptimization from './pages/PipelineOptimization';
+import PluginDashboards from './pages/PluginDashboards';
+import PluginDevStudio from './pages/PluginDevStudio';
+import PluginMarketplace from './pages/PluginMarketplace';
+import PluginSDK from './pages/PluginSDK';
 import Profile from './pages/Profile';
 import PromptHub from './pages/PromptHub';
 import PromptLibrary from './pages/PromptLibrary';
@@ -52,11 +57,7 @@ import VisualPipelineBuilder from './pages/VisualPipelineBuilder';
 import WebsiteCloner from './pages/WebsiteCloner';
 import WorkflowBuilder from './pages/WorkflowBuilder';
 import Workflows from './pages/Workflows';
-import PluginMarketplace from './pages/PluginMarketplace';
-import MyPlugins from './pages/MyPlugins';
-import PluginSDK from './pages/PluginSDK';
-import PluginDashboards from './pages/PluginDashboards';
-import PluginDevStudio from './pages/PluginDevStudio';
+import SecurityMonitoring from './pages/SecurityMonitoring';
 import __Layout from './Layout.jsx';
 
 
@@ -99,9 +100,14 @@ export const PAGES = {
     "MarketingSuite": MarketingSuite,
     "MediaStudio": MediaStudio,
     "MyGenerations": MyGenerations,
+    "MyPlugins": MyPlugins,
     "Onboarding": Onboarding,
     "Orchestration": Orchestration,
     "PipelineOptimization": PipelineOptimization,
+    "PluginDashboards": PluginDashboards,
+    "PluginDevStudio": PluginDevStudio,
+    "PluginMarketplace": PluginMarketplace,
+    "PluginSDK": PluginSDK,
     "Profile": Profile,
     "PromptHub": PromptHub,
     "PromptLibrary": PromptLibrary,
@@ -115,11 +121,7 @@ export const PAGES = {
     "WebsiteCloner": WebsiteCloner,
     "WorkflowBuilder": WorkflowBuilder,
     "Workflows": Workflows,
-    "PluginMarketplace": PluginMarketplace,
-    "MyPlugins": MyPlugins,
-    "PluginSDK": PluginSDK,
-    "PluginDashboards": PluginDashboards,
-    "PluginDevStudio": PluginDevStudio,
+    "SecurityMonitoring": SecurityMonitoring,
 }
 
 export const pagesConfig = {
