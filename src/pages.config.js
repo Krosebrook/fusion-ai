@@ -49,6 +49,7 @@ import PluginSDK from './pages/PluginSDK';
 import Profile from './pages/Profile';
 import PromptHub from './pages/PromptHub';
 import PromptLibrary from './pages/PromptLibrary';
+import PromptStudio from './pages/PromptStudio';
 import Secrets from './pages/Secrets';
 import SecretsVault from './pages/SecretsVault';
 import Security from './pages/Security';
@@ -60,7 +61,7 @@ import VisualPipelineBuilder from './pages/VisualPipelineBuilder';
 import WebsiteCloner from './pages/WebsiteCloner';
 import WorkflowBuilder from './pages/WorkflowBuilder';
 import Workflows from './pages/Workflows';
-import PromptStudio from './pages/PromptStudio';
+import AgentOrchestrationHub from './pages/AgentOrchestrationHub';
 import __Layout from './Layout.jsx';
 
 
@@ -116,6 +117,7 @@ export const PAGES = {
     "Profile": Profile,
     "PromptHub": PromptHub,
     "PromptLibrary": PromptLibrary,
+    "PromptStudio": PromptStudio,
     "Secrets": Secrets,
     "SecretsVault": SecretsVault,
     "Security": Security,
@@ -127,7 +129,7 @@ export const PAGES = {
     "WebsiteCloner": WebsiteCloner,
     "WorkflowBuilder": WorkflowBuilder,
     "Workflows": Workflows,
-    "PromptStudio": PromptStudio,
+    "AgentOrchestrationHub": AgentOrchestrationHub,
 }
 
 export const pagesConfig = {
