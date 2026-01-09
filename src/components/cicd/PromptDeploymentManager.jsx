@@ -11,6 +11,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { PromptEnvironmentManager } from './PromptEnvironmentManager';
 import { PromptQualityGates } from './PromptQualityGates';
+import { PromptGovernanceDashboard } from './PromptGovernanceDashboard';
+import { PromptPolicyManager } from './PromptPolicyManager';
+import { PromptReviewWorkflow } from './PromptReviewWorkflow';
 import { 
   Rocket, GitBranch, Check, AlertCircle, 
   Clock, Zap, Settings, Activity
@@ -35,7 +38,23 @@ export function PromptDeploymentManager() {
 
   const deployPrompt = async (versionId, environment) => {
     try {
-      // Run health checks first
+      // Run policy checks
+      const policyCheck = await base44.functions.invoke('promptPolicyCheck', {
+        version_id: versionId,
+        policies: [
+          { type: 'review', enabled: environment !== 'development', name: 'Code Review' },
+          { type: 'validation', enabled: true, name: 'Max Length', config: { max_tokens: 2000 } },
+          { type: 'security', enabled: true, name: 'PII Check', config: { patterns: ['email', 'phone', 'ssn'] } },
+          { type: 'compliance', enabled: true, name: 'Version Control', config: { require_change_summary: true, min_summary_length: 10 } }
+        ]
+      });
+
+      if (!policyCheck.passed) {
+        toast.error(`Policy violations: ${policyCheck.violations.slice(0, 2).join(', ')}`);
+        return;
+      }
+
+      // Run health checks
       const healthCheck = await base44.functions.invoke('promptHealthCheck', {
         version_id: versionId,
         environment
@@ -69,7 +88,9 @@ export function PromptDeploymentManager() {
         deployment_config: { 
           prompt_version_id: versionId,
           health_check_passed: true,
-          quality_gate_passed: true
+          quality_gate_passed: true,
+          compliance_passed: true,
+          policy_violations: []
         }
       });
 
@@ -100,6 +121,9 @@ export function PromptDeploymentManager() {
     <Tabs defaultValue="deploy" className="w-full">
       <TabsList className="bg-slate-900/50 border border-white/10">
         <TabsTrigger value="deploy">Deploy</TabsTrigger>
+        <TabsTrigger value="governance">Governance</TabsTrigger>
+        <TabsTrigger value="policies">Policies</TabsTrigger>
+        <TabsTrigger value="reviews">Reviews</TabsTrigger>
         <TabsTrigger value="environments">Environments</TabsTrigger>
         <TabsTrigger value="quality">Quality Gates</TabsTrigger>
       </TabsList>
@@ -212,6 +236,18 @@ export function PromptDeploymentManager() {
             </div>
           </CinematicCard>
         )}
+      </TabsContent>
+
+      <TabsContent value="governance" className="mt-6">
+        <PromptGovernanceDashboard />
+      </TabsContent>
+
+      <TabsContent value="policies" className="mt-6">
+        <PromptPolicyManager />
+      </TabsContent>
+
+      <TabsContent value="reviews" className="mt-6">
+        <PromptReviewWorkflow />
       </TabsContent>
 
       <TabsContent value="environments" className="mt-6">
