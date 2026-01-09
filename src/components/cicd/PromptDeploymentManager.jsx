@@ -14,6 +14,7 @@ import { PromptQualityGates } from './PromptQualityGates';
 import { PromptGovernanceDashboard } from './PromptGovernanceDashboard';
 import { PromptPolicyManager } from './PromptPolicyManager';
 import { PromptReviewWorkflow } from './PromptReviewWorkflow';
+import { PromptRollbackManager } from './PromptRollbackManager';
 import { 
   Rocket, GitBranch, Check, AlertCircle, 
   Clock, Zap, Settings, Activity
@@ -119,13 +120,14 @@ export function PromptDeploymentManager() {
 
   return (
     <Tabs defaultValue="deploy" className="w-full">
-      <TabsList className="bg-slate-900/50 border border-white/10">
+      <TabsList className="bg-slate-900/50 border border-white/10 grid grid-cols-7 gap-1">
         <TabsTrigger value="deploy">Deploy</TabsTrigger>
+        <TabsTrigger value="rollback">Rollback</TabsTrigger>
         <TabsTrigger value="governance">Governance</TabsTrigger>
         <TabsTrigger value="policies">Policies</TabsTrigger>
         <TabsTrigger value="reviews">Reviews</TabsTrigger>
-        <TabsTrigger value="environments">Environments</TabsTrigger>
-        <TabsTrigger value="quality">Quality Gates</TabsTrigger>
+        <TabsTrigger value="environments">Envs</TabsTrigger>
+        <TabsTrigger value="quality">Quality</TabsTrigger>
       </TabsList>
 
       <TabsContent value="deploy" className="space-y-6 mt-6">
@@ -236,6 +238,10 @@ export function PromptDeploymentManager() {
             </div>
           </CinematicCard>
         )}
+      </TabsContent>
+
+      <TabsContent value="rollback" className="mt-6">
+        <PromptRollbackManager environment={selectedEnvironment} />
       </TabsContent>
 
       <TabsContent value="governance" className="mt-6">

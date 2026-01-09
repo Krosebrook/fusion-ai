@@ -18,6 +18,8 @@ import { ABTestManager } from '../components/prompt-studio/ABTestManager';
 import { PromptLibrary } from '../components/prompt-studio/PromptLibrary';
 import { PromptAnalytics } from '../components/prompt-studio/PromptAnalytics';
 import { ABTestAnalytics } from '../components/prompt-studio/ABTestAnalytics';
+import { PredictiveAnalytics } from '../components/prompt-studio/PredictiveAnalytics';
+import { CustomMetricsBuilder } from '../components/prompt-studio/CustomMetricsBuilder';
 import { PromptDeploymentManager } from '../components/cicd/PromptDeploymentManager';
 import { PromptPromotionPipeline } from '../components/cicd/PromptPromotionPipeline';
 import { 
@@ -211,7 +213,11 @@ export default function PromptStudioPage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
               >
-                <PromptAnalytics />
+                <div className="space-y-6">
+                  <PromptAnalytics />
+                  {selectedTemplate && <PredictiveAnalytics templateId={selectedTemplate.id} />}
+                  <CustomMetricsBuilder />
+                </div>
               </motion.div>
             </TabsContent>
 

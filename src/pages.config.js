@@ -14,6 +14,7 @@ import AccessControl from './pages/AccessControl';
 import AdvancedAnalytics from './pages/AdvancedAnalytics';
 import AgentManagement from './pages/AgentManagement';
 import AgentOrchestration from './pages/AgentOrchestration';
+import AgentOrchestrationHub from './pages/AgentOrchestrationHub';
 import AgentOrchestrator from './pages/AgentOrchestrator';
 import Analytics from './pages/Analytics';
 import AppBuilder from './pages/AppBuilder';
@@ -61,7 +62,6 @@ import VisualPipelineBuilder from './pages/VisualPipelineBuilder';
 import WebsiteCloner from './pages/WebsiteCloner';
 import WorkflowBuilder from './pages/WorkflowBuilder';
 import Workflows from './pages/Workflows';
-import AgentOrchestrationHub from './pages/AgentOrchestrationHub';
 import __Layout from './Layout.jsx';
 
 
@@ -82,6 +82,7 @@ export const PAGES = {
     "AdvancedAnalytics": AdvancedAnalytics,
     "AgentManagement": AgentManagement,
     "AgentOrchestration": AgentOrchestration,
+    "AgentOrchestrationHub": AgentOrchestrationHub,
     "AgentOrchestrator": AgentOrchestrator,
     "Analytics": Analytics,
     "AppBuilder": AppBuilder,
@@ -129,7 +130,6 @@ export const PAGES = {
     "WebsiteCloner": WebsiteCloner,
     "WorkflowBuilder": WorkflowBuilder,
     "Workflows": Workflows,
-    "AgentOrchestrationHub": AgentOrchestrationHub,
 }
 
 export const pagesConfig = {
