@@ -160,6 +160,7 @@ function LayoutContent({ children }) {
 
   const authenticatedNavItems = [
     { name: "Dashboard", path: createPageUrl("Dashboard"), icon: LayoutDashboard },
+    { name: "Dev Dashboard", path: createPageUrl("DeveloperDashboard"), icon: Code },
     { name: "Analytics", path: createPageUrl("Analytics"), icon: BarChart3 },
     { name: "Integrations", path: createPageUrl("Integrations"), icon: Link2 }
   ];

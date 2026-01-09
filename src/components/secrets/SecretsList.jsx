@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { AIContextualHelp } from '../help/AIContextualHelp';
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Key, Eye, EyeOff, Copy, Trash2, Edit2, Clock, Server, Shield,
