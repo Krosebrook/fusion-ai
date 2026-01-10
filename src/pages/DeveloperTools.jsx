@@ -10,6 +10,7 @@ import {
 import CLIReference from "../components/dev-tools/CLIReference";
 import VSCodeExtension from "../components/dev-tools/VSCodeExtension";
 import APIPlayground from "../components/dev-tools/APIPlayground";
+import { ClaudeCodeIntegration } from "../components/dev-tools/ClaudeCodeIntegration";
 
 export default function DeveloperToolsPage() {
   const [copiedCommand, setCopiedCommand] = useState(null);
@@ -105,6 +106,10 @@ export default function DeveloperToolsPage() {
         {/* Main Tabs */}
         <Tabs defaultValue="cli" className="w-full">
           <TabsList className="bg-white/5 mb-4">
+            <TabsTrigger value="claude" className="data-[state=active]:bg-orange-500/20">
+              <Zap className="w-4 h-4 mr-2" />
+              Claude Code
+            </TabsTrigger>
             <TabsTrigger value="cli" className="data-[state=active]:bg-green-500/20">
               <Terminal className="w-4 h-4 mr-2" />
               CLI Reference
@@ -118,6 +123,10 @@ export default function DeveloperToolsPage() {
               API Playground
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="claude">
+            <ClaudeCodeIntegration />
+          </TabsContent>
 
           <TabsContent value="cli">
             <CLIReference />
