@@ -20,6 +20,9 @@ import { PromptAnalytics } from '../components/prompt-studio/PromptAnalytics';
 import { ABTestAnalytics } from '../components/prompt-studio/ABTestAnalytics';
 import { PredictiveAnalytics } from '../components/prompt-studio/PredictiveAnalytics';
 import { CustomMetricsBuilder } from '../components/prompt-studio/CustomMetricsBuilder';
+import { CorrelationMatrix } from '../components/prompt-studio/CorrelationMatrix';
+import { PerformanceHeatmap } from '../components/prompt-studio/PerformanceHeatmap';
+import { InteractiveDashboard } from '../components/prompt-studio/InteractiveDashboard';
 import { PromptDeploymentManager } from '../components/cicd/PromptDeploymentManager';
 import { PromptPromotionPipeline } from '../components/cicd/PromptPromotionPipeline';
 import { 
@@ -214,6 +217,11 @@ export default function PromptStudioPage() {
                 exit={{ opacity: 0, y: -20 }}
               >
                 <div className="space-y-6">
+                  <InteractiveDashboard experiments={experiments} versions={executionLogs} />
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <CorrelationMatrix logs={executionLogs} />
+                    <PerformanceHeatmap logs={executionLogs} />
+                  </div>
                   <PromptAnalytics />
                   {selectedTemplate && <PredictiveAnalytics templateId={selectedTemplate.id} />}
                   <CustomMetricsBuilder />

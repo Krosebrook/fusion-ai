@@ -14,6 +14,7 @@ import { WorkflowBuilder } from '../components/agent-orchestration/WorkflowBuild
 import { ExecutionMonitor } from '../components/agent-orchestration/ExecutionMonitor';
 import { ErrorHandler } from '../components/agent-orchestration/ErrorHandler';
 import { DynamicCollaboration } from '../components/agent-orchestration/DynamicCollaboration';
+import { AgentTrainingModule } from '../components/agent-training/AgentTrainingModule';
 import { 
   Zap, GitBranch, Activity, AlertTriangle, Plus, 
   Layers, TrendingUp 
@@ -119,7 +120,7 @@ export default function AgentOrchestrationHubPage() {
 
         {/* Main Interface */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="bg-slate-900/50 border border-white/10 backdrop-blur-xl p-1">
+          <TabsList className="bg-slate-900/50 border border-white/10 backdrop-blur-xl p-1 grid grid-cols-5 gap-1">
             <TabsTrigger value="orchestrate" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-cyan-600">
               <Zap className="w-4 h-4 mr-2" />
               Builder
@@ -127,6 +128,10 @@ export default function AgentOrchestrationHubPage() {
             <TabsTrigger value="collaborate" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-pink-600">
               <Layers className="w-4 h-4 mr-2" />
               Collaborate
+            </TabsTrigger>
+            <TabsTrigger value="train" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-600 data-[state=active]:to-emerald-600">
+              <TrendingUp className="w-4 h-4 mr-2" />
+              Train
             </TabsTrigger>
             <TabsTrigger value="monitor" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-600 data-[state=active]:to-green-600">
               <Activity className="w-4 h-4 mr-2" />
@@ -153,6 +158,12 @@ export default function AgentOrchestrationHubPage() {
             <TabsContent value="collaborate" asChild>
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                 <DynamicCollaboration workflowId={selectedWorkflow?.id} />
+              </motion.div>
+            </TabsContent>
+
+            <TabsContent value="train" asChild>
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                <AgentTrainingModule />
               </motion.div>
             </TabsContent>
 
