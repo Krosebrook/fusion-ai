@@ -44,11 +44,10 @@ export function CinematicCard({
       whileHover={hover ? {
         y: -4,
         boxShadow: glow ? glowColors[glowColor] : '0 22px 65px rgba(0,0,0,0.50)',
-        transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] },
       } : {}}
       transition={{
         duration: 0.5,
-        ease: [0.4, 0, 0.2, 1],
+        ease: [0.25, 0.46, 0.45, 0.94],
       }}
       {...props}
     >
