@@ -7,10 +7,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
+import { useToast } from "@/components/ui/use-toast";
 import { Cpu, Loader2, CheckCircle, Download, Eye, Code, Shield, Database, FileCode } from "lucide-react";
 import { motion } from "framer-motion";
 
+// Progress animation constants
+const PROGRESS_INCREMENT = 10;
+const PROGRESS_MAX = 90;
+const PROGRESS_INTERVAL_MS = 500;
+
 export default function APIGeneratorPage() {
+  const { toast } = useToast();
   const [config, setConfig] = useState({
     apiName: '',
     description: '',
@@ -37,7 +44,11 @@ export default function APIGeneratorPage() {
 
   const handleGenerate = async () => {
     if (!config.apiName || !config.description) {
-      alert('Please provide API name and description');
+      toast({
+        title: "Missing Information",
+        description: "Please provide API name and description",
+        variant: "destructive"
+      });
       return;
     }
 
@@ -46,8 +57,8 @@ export default function APIGeneratorPage() {
     setActiveTab('preview');
 
     const progressInterval = setInterval(() => {
-      setProgress(prev => Math.min(prev + 10, 90));
-    }, 500);
+      setProgress(prev => Math.min(prev + PROGRESS_INCREMENT, PROGRESS_MAX));
+    }, PROGRESS_INTERVAL_MS);
 
     try {
       const prompt = `Generate a complete production-ready RESTful API for: ${config.apiName}
@@ -103,7 +114,11 @@ Format the response with clear code blocks and file paths.`;
       });
     } catch (error) {
       console.error("Error generating API:", error);
-      alert('Error generating API. Please try again.');
+      toast({
+        title: "Generation Failed",
+        description: "Error generating API. Please try again.",
+        variant: "destructive"
+      });
     } finally {
       clearInterval(progressInterval);
       setGenerating(false);
@@ -350,7 +365,7 @@ Format the response with clear code blocks and file paths.`;
                         Endpoints
                       </label>
                       <Textarea
-                        placeholder="List your API endpoints (one per line)&#10;e.g.:&#10;GET /users&#10;POST /users&#10;GET /users/:id&#10;PUT /users/:id&#10;DELETE /users/:id"
+                        placeholder={"List your API endpoints (one per line)\ne.g.:\nGET /users\nPOST /users\nGET /users/:id\nPUT /users/:id\nDELETE /users/:id"}
                         value={config.endpoints}
                         onChange={(e) => setConfig({ ...config, endpoints: e.target.value })}
                         rows={8}

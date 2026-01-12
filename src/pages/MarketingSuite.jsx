@@ -6,13 +6,20 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
+import { useToast } from "@/components/ui/use-toast";
 import { 
   FileText, Loader2, CheckCircle, Download, TrendingUp, 
   Target, Mail, Share2, Search, Megaphone, Copy, Eye 
 } from "lucide-react";
 import { motion } from "framer-motion";
 
+// Progress animation constants
+const PROGRESS_INCREMENT = 10;
+const PROGRESS_MAX = 90;
+const PROGRESS_INTERVAL_MS = 500;
+
 export default function MarketingSuitePage() {
+  const { toast } = useToast();
   const [config, setConfig] = useState({
     contentType: 'blog-post',
     topic: '',
@@ -32,7 +39,11 @@ export default function MarketingSuitePage() {
 
   const handleGenerate = async () => {
     if (!config.topic || !config.audience) {
-      alert('Please provide topic and target audience');
+      toast({
+        title: "Missing Information",
+        description: "Please provide topic and target audience",
+        variant: "destructive"
+      });
       return;
     }
 
@@ -41,8 +52,8 @@ export default function MarketingSuitePage() {
     setActiveTab('preview');
 
     const progressInterval = setInterval(() => {
-      setProgress(prev => Math.min(prev + 10, 90));
-    }, 500);
+      setProgress(prev => Math.min(prev + PROGRESS_INCREMENT, PROGRESS_MAX));
+    }, PROGRESS_INTERVAL_MS);
 
     try {
       const contentTypeMap = {
@@ -144,7 +155,11 @@ Format as a clear, actionable report.`;
       });
     } catch (error) {
       console.error("Error generating content:", error);
-      alert('Error generating marketing content. Please try again.');
+      toast({
+        title: "Generation Failed",
+        description: "Error generating marketing content. Please try again.",
+        variant: "destructive"
+      });
     } finally {
       clearInterval(progressInterval);
       setGenerating(false);
