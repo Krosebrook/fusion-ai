@@ -19,6 +19,7 @@ import AgentOrchestrationHub from './pages/AgentOrchestrationHub';
 import AgentOrchestrator from './pages/AgentOrchestrator';
 import Analytics from './pages/Analytics';
 import AppBuilder from './pages/AppBuilder';
+import AppEvaluator from './pages/AppEvaluator';
 import Auth from './pages/Auth';
 import CICDAnalytics from './pages/CICDAnalytics';
 import CICDAutomation from './pages/CICDAutomation';
@@ -90,6 +91,7 @@ export const PAGES = {
     "AgentOrchestrator": AgentOrchestrator,
     "Analytics": Analytics,
     "AppBuilder": AppBuilder,
+    "AppEvaluator": AppEvaluator,
     "Auth": Auth,
     "CICDAnalytics": CICDAnalytics,
     "CICDAutomation": CICDAutomation,
