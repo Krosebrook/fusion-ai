@@ -674,4 +674,4 @@ function useAuth() {
 
 ---
 
-*Last Updated: January 8, 2026*
+*Last Updated: January 12, 2026*

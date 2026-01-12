@@ -5,7 +5,232 @@
 This directory contains the complete API reference documentation for FlashFusion.
 
 **Status:** 📝 In Progress  
-**Last Updated:** January 8, 2026
+**Last Updated:** January 12, 2026
+
+---
+
+## Quick Links
+
+### Core APIs
+- [FlashFusion API](#flashfusion-api) - Main platform API
+- [AI Generation API](#ai-generation-api) - Code, content, and visual generation
+- [Pipeline API](#pipeline-api) - CI/CD pipeline management
+- [Integration API](#integration-api) - Third-party service integrations
+
+### Backend Functions
+All 26 backend functions are documented below with request/response schemas, examples, and error codes.
+
+---
+
+## FlashFusion API
+
+### Base URL
+```
+Production: https://api.flashfusion.dev
+Development: http://localhost:3001
+```
+
+### Authentication
+
+All API requests require authentication via Bearer token:
+
+```bash
+Authorization: Bearer your_token_here
+```
+
+Get your API token:
+1. Login to FlashFusion
+2. Navigate to Settings → API Keys
+3. Generate new API key
+4. Copy and store securely
+
+---
+
+## AI Generation API
+
+### Generate Code
+
+**Endpoint:** `POST /api/generate-code`  
+**Authentication:** Required
+
+Generate code using AI based on natural language description.
+
+#### Request Schema
+```typescript
+interface GenerateCodeRequest {
+  task: string;              // Description of what to generate
+  language: string;          // Programming language (e.g., "javascript", "python")
+  framework?: string;        // Optional framework (e.g., "react", "django")
+  style?: string;           // Optional style guide (e.g., "airbnb", "pep8")
+  includeTests?: boolean;   // Include unit tests (default: false)
+}
+```
+
+#### Response Schema
+```typescript
+interface GenerateCodeResponse {
+  success: boolean;
+  code: string;             // Generated code
+  language: string;
+  tests?: string;          // Generated tests (if requested)
+  explanation?: string;    // Code explanation
+  suggestions?: string[];  // Improvement suggestions
+}
+```
+
+#### Example Usage
+```javascript
+const response = await fetch('/api/generate-code', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  },
+  body: JSON.stringify({
+    task: 'Create a React button component with hover effects',
+    language: 'javascript',
+    framework: 'react',
+    style: 'airbnb'
+  })
+});
+
+const result = await response.json();
+console.log(result.code);
+```
+
+#### Error Codes
+| Code | Description |
+|------|-------------|
+| 400 | Bad Request - Invalid parameters |
+| 401 | Unauthorized - Missing or invalid token |
+| 429 | Too Many Requests - Rate limit exceeded |
+| 500 | Internal Server Error |
+
+---
+
+## Pipeline API
+
+### Generate Pipeline
+
+**Endpoint:** `POST /api/generate-pipeline`  
+**Authentication:** Required
+
+Generate CI/CD pipeline configuration from natural language description.
+
+#### Request Schema
+```typescript
+interface GeneratePipelineRequest {
+  description: string;      // Pipeline description
+  projectType?: string;     // e.g., "react", "node", "python"
+  platform?: string;       // e.g., "github-actions", "gitlab-ci"
+  environment?: string;    // e.g., "production", "staging"
+}
+```
+
+#### Response Schema
+```typescript
+interface GeneratePipelineResponse {
+  success: boolean;
+  config: string;          // YAML configuration
+  projectType: string;
+  platform: string;
+  steps: PipelineStep[];
+}
+
+interface PipelineStep {
+  name: string;
+  command: string;
+  description: string;
+}
+```
+
+#### Example Usage
+```javascript
+const pipeline = await fetch('/api/generate-pipeline', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  },
+  body: JSON.stringify({
+    description: 'React app with Jest tests, deploy to Vercel',
+    projectType: 'react',
+    platform: 'github-actions'
+  })
+});
+
+const result = await pipeline.json();
+console.log(result.config); // YAML configuration
+```
+
+---
+
+## Integration API
+
+### GitHub Integration
+
+**Base URL:** `/api/integrations/github`
+
+#### Connect Repository
+```typescript
+POST /api/integrations/github/connect
+
+Request:
+{
+  owner: string;
+  repo: string;
+  branch?: string;    // default: "main"
+}
+
+Response:
+{
+  success: boolean;
+  repository: {
+    id: string;
+    name: string;
+    owner: string;
+    url: string;
+  };
+}
+```
+
+#### List Workflows
+```typescript
+GET /api/integrations/github/workflows/:owner/:repo
+
+Response:
+{
+  success: boolean;
+  workflows: Array<{
+    id: string;
+    name: string;
+    path: string;
+    state: "active" | "disabled";
+  }>;
+}
+```
+
+### Slack Integration
+
+**Base URL:** `/api/integrations/slack`
+
+#### Send Message
+```typescript
+POST /api/integrations/slack/message
+
+Request:
+{
+  channel: string;
+  text: string;
+  blocks?: SlackBlock[];
+}
+
+Response:
+{
+  success: boolean;
+  ts: string;  // Message timestamp
+}
+```
 
 ---
 
@@ -374,5 +599,5 @@ query {
 
 ---
 
-*API Reference Version: 1.0 (In Progress)*  
-*Last Updated: 2025-12-30*
+*API Reference Version: 1.1 (In Progress)*  
+*Last Updated: January 12, 2026*

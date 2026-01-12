@@ -522,4 +522,4 @@ gh run view <run-id> --log
 
 ---
 
-*Last Updated: 2025-12-30*
+*Last Updated: January 12, 2026*
