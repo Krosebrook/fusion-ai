@@ -2,8 +2,8 @@
 
 > Strategic roadmap from MVP to V1.0+ with quarterly milestones and feature releases
 
-**Version:** 1.1  
-**Last Updated:** January 8, 2026  
+**Version:** 1.2  
+**Last Updated:** January 12, 2026  
 **Current Version:** 2.0.0 (Production)  
 **Status:** Active Development
 

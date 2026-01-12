@@ -334,5 +334,5 @@ We would like to thank the following security researchers who have responsibly d
 
 **Security is everyone's responsibility. Thank you for helping keep FlashFusion secure!**
 
-*Last Updated: January 8, 2026*
-*Version: 1.1*
+*Last Updated: January 12, 2026*
+*Version: 1.2*
