@@ -11,19 +11,19 @@ This documentation follows the [Diátaxis](https://diataxis.fr/) framework, orga
 Step-by-step lessons for beginners to learn by doing.
 
 - **[Getting Started](./tutorials/getting-started.md)** - Your first steps with FlashFusion
-- **Building Your First Pipeline** *(Coming Soon)* - Create and deploy a CI/CD pipeline
-- **Creating a Custom Plugin** *(Coming Soon)* - Extend FlashFusion with plugins
-- **AI-Assisted Development Workflow** *(Coming Soon)* - Leverage AI in your workflow
+- **[Building Your First Pipeline](./tutorials/building-first-pipeline.md)** - Create and deploy a CI/CD pipeline *(stub created)*
+- **[Creating a Custom Plugin](./tutorials/creating-custom-plugin.md)** - Extend FlashFusion with plugins *(stub created)*
+- **[AI-Assisted Development Workflow](./tutorials/ai-assisted-workflow.md)** - Leverage AI in your workflow *(stub created)*
 
 ### 🔧 How-To Guides (Problem-Oriented)
 
 Practical guides for accomplishing specific tasks.
 
 - **[Integrate with GitHub](./how-to-guides/integrate-github.md)** - Connect GitHub for automation
-- **Deploy to AWS** *(Coming Soon)* - Deploy applications to AWS
-- **Create Custom Agents** *(Coming Soon)* - Build specialized AI agents
-- **Optimize Performance** *(Coming Soon)* - Speed up your applications
-- **Secure Your Instance** *(Coming Soon)* - Harden security settings
+- **[Deploy to AWS](./how-to-guides/deploy-to-aws.md)** - Deploy applications to AWS *(stub created)*
+- **[Create Custom Agents](./how-to-guides/create-custom-agents.md)** - Build specialized AI agents *(stub created)*
+- **[Optimize Performance](./how-to-guides/optimize-performance.md)** - Speed up your applications *(stub created)*
+- **[Secure Your Instance](./how-to-guides/secure-your-instance.md)** - Harden security settings *(stub created)*
 
 ### 📖 Reference (Information-Oriented)
 
