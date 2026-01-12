@@ -683,8 +683,14 @@ ${results.reconstructionPrompt}
                   </ScrollArea>
                   <Button
                     className="mt-4"
-                    onClick={() => {
-                      navigator.clipboard.writeText(results.reconstructionPrompt);
+                    onClick={async () => {
+                      try {
+                        await navigator.clipboard.writeText(results.reconstructionPrompt);
+                        // Could add toast notification here
+                      } catch (err) {
+                        console.error('Failed to copy to clipboard:', err);
+                        // Fallback: Could show a dialog with the text to manually copy
+                      }
                     }}
                   >
                     Copy to Clipboard

@@ -46,6 +46,16 @@ function calculateGrade(scores) {
 }
 
 /**
+ * Convert camelCase to SCREAMING_SNAKE_CASE for EVALUATION_CRITERIA lookup
+ */
+function getCriteriaKey(camelCaseKey) {
+  return camelCaseKey
+    .replace(/([A-Z])/g, '_$1')
+    .toUpperCase()
+    .replace(/^_/, '');
+}
+
+/**
  * Evaluate application architecture and modularity
  */
 export function evaluateArchitecture(appContext) {
@@ -264,6 +274,9 @@ export function evaluateSecurity(appContext) {
   if (appContext.authMethod === 'jwt' || appContext.authMethod === 'oauth2') {
     findings.score += 2;
     findings.strengths.push(`Modern authentication: ${appContext.authMethod}`);
+  } else if (appContext.authMethod && appContext.authMethod.includes('sdk')) {
+    findings.score += 2;
+    findings.strengths.push(`SDK-based authentication: ${appContext.authMethod}`);
   } else if (appContext.authMethod === 'session') {
     findings.score += 1;
     findings.issues.push('Session-based auth limits scalability');
@@ -786,7 +799,7 @@ You are rebuilding an existing ${appContext.appType || 'web'} application from s
 **Current Weaknesses (Based on Audit):**
 ${Object.entries(scores)
   .filter(([_, data]) => data.score < 7)
-  .map(([key, data]) => `- ${EVALUATION_CRITERIA[key.toUpperCase().replace(/([A-Z])/g, '_$1').slice(1)]}: ${data.score}/10
+  .map(([key, data]) => `- ${EVALUATION_CRITERIA[getCriteriaKey(key)]}: ${data.score}/10
   ${data.issues.map(issue => `  • ${issue}`).join('\n')}`)
   .join('\n')}
 
@@ -935,7 +948,7 @@ ${gradeInfo.grade === 'B' ? 'Minor improvements needed for production-readiness.
 ${gradeInfo.grade === 'A' ? 'Production-ready with minor polish needed. ' : ''}
 Primary gaps: ${Object.entries(scores)
   .filter(([_, s]) => s.score < 6)
-  .map(([key]) => EVALUATION_CRITERIA[key.toUpperCase().replace(/([A-Z])/g, '_$1').slice(1)])
+  .map(([key]) => EVALUATION_CRITERIA[getCriteriaKey(key)])
   .slice(0, 3)
   .join(', ') || 'None major'}.
   `.trim();
