@@ -85,7 +85,8 @@ jobs:
         run: |
           COVERAGE=$(cat coverage/coverage-summary.json | jq '.total.lines.pct')
           echo "Current coverage: $COVERAGE%"
-          if (( $(echo "$COVERAGE < 40" | bc -l) )); then
+          # Use awk for portable floating point comparison
+          if awk "BEGIN {exit !($COVERAGE < 40)}"; then
             echo "⚠️  Warning: Coverage is below 40% target"
             echo "Current: $COVERAGE%, Target: 40%"
           else
@@ -153,8 +154,7 @@ jobs:
         run: |
           echo "📊 Vulnerability Report:"
           npm audit --json > audit.json || true
-          cat audit.json | jq '.vulnerabilities | length' > vuln_count.txt
-          VULN_COUNT=$(cat vuln_count.txt)
+          VULN_COUNT=$(cat audit.json | jq '.vulnerabilities | length')
           echo "Found $VULN_COUNT vulnerabilities"
           
           if [ "$VULN_COUNT" != "null" ] && [ "$VULN_COUNT" -gt 0 ]; then
