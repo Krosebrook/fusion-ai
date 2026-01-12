@@ -1,3 +1,4 @@
+import ActivityDashboard from './pages/ActivityDashboard';
 import AICodeAgent from './pages/AICodeAgent';
 import AICodeGen from './pages/AICodeGen';
 import AICodeReview from './pages/AICodeReview';
@@ -22,6 +23,7 @@ import Auth from './pages/Auth';
 import CICDAnalytics from './pages/CICDAnalytics';
 import CICDAutomation from './pages/CICDAutomation';
 import CinematicDemo from './pages/CinematicDemo';
+import CollaborationWorkspace from './pages/CollaborationWorkspace';
 import Commerce from './pages/Commerce';
 import ContentStudio from './pages/ContentStudio';
 import Copilot from './pages/Copilot';
@@ -51,6 +53,7 @@ import Profile from './pages/Profile';
 import PromptHub from './pages/PromptHub';
 import PromptLibrary from './pages/PromptLibrary';
 import PromptStudio from './pages/PromptStudio';
+import RBACManager from './pages/RBACManager';
 import Secrets from './pages/Secrets';
 import SecretsVault from './pages/SecretsVault';
 import Security from './pages/Security';
@@ -66,6 +69,7 @@ import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "ActivityDashboard": ActivityDashboard,
     "AICodeAgent": AICodeAgent,
     "AICodeGen": AICodeGen,
     "AICodeReview": AICodeReview,
@@ -90,6 +94,7 @@ export const PAGES = {
     "CICDAnalytics": CICDAnalytics,
     "CICDAutomation": CICDAutomation,
     "CinematicDemo": CinematicDemo,
+    "CollaborationWorkspace": CollaborationWorkspace,
     "Commerce": Commerce,
     "ContentStudio": ContentStudio,
     "Copilot": Copilot,
@@ -119,6 +124,7 @@ export const PAGES = {
     "PromptHub": PromptHub,
     "PromptLibrary": PromptLibrary,
     "PromptStudio": PromptStudio,
+    "RBACManager": RBACManager,
     "Secrets": Secrets,
     "SecretsVault": SecretsVault,
     "Security": Security,
