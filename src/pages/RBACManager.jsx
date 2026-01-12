@@ -12,6 +12,14 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
+// Role configuration constants
+const ROLE_BADGE_COLORS = {
+  Owner: 'bg-orange-500',
+  Admin: 'bg-purple-500',
+  Developer: 'bg-cyan-500',
+  Viewer: 'bg-gray-500',
+};
+
 export default function RBACManager() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRole, setSelectedRole] = useState(null);
@@ -46,13 +54,7 @@ export default function RBACManager() {
   ];
 
   const getRoleBadgeColor = (role) => {
-    const colors = {
-      Owner: 'bg-orange-500',
-      Admin: 'bg-purple-500',
-      Developer: 'bg-cyan-500',
-      Viewer: 'bg-gray-500',
-    };
-    return colors[role] || 'bg-gray-500';
+    return ROLE_BADGE_COLORS[role] || 'bg-gray-500';
   };
 
   return (

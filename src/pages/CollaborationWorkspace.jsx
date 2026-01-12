@@ -11,6 +11,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 
+// Utility function for pluralization
+const pluralize = (count, singular, plural) => {
+  return count === 1 ? singular : (plural || `${singular}s`);
+};
+
 export default function CollaborationWorkspace() {
   const [activeWorkspace, setActiveWorkspace] = useState('project-alpha');
   const [commentText, setCommentText] = useState('');
@@ -274,7 +279,7 @@ export default function CollaborationWorkspace() {
                             data-b44-sync="true"
                           >
                             <MessageSquare className="w-3 h-3 mr-1" />
-                            {comment.replies} {comment.replies === 1 ? 'reply' : 'replies'}
+                            {comment.replies} {pluralize(comment.replies, 'reply', 'replies')}
                           </Button>
                         </div>
                       </motion.div>
