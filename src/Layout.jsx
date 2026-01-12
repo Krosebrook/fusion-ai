@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { cn } from "@/lib/utils";
 import { LayoutDashboard, Wrench, BarChart3, Menu, X, PlayCircle, ArrowRight, UserPlus, Code, BookOpen, Globe, Link2,
-  Rocket
+  Rocket, Activity, Shield, Users as UsersIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { base44 } from "@/api/base44Client";
@@ -159,7 +159,10 @@ function LayoutContent({ children }) {
     { name: "Dashboard", path: createPageUrl("Dashboard"), icon: LayoutDashboard },
     { name: "Dev Dashboard", path: createPageUrl("DeveloperDashboard"), icon: Code },
     { name: "Analytics", path: createPageUrl("Analytics"), icon: BarChart3 },
-    { name: "Integrations", path: createPageUrl("Integrations"), icon: Link2 }
+    { name: "Integrations", path: createPageUrl("Integrations"), icon: Link2 },
+    { name: "Activity", path: createPageUrl("ActivityDashboard"), icon: Activity },
+    { name: "Collaboration", path: createPageUrl("CollaborationWorkspace"), icon: UsersIcon },
+    { name: "RBAC", path: createPageUrl("RBACManager"), icon: Shield }
   ];
   
   const toolComponents = [
@@ -188,6 +191,21 @@ function LayoutContent({ children }) {
       title: "CI/CD Automation",
       href: createPageUrl("CICDAutomation"),
       description: "Configure and manage your deployment pipelines.",
+    },
+    {
+      title: "Activity Dashboard",
+      href: createPageUrl("ActivityDashboard"),
+      description: "Track generations, API usage, and performance metrics.",
+    },
+    {
+      title: "RBAC Manager",
+      href: createPageUrl("RBACManager"),
+      description: "Manage roles, permissions, and user access control.",
+    },
+    {
+      title: "Collaboration Workspace",
+      href: createPageUrl("CollaborationWorkspace"),
+      description: "Work together in real-time with your team.",
     },
     {
       title: "Advanced Analytics",
