@@ -1,0 +1,106 @@
+name: Pull Request
+description: Standard pull request template
+title: "[Feature/Fix/Docs]: "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Pull Request Checklist
+        
+        Thanks for contributing to FlashFusion! Please complete this checklist before submitting.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What does this PR do? Provide a clear and concise description.
+      placeholder: This PR implements...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: pr-type
+    attributes:
+      label: Type of Change
+      description: What type of change does this PR introduce?
+      options:
+        - Feature (new functionality)
+        - Bug Fix (fixes an issue)
+        - Documentation (docs only)
+        - Refactor (code improvement)
+        - Performance (optimization)
+        - Test (adding tests)
+        - CI/CD (pipeline changes)
+        - Security (security improvements)
+        - Dependencies (dependency updates)
+    validations:
+      required: true
+
+  - type: textarea
+    id: related-issues
+    attributes:
+      label: Related Issues
+      description: Link any related issues (e.g., Fixes #123, Closes #456)
+      placeholder: "Fixes #"
+
+  - type: checkboxes
+    id: testing
+    attributes:
+      label: Testing
+      description: How has this been tested?
+      options:
+        - label: All existing tests pass
+        - label: New tests added for this change
+        - label: Manual testing performed
+        - label: No tests needed (docs/config only)
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      description: Please verify all items before submitting
+      options:
+        - label: Code follows project style guidelines
+          required: true
+        - label: Self-review of code completed
+          required: true
+        - label: Code commented where needed
+          required: false
+        - label: Documentation updated (if applicable)
+          required: false
+        - label: No new warnings generated
+          required: true
+        - label: Tests added/updated (if applicable)
+          required: false
+        - label: CHANGELOG.md updated (for features/fixes)
+          required: false
+
+  - type: textarea
+    id: breaking-changes
+    attributes:
+      label: Breaking Changes
+      description: Does this PR introduce breaking changes? If yes, describe them and migration path.
+      placeholder: None / Describe breaking changes...
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots (if applicable)
+      description: Add screenshots for UI changes
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other context about the PR here
+
+  - type: checkboxes
+    id: final-checks
+    attributes:
+      label: Final Checks
+      options:
+        - label: I have read and followed the [Contributing Guidelines](../CONTRIBUTING.md)
+          required: true
+        - label: I understand this PR will be reviewed and may require changes
+          required: true
