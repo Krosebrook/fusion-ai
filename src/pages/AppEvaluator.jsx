@@ -67,6 +67,26 @@ function getGradeColor(grade) {
 }
 
 /**
+ * Convert camelCase to SCREAMING_SNAKE_CASE for EVALUATION_CRITERIA lookup
+ */
+function getCriteriaKey(camelCaseKey) {
+  return camelCaseKey
+    .replace(/([A-Z])/g, '_$1')
+    .toUpperCase()
+    .replace(/^_/, '');
+}
+
+/**
+ * Get short label for a criteria (first word)
+ */
+function getShortCriteriaLabel(key) {
+  const criteriaKey = getCriteriaKey(key);
+  const fullLabel = EVALUATION_CRITERIA[criteriaKey];
+  if (!fullLabel) return key;
+  return fullLabel.split(' ')[0] || fullLabel.split('/')[0] || fullLabel;
+}
+
+/**
  * Score Card Component
  */
 function ScoreCard({ category, data, icon: Icon }) {
@@ -74,7 +94,7 @@ function ScoreCard({ category, data, icon: Icon }) {
     <Card className="hover:shadow-lg transition-shadow">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">
-          {EVALUATION_CRITERIA[category.toUpperCase().replace(/([A-Z])/g, '_$1').slice(1)]}
+          {EVALUATION_CRITERIA[getCriteriaKey(category)]}
         </CardTitle>
         {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
       </CardHeader>
@@ -255,7 +275,7 @@ ${results.executiveSummary}
 
 ## Detailed Scores
 ${Object.entries(results.scores).map(([key, data]) => `
-### ${EVALUATION_CRITERIA[key.toUpperCase().replace(/([A-Z])/g, '_$1').slice(1)]}
+### ${EVALUATION_CRITERIA[getCriteriaKey(key)]}
 Score: ${data.score}/10
 
 **Strengths:**
@@ -398,7 +418,7 @@ ${results.reconstructionPrompt}
                     <div key={key} className="text-center">
                       <div className="text-2xl font-bold">{data.score}</div>
                       <div className="text-xs text-muted-foreground">
-                        {EVALUATION_CRITERIA[key.toUpperCase().replace(/([A-Z])/g, '_$1').slice(1)].split(' ')[0]}
+                        {getShortCriteriaLabel(key)}
                       </div>
                     </div>
                   ))}
