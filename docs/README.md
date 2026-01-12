@@ -29,10 +29,10 @@ Practical guides for accomplishing specific tasks.
 
 Technical descriptions and specifications.
 
-- **API Documentation** *(Coming Soon)* - Complete API reference
+- **[API Documentation](./reference/api.md)** - Complete API reference
 - **CLI Commands** *(Coming Soon)* - Command-line interface guide
 - **Configuration** *(Coming Soon)* - Configuration options
-- **Environment Variables** - See [.env.example](../.env.example)
+- **[Environment Variables](../.env.example)** - See .env.example in project root
 
 ### 💡 Explanation (Understanding-Oriented)
 
@@ -121,7 +121,8 @@ We welcome documentation improvements! See [CONTRIBUTING.md](../CONTRIBUTING.md)
 | Getting Started | ✅ Complete | January 8, 2026 |
 | GitHub Integration | ✅ Complete | January 8, 2026 |
 | Architecture | ✅ Complete | January 8, 2026 |
-| API Reference | 📝 In Progress | TBD |
+| API Reference | 📝 In Progress | January 12, 2026 |
+| Environment Setup | ✅ Complete | January 12, 2026 |
 | CLI Guide | 📝 Planned | TBD |
 | More Tutorials | 📝 Planned | TBD |
 
@@ -133,6 +134,7 @@ We welcome documentation improvements! See [CONTRIBUTING.md](../CONTRIBUTING.md)
 - [README](../README.md) - Platform overview
 - [CHANGELOG](../CHANGELOG.md) - Version history
 - [ROADMAP](../ROADMAP.md) - Future plans
+- [LICENSE](../LICENSE) - MIT License
 
 ### Development
 - [CONTRIBUTING](../CONTRIBUTING.md) - Contribution guidelines
@@ -142,6 +144,9 @@ We welcome documentation improvements! See [CONTRIBUTING.md](../CONTRIBUTING.md)
 ### Security
 - [SECURITY](../SECURITY.md) - Security policy
 - [Vulnerability Reporting](../SECURITY.md#reporting-a-vulnerability)
+
+### Configuration
+- [.env.example](../.env.example) - Environment variables template
 
 ### AI Integration
 - [Agent Documentation](../agents.md) - AI agents overview
@@ -181,9 +186,9 @@ We welcome documentation improvements! See [CONTRIBUTING.md](../CONTRIBUTING.md)
 
 ---
 
-**Documentation Version:** 1.1  
-**Last Updated:** January 8, 2026  
-**Next Review:** February 8, 2026
+**Documentation Version:** 1.2  
+**Last Updated:** January 12, 2026  
+**Next Review:** February 12, 2026
 
 ---
 
