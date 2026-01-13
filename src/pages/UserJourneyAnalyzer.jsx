@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -79,7 +79,7 @@ export default function UserJourneyAnalyzerPage() {
     toast.success('Copied to clipboard');
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!conversation) return;
 
     const unsubscribe = base44.agents.subscribeToConversation(conversation.id, (data) => {
