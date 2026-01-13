@@ -1,4 +1,3 @@
-import ActivityDashboard from './pages/ActivityDashboard';
 import AICodeAgent from './pages/AICodeAgent';
 import AICodeGen from './pages/AICodeGen';
 import AICodeReview from './pages/AICodeReview';
@@ -12,6 +11,7 @@ import APIDocumentation from './pages/APIDocumentation';
 import APIGenerator from './pages/APIGenerator';
 import APIIntegration from './pages/APIIntegration';
 import AccessControl from './pages/AccessControl';
+import ActivityDashboard from './pages/ActivityDashboard';
 import AdvancedAnalytics from './pages/AdvancedAnalytics';
 import AgentManagement from './pages/AgentManagement';
 import AgentOrchestration from './pages/AgentOrchestration';
@@ -66,11 +66,11 @@ import VisualPipelineBuilder from './pages/VisualPipelineBuilder';
 import WebsiteCloner from './pages/WebsiteCloner';
 import WorkflowBuilder from './pages/WorkflowBuilder';
 import Workflows from './pages/Workflows';
+import UserJourneyAnalyzer from './pages/UserJourneyAnalyzer';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "ActivityDashboard": ActivityDashboard,
     "AICodeAgent": AICodeAgent,
     "AICodeGen": AICodeGen,
     "AICodeReview": AICodeReview,
@@ -84,6 +84,7 @@ export const PAGES = {
     "APIGenerator": APIGenerator,
     "APIIntegration": APIIntegration,
     "AccessControl": AccessControl,
+    "ActivityDashboard": ActivityDashboard,
     "AdvancedAnalytics": AdvancedAnalytics,
     "AgentManagement": AgentManagement,
     "AgentOrchestration": AgentOrchestration,
@@ -138,6 +139,7 @@ export const PAGES = {
     "WebsiteCloner": WebsiteCloner,
     "WorkflowBuilder": WorkflowBuilder,
     "Workflows": Workflows,
+    "UserJourneyAnalyzer": UserJourneyAnalyzer,
 }
 
 export const pagesConfig = {
