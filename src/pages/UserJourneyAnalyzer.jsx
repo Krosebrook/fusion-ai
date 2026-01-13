@@ -24,9 +24,127 @@ export default function UserJourneyAnalyzerPage() {
   const [customPrompt, setCustomPrompt] = useState('');
   const [conversation, setConversation] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
+  const [selectedPreset, setSelectedPreset] = useState(null);
   const queryClient = useQueryClient();
 
   const agentName = 'UserJourneyMapper';
+
+  const presets = {
+    'first-recognition': {
+      name: 'New User First-Time Recognition',
+      role: 'user',
+      flow: 'recognition',
+      icon: '🎉',
+      description: 'User discovers and sends their first recognition to a colleague',
+      prompt: `Analyze the complete journey of a brand new user discovering and sending their first recognition. Map the flow from: 
+1. Landing on the platform (post-onboarding)
+2. Discovering the recognition feature (navigation, tooltips, prompts)
+3. Understanding what recognition is and why to use it
+4. Finding a colleague to recognize
+5. Composing their first recognition message
+6. Selecting rewards/badges (if applicable)
+7. Sending and confirmation
+8. Post-send experience (notifications, social proof)
+
+Identify friction points such as: unclear CTAs, difficulty finding colleagues, uncertainty about what to write, technical barriers, lack of encouragement to complete the action. Generate a detailed Mermaid flowchart with decision points, potential dead ends, and success metrics.`
+    },
+    'admin-dispute': {
+      name: 'Admin Dispute Resolution',
+      role: 'admin',
+      flow: 'moderation',
+      icon: '⚖️',
+      description: 'Admin handles a flagged content dispute between users',
+      prompt: `Analyze the complete admin workflow for resolving a content dispute or moderation case:
+1. Receiving notification of flagged content
+2. Accessing the moderation queue/dashboard
+3. Reviewing the flagged content and context (original post, reporter's reason, user history)
+4. Investigating additional evidence (user profiles, previous incidents, community guidelines)
+5. Making a decision (approve, remove, warn, ban)
+6. Documenting the decision with reasoning
+7. Communicating with involved parties
+8. Implementing the decision (content removal, user sanctions)
+9. Following up and monitoring
+
+Identify friction points: insufficient context, unclear guidelines, lack of tools for investigation, difficult communication interfaces, no audit trail, excessive steps. Generate a detailed Mermaid flowchart highlighting decision branches and potential escalation paths.`
+    },
+    'owner-gamification': {
+      name: 'Owner Gamification Setup',
+      role: 'owner',
+      flow: 'gamification',
+      icon: '🎮',
+      description: 'Owner configures complex gamification rules for the first time',
+      prompt: `Analyze the complete owner journey for setting up a comprehensive gamification system from scratch:
+1. Accessing gamification settings/configuration
+2. Understanding available gamification mechanics (points, badges, leaderboards, levels)
+3. Defining point rules (what actions earn points, how many)
+4. Creating custom badges with criteria
+5. Configuring leaderboards (timeframes, visibility, categories)
+6. Setting up level thresholds and rewards
+7. Testing the configuration with sample scenarios
+8. Publishing/activating the gamification system
+9. Monitoring initial user engagement and metrics
+
+Identify friction points: complex configuration interfaces, lack of templates/presets, unclear impact preview, difficulty testing before launch, no validation of rule conflicts, missing documentation. Generate a detailed Mermaid flowchart with configuration steps, validation gates, and rollback points.`
+    },
+    'multi-role-recognition': {
+      name: 'Cross-Department Recognition Flow',
+      role: 'user',
+      flow: 'recognition',
+      icon: '🤝',
+      description: 'User sends recognition across departments with approval workflow',
+      prompt: `Analyze the complex journey of sending recognition that requires cross-departmental approval:
+1. User identifies someone from another department to recognize
+2. Searches/finds the person in the system
+3. Composes recognition with specific achievements
+4. Selects reward tier (triggering approval requirement)
+5. Submission and notification to approvers
+6. Approval workflow (manager review, budget check, HR approval)
+7. Notification back to original user
+8. Final delivery to recipient
+9. Social sharing and celebration
+
+Identify friction points: confusing approval requirements, lack of visibility into approval status, unclear budget constraints, lost context during approvals, delayed notifications, abandonment during waiting periods. Generate a detailed Mermaid flowchart showing parallel approval paths and timeout scenarios.`
+    },
+    'onboarding-activation': {
+      name: 'Complete User Onboarding to Activation',
+      role: 'user',
+      flow: 'onboarding',
+      icon: '🚀',
+      description: 'New user journey from signup through first meaningful action',
+      prompt: `Analyze the critical activation journey from initial signup to first value realization:
+1. Landing page arrival and signup decision
+2. Account creation (email, OAuth, form fields)
+3. Email verification and first login
+4. Profile setup (photo, bio, department, role)
+5. Product tour/walkthrough
+6. Connecting with colleagues (imports, search, suggestions)
+7. Understanding the value proposition
+8. Taking first meaningful action (give recognition, join challenge, etc.)
+9. Receiving first notification/engagement
+10. Returning for second session
+
+Identify friction points: lengthy signup forms, unclear value proposition, overwhelming feature tours, difficulty finding relevant connections, lack of immediate value, poor mobile experience, confusing next steps. Generate a detailed Mermaid flowchart with drop-off points, intervention opportunities, and success indicators.`
+    },
+    'admin-bulk-actions': {
+      name: 'Admin Bulk User Management',
+      role: 'admin',
+      flow: 'custom',
+      icon: '👥',
+      description: 'Admin performs bulk operations on user accounts',
+      prompt: `Analyze the admin workflow for performing bulk operations on multiple user accounts:
+1. Accessing user management dashboard
+2. Defining selection criteria (department, role, activity level, date joined)
+3. Previewing affected users
+4. Selecting bulk action (role change, deactivation, messaging, export)
+5. Confirming action with safeguards
+6. Processing and progress tracking
+7. Handling errors/exceptions
+8. Reviewing completion report
+9. Undoing if needed
+
+Identify friction points: unclear selection criteria, no preview of impact, accidental actions, slow processing, lack of progress visibility, inadequate error handling, no undo option, missing audit logs. Generate a detailed Mermaid flowchart with safety checks and rollback procedures.`
+    }
+  };
 
   const flows = {
     onboarding: 'User Onboarding Journey',
@@ -42,6 +160,20 @@ export default function UserJourneyAnalyzerPage() {
     owner: { icon: Crown, color: 'from-orange-500 to-amber-500', label: 'Owner' }
   };
 
+  const handlePresetSelect = (presetKey) => {
+    const preset = presets[presetKey];
+    setSelectedPreset(presetKey);
+    setSelectedRole(preset.role);
+    setSelectedFlow(preset.flow);
+    setCustomPrompt(preset.prompt);
+    toast.success(`Loaded preset: ${preset.name}`);
+  };
+
+  const handleClearPreset = () => {
+    setSelectedPreset(null);
+    setCustomPrompt('');
+  };
+
   const handleStartAnalysis = async () => {
     setAnalyzing(true);
     try {
@@ -50,15 +182,17 @@ export default function UserJourneyAnalyzerPage() {
         metadata: {
           role: selectedRole,
           flow: selectedFlow,
+          preset: selectedPreset,
           timestamp: new Date().toISOString()
         }
       });
       
       setConversation(conv);
 
-      const prompt = selectedFlow === 'custom' && customPrompt
-        ? customPrompt
-        : `Analyze the ${flows[selectedFlow]} for a ${roles[selectedRole].label} role. Map out the complete user journey, identify all friction points, and generate a visual flowchart with specific recommendations for optimization.`;
+      const prompt = customPrompt || 
+        (selectedFlow === 'custom' 
+          ? 'Please describe the user flow you want to analyze.'
+          : `Analyze the ${flows[selectedFlow]} for a ${roles[selectedRole].label} role. Map out the complete user journey, identify all friction points, and generate a visual flowchart with specific recommendations for optimization.`);
 
       await base44.agents.addMessage(conv, {
         role: 'user',
@@ -123,9 +257,64 @@ export default function UserJourneyAnalyzerPage() {
           </div>
         </motion.div>
 
+        {/* Presets Grid */}
+        <CinematicCard className="p-6">
+          <h2 className="text-2xl font-bold text-white mb-4">Quick Start Presets</h2>
+          <p className="text-white/60 text-sm mb-6">Select a complex scenario to analyze with pre-configured settings</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            {Object.entries(presets).map(([key, preset]) => (
+              <motion.button
+                key={key}
+                onClick={() => handlePresetSelect(key)}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className={`p-4 rounded-lg border text-left transition-all ${
+                  selectedPreset === key
+                    ? 'bg-purple-500/20 border-purple-500/50 shadow-lg shadow-purple-500/20'
+                    : 'bg-slate-800/30 border-white/10 hover:border-purple-500/30'
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  <span className="text-3xl">{preset.icon}</span>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-white font-semibold text-sm mb-1 line-clamp-2">
+                      {preset.name}
+                    </h3>
+                    <p className="text-white/60 text-xs mb-2 line-clamp-2">
+                      {preset.description}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <Badge className="text-xs bg-slate-700/50 border-white/10">
+                        {roles[preset.role].label}
+                      </Badge>
+                      {selectedPreset === key && (
+                        <CheckCircle className="w-4 h-4 text-purple-400" />
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </motion.button>
+            ))}
+          </div>
+
+          {selectedPreset && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleClearPreset}
+              className="border-white/10 mb-4"
+            >
+              Clear Preset
+            </Button>
+          )}
+        </CinematicCard>
+
         {/* Configuration Panel */}
         <CinematicCard className="p-6">
-          <h2 className="text-2xl font-bold text-white mb-6">Configure Analysis</h2>
+          <h2 className="text-2xl font-bold text-white mb-6">
+            {selectedPreset ? 'Review Configuration' : 'Custom Configuration'}
+          </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             {/* Role Selection */}
@@ -164,21 +353,23 @@ export default function UserJourneyAnalyzerPage() {
             </div>
           </div>
 
-          {selectedFlow === 'custom' && (
+          {(selectedFlow === 'custom' || selectedPreset) && (
             <div className="mb-6">
-              <label className="text-sm text-white/60 mb-2 block">Custom Flow Description</label>
+              <label className="text-sm text-white/60 mb-2 block">
+                {selectedPreset ? 'Preset Prompt (Edit if needed)' : 'Custom Flow Description'}
+              </label>
               <Textarea
                 value={customPrompt}
                 onChange={(e) => setCustomPrompt(e.target.value)}
                 placeholder="Describe the custom user flow you want to analyze..."
-                className="bg-slate-800/50 border-white/10 text-white min-h-[100px]"
+                className="bg-slate-800/50 border-white/10 text-white min-h-[120px]"
               />
             </div>
           )}
 
           <Button
             onClick={handleStartAnalysis}
-            disabled={analyzing || (selectedFlow === 'custom' && !customPrompt)}
+            disabled={analyzing || (selectedFlow === 'custom' && !customPrompt && !selectedPreset)}
             className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
           >
             {analyzing ? (
