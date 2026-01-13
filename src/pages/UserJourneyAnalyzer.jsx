@@ -15,21 +15,8 @@ import {
 } from 'lucide-react';
 import { CinematicCard } from '../components/atoms/CinematicCard';
 import ReactMarkdown from 'react-markdown';
-import mermaid from 'mermaid';
 import { toast } from 'sonner';
-
-mermaid.initialize({ 
-  startOnLoad: true, 
-  theme: 'dark',
-  themeVariables: {
-    primaryColor: '#8B5CF6',
-    primaryTextColor: '#fff',
-    primaryBorderColor: '#7C3AED',
-    lineColor: '#A78BFA',
-    secondaryColor: '#EC4899',
-    tertiaryColor: '#14B8A6'
-  }
-});
+import { MermaidDiagram } from '../components/visualization/MermaidDiagram';
 
 export default function UserJourneyAnalyzerPage() {
   const [selectedRole, setSelectedRole] = useState('user');
@@ -84,16 +71,6 @@ export default function UserJourneyAnalyzerPage() {
       toast.error('Failed to start analysis');
     } finally {
       setAnalyzing(false);
-    }
-  };
-
-  const renderMermaid = async (code) => {
-    try {
-      const { svg } = await mermaid.render('mermaid-' + Date.now(), code);
-      return svg;
-    } catch (error) {
-      console.error('Mermaid render error:', error);
-      return null;
     }
   };
 
@@ -265,14 +242,7 @@ export default function UserJourneyAnalyzerPage() {
                           code: ({ inline, className, children, ...props }) => {
                             const match = /language-(\w+)/.exec(className || '');
                             if (!inline && match && match[1] === 'mermaid') {
-                              return (
-                                <div 
-                                  className="mermaid bg-slate-900/50 p-4 rounded-lg overflow-auto"
-                                  dangerouslySetInnerHTML={{ 
-                                    __html: children 
-                                  }}
-                                />
-                              );
+                              return <MermaidDiagram chart={String(children).trim()} />;
                             }
                             return inline ? (
                               <code className="bg-slate-700 px-1 py-0.5 rounded text-sm" {...props}>
