@@ -2,20 +2,17 @@
  * Predictive Analytics - ML-powered forecasting and anomaly detection
  */
 
-import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { Badge } from '@/components/ui/badge';
-import { 
-  LineChart, Line, AreaChart, Area, XAxis, YAxis, 
-  CartesianGrid, Tooltip, ResponsiveContainer, Legend,
+import { AreaChart, Area, XAxis, YAxis, 
+  CartesianGrid, Tooltip, ResponsiveContainer,
   ScatterChart, Scatter
 } from 'recharts';
 import { 
-  TrendingUp, AlertTriangle, Brain, Target,
-  Activity, Zap
+  TrendingUp, AlertTriangle, Brain, Target, Zap
 } from 'lucide-react';
 
 export function PredictiveAnalytics({ templateId }) {

@@ -35,15 +35,34 @@ export class GlobalErrorBoundary extends React.Component {
   }
 
   logErrorToService(error, errorInfo) {
+    // Safe refactor: Added Sentry placeholder for production error logging
     // In production, send to Sentry, LogRocket, etc.
-    console.error('Global Error Boundary caught:', {
-      error: error.toString(),
-      stack: error.stack,
-      componentStack: errorInfo.componentStack,
-      userAgent: navigator.userAgent,
-      timestamp: new Date().toISOString(),
-      url: window.location.href
-    });
+    
+    try {
+      // Placeholder for Sentry integration
+      // if (window.Sentry) {
+      //   window.Sentry.captureException(error, {
+      //     contexts: {
+      //       react: {
+      //         componentStack: errorInfo.componentStack
+      //       }
+      //     }
+      //   });
+      // }
+      
+      // Fallback: Always log to console for debugging
+      console.error('Global Error Boundary caught:', {
+        error: error.toString(),
+        stack: error.stack,
+        componentStack: errorInfo.componentStack,
+        userAgent: navigator.userAgent,
+        timestamp: new Date().toISOString(),
+        url: window.location.href
+      });
+    } catch (loggingError) {
+      // Safe refactor: Fail gracefully if error logging itself fails
+      console.error('Error logging failed:', loggingError);
+    }
   }
 
   handleReset = () => {

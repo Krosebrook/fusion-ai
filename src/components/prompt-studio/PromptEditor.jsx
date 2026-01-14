@@ -3,7 +3,7 @@
  * Rich text editor for crafting prompts with dynamic variables
  */
 
-import React, { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
@@ -13,7 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { 
   Plus, X, Sparkles, Save, Code, 
-  Settings, Variable, Hash, AlertCircle
+  Settings, Variable, Hash
 } from 'lucide-react';
 import { toast } from 'sonner';
 

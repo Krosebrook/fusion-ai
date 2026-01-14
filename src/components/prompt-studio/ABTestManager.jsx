@@ -3,7 +3,7 @@
  * Create and analyze prompt experiments with statistical significance
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
@@ -11,11 +11,10 @@ import { Input } from '@/components/ui/input';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { Badge } from '@/components/ui/badge';
 import { 
-  TestTube, Plus, Play, Pause, BarChart3, 
-  TrendingUp, Award, Target 
+  TestTube, Plus, Play, Pause, BarChart3, Award, Target 
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export function ABTestManager({ templates, experiments, onSelectExperiment }) {
   const [showNewExperiment, setShowNewExperiment] = useState(false);

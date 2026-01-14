@@ -2,10 +2,9 @@
  * Performance Heatmap - Segment analysis visualization
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CinematicCard } from '../atoms/CinematicCard';
-import { Badge } from '@/components/ui/badge';
 import { Activity } from 'lucide-react';
 
 export function PerformanceHeatmap({ logs = [] }) {

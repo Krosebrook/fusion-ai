@@ -3,13 +3,12 @@
  * Side-by-side comparison of prompt versions with diff highlighting
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { GitBranch, Clock, TrendingUp, ArrowRight } from 'lucide-react';
 
 export function VersionComparison({ templates }) {

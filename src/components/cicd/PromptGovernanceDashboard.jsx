@@ -2,17 +2,15 @@
  * Prompt Governance Dashboard - Compliance monitoring and policy enforcement
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-  Shield, CheckCircle, XCircle, AlertTriangle, 
-  FileText, Users, BarChart3, Settings
+  Shield, CheckCircle, XCircle, AlertTriangle, Users, BarChart3, Settings
 } from 'lucide-react';
 
 export function PromptGovernanceDashboard() {

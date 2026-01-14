@@ -1,4 +1,5 @@
 import './App.css'
+import { Suspense } from 'react' // Safe refactor: Add Suspense for lazy-loaded pages
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
@@ -9,6 +10,17 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
+import { ErrorBoundaryWrapper } from '@/components/ui-library/ErrorBoundaryWrapper'; // Safe refactor: Route-level error boundaries
+
+// Safe refactor: Loading fallback for lazy-loaded pages
+const PageLoadingFallback = () => (
+  <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="text-center">
+      <div className="w-16 h-16 border-4 border-slate-200 border-t-orange-500 rounded-full animate-spin mx-auto mb-4"></div>
+      <p className="text-slate-300 text-sm">Loading page...</p>
+    </div>
+  </div>
+);
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -41,12 +53,16 @@ const AuthenticatedApp = () => {
     }
   }
 
-  // Render the main app
+  // Render the main app with Suspense for lazy-loaded pages and error boundaries per route
   return (
     <Routes>
       <Route path="/" element={
         <LayoutWrapper currentPageName={mainPageKey}>
-          <MainPage />
+          <ErrorBoundaryWrapper title="Error loading home page">
+            <Suspense fallback={<PageLoadingFallback />}>
+              <MainPage />
+            </Suspense>
+          </ErrorBoundaryWrapper>
         </LayoutWrapper>
       } />
       {Object.entries(Pages).map(([path, Page]) => (
@@ -55,7 +71,11 @@ const AuthenticatedApp = () => {
           path={`/${path}`}
           element={
             <LayoutWrapper currentPageName={path}>
-              <Page />
+              <ErrorBoundaryWrapper title={`Error loading ${path}`}>
+                <Suspense fallback={<PageLoadingFallback />}>
+                  <Page />
+                </Suspense>
+              </ErrorBoundaryWrapper>
             </LayoutWrapper>
           }
         />

@@ -2,17 +2,19 @@
  * Execution Monitor - Real-time workflow execution tracking
  */
 
-import React, { useState } from 'react';
+// Safe refactor: Removed unused React and icon imports (no logic change)
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { Badge } from '@/components/ui/badge';
 import { 
   Activity, CheckCircle, AlertCircle, Clock, 
-  Zap, TrendingUp, ArrowRight 
+  Zap
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-export function ExecutionMonitor({ executions, workflows }) {
+// Safe refactor: workflows available for future use
+export function ExecutionMonitor({ executions, workflows: _workflows }) {
   const [selectedExecution, setSelectedExecution] = useState(executions?.[0]);
 
   const getStatusColor = (status) => {

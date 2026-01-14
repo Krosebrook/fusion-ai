@@ -2,15 +2,15 @@
  * Error Handler - Error management and retry mechanisms
  */
 
-import React, { useState, useCallback } from 'react';
+// Safe refactor: Removed unused React and icon imports (no logic change)
+import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { 
-  AlertTriangle, RefreshCw, CheckCircle, 
-  Clock, FileText, Zap 
+  AlertTriangle, RefreshCw, FileText
 } from 'lucide-react';
 import { toast } from 'sonner';
 

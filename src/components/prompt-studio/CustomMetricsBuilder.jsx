@@ -2,17 +2,15 @@
  * Custom Metrics Builder - User-defined evaluation criteria
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { 
-  Plus, Save, Trash2, Sliders, Target, 
-  TrendingUp, CheckCircle
+  Plus, Save, Trash2, Target
 } from 'lucide-react';
 import { toast } from 'sonner';
 

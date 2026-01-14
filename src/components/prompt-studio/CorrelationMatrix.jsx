@@ -2,10 +2,8 @@
  * Correlation Matrix - Metric relationships and dependencies
  */
 
-import React from 'react';
 import { motion } from 'framer-motion';
 import { CinematicCard } from '../atoms/CinematicCard';
-import { TrendingUp, TrendingDown } from 'lucide-react';
 
 export function CorrelationMatrix({ logs = [] }) {
   const metrics = ['latency_ms', 'cost_usd', 'quality_score', 'tokens.total'];

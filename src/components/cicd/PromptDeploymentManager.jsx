@@ -2,7 +2,7 @@
  * Prompt Deployment Manager - CI/CD integration for prompts
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -16,8 +16,7 @@ import { PromptPolicyManager } from './PromptPolicyManager';
 import { PromptReviewWorkflow } from './PromptReviewWorkflow';
 import { PromptRollbackManager } from './PromptRollbackManager';
 import { 
-  Rocket, GitBranch, Check, AlertCircle, 
-  Clock, Zap, Settings, Activity
+  Rocket, Zap, Activity
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';

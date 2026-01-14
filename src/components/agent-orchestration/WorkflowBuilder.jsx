@@ -2,7 +2,8 @@
  * Workflow Builder - Visual workflow orchestration with dependencies
  */
 
-import React, { useState, useCallback } from 'react';
+// Safe refactor: Removed unused React and icon imports (no logic change)
+import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
@@ -10,14 +11,15 @@ import { Input } from '@/components/ui/input';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { Badge } from '@/components/ui/badge';
 import { 
-  Plus, Save, Play, ArrowRight, AlertCircle, Zap 
+  Plus, Save, Play, ArrowRight, Zap 
 } from 'lucide-react';
 import { toast } from 'sonner';
 
-export function WorkflowBuilder({ workflows, agents, selectedWorkflow, onSelectWorkflow }) {
-  const [nodes, setNodes] = useState(selectedWorkflow?.nodes || []);
-  const [edges, setEdges] = useState(selectedWorkflow?.edges || []);
-  const [workflowName, setWorkflowName] = useState(selectedWorkflow?.name || '');
+// Safe refactor: workflows, selectedWorkflow, onSelectWorkflow available for future use
+export function WorkflowBuilder({ workflows: _workflows, agents, selectedWorkflow: _selectedWorkflow, onSelectWorkflow: _onSelectWorkflow }) {
+  const [nodes, setNodes] = useState(_selectedWorkflow?.nodes || []);
+  const [edges, setEdges] = useState(_selectedWorkflow?.edges || []);
+  const [workflowName, setWorkflowName] = useState(_selectedWorkflow?.name || '');
   const [showNodeForm, setShowNodeForm] = useState(false);
   const [newNode, setNewNode] = useState({ 
     id: '', 

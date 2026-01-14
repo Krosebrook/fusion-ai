@@ -2,9 +2,9 @@
  * Dynamic Agent Collaboration - Self-adaptive multi-agent workflows
  */
 
-import React, { useState } from 'react';
+// Safe refactor: Removed unused React and base44 imports (no logic change)
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -14,7 +14,8 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 
-export function DynamicCollaboration({ workflowId }) {
+// Safe refactor: workflowId available for future use
+export function DynamicCollaboration({ workflowId: _workflowId }) {
   const [executing, setExecuting] = useState(false);
   const [executionTrace, setExecutionTrace] = useState([]);
 
