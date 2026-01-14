@@ -11,12 +11,13 @@ import { Badge } from '@/components/ui/badge';
 import { 
   GitBranch, Users, Shield, Crown, TrendingUp, 
   AlertCircle, CheckCircle, Zap, MessageSquare, 
-  Download, Copy, Eye
+  Download, Copy, Eye, FlaskConical
 } from 'lucide-react';
 import { CinematicCard } from '../components/atoms/CinematicCard';
 import ReactMarkdown from 'react-markdown';
 import { toast } from 'sonner';
 import { MermaidDiagram } from '../components/visualization/MermaidDiagram';
+import { ABTestScenarios } from '../components/user-journey/ABTestScenarios';
 
 export default function UserJourneyAnalyzerPage() {
   const [selectedRole, setSelectedRole] = useState('user');
@@ -25,6 +26,8 @@ export default function UserJourneyAnalyzerPage() {
   const [conversation, setConversation] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [selectedPreset, setSelectedPreset] = useState(null);
+  const [abTestScenarios, setAbTestScenarios] = useState(null);
+  const [generatingTests, setGeneratingTests] = useState(false);
   const queryClient = useQueryClient();
 
   const agentName = 'UserJourneyMapper';
@@ -211,6 +214,44 @@ Identify friction points: unclear selection criteria, no preview of impact, acci
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
     toast.success('Copied to clipboard');
+  };
+
+  const generateABTests = async () => {
+    if (!conversation?.messages?.length) {
+      toast.error('No analysis available to generate tests from');
+      return;
+    }
+
+    setGeneratingTests(true);
+    try {
+      const lastMessage = conversation.messages[conversation.messages.length - 1];
+      const analysisContent = lastMessage.role === 'assistant' ? lastMessage.content : '';
+
+      const { generateABTestScenarios } = await import('@/functions/generateABTestScenarios');
+      const result = await generateABTestScenarios({
+        analysisContent,
+        role: selectedRole,
+        flow: selectedFlow
+      });
+
+      if (result.scenarios && result.scenarios.length > 0) {
+        setAbTestScenarios(result.scenarios);
+        toast.success(`Generated ${result.scenarios.length} A/B test scenarios`);
+      } else {
+        toast.error('No test scenarios could be generated');
+      }
+    } catch (error) {
+      console.error('Failed to generate A/B tests:', error);
+      toast.error('Failed to generate A/B test scenarios');
+    } finally {
+      setGeneratingTests(false);
+    }
+  };
+
+  const handleSimulateTest = (scenario) => {
+    toast.success(`Starting simulation for: ${scenario.frictionPoint}`, {
+      description: 'Test simulation would be configured here with analytics tracking'
+    });
   };
 
   useEffect(() => {
@@ -406,6 +447,24 @@ Identify friction points: unclear selection criteria, no preview of impact, acci
                       <Copy className="w-4 h-4 mr-2" />
                       Copy
                     </Button>
+                    <Button
+                      size="sm"
+                      onClick={generateABTests}
+                      disabled={generatingTests}
+                      className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600"
+                    >
+                      {generatingTests ? (
+                        <>
+                          <Zap className="w-4 h-4 mr-2 animate-pulse" />
+                          Generating...
+                        </>
+                      ) : (
+                        <>
+                          <FlaskConical className="w-4 h-4 mr-2" />
+                          Generate A/B Tests
+                        </>
+                      )}
+                    </Button>
                   </div>
                 </div>
 
@@ -453,6 +512,21 @@ Identify friction points: unclear selection criteria, no preview of impact, acci
                   ))}
                 </div>
               </CinematicCard>
+            </motion.div>
+          </AnimatePresence>
+        )}
+
+        {/* A/B Test Scenarios */}
+        {abTestScenarios && abTestScenarios.length > 0 && (
+          <AnimatePresence>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <ABTestScenarios 
+                scenarios={abTestScenarios}
+                onSimulate={handleSimulateTest}
+              />
             </motion.div>
           </AnimatePresence>
         )}

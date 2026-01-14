@@ -62,11 +62,11 @@ import SecurityMonitoring from './pages/SecurityMonitoring';
 import Settings from './pages/Settings';
 import Share from './pages/Share';
 import Tools from './pages/Tools';
+import UserJourneyAnalyzer from './pages/UserJourneyAnalyzer';
 import VisualPipelineBuilder from './pages/VisualPipelineBuilder';
 import WebsiteCloner from './pages/WebsiteCloner';
 import WorkflowBuilder from './pages/WorkflowBuilder';
 import Workflows from './pages/Workflows';
-import UserJourneyAnalyzer from './pages/UserJourneyAnalyzer';
 import __Layout from './Layout.jsx';
 
 
@@ -135,11 +135,11 @@ export const PAGES = {
     "Settings": Settings,
     "Share": Share,
     "Tools": Tools,
+    "UserJourneyAnalyzer": UserJourneyAnalyzer,
     "VisualPipelineBuilder": VisualPipelineBuilder,
     "WebsiteCloner": WebsiteCloner,
     "WorkflowBuilder": WorkflowBuilder,
     "Workflows": Workflows,
-    "UserJourneyAnalyzer": UserJourneyAnalyzer,
 }
 
 export const pagesConfig = {
