@@ -17,18 +17,18 @@ import { VersionComparison } from '../components/prompt-studio/VersionComparison
 import { ABTestManager } from '../components/prompt-studio/ABTestManager';
 import { PromptLibrary } from '../components/prompt-studio/PromptLibrary';
 import { PromptAnalytics } from '../components/prompt-studio/PromptAnalytics';
-import { ABTestAnalytics } from '../components/prompt-studio/ABTestAnalytics';
-import { PredictiveAnalytics } from '../components/prompt-studio/PredictiveAnalytics';
-import { CustomMetricsBuilder } from '../components/prompt-studio/CustomMetricsBuilder';
-import { CorrelationMatrix } from '../components/prompt-studio/CorrelationMatrix';
-import { PerformanceHeatmap } from '../components/prompt-studio/PerformanceHeatmap';
-import { InteractiveDashboard } from '../components/prompt-studio/InteractiveDashboard';
+import { ChainBuilderAdvanced } from '../components/prompt-studio/ChainBuilderAdvanced';
+import { ChainDebugger } from '../components/prompt-studio/ChainDebugger';
+import { PerformanceDashboard } from '../components/prompt-studio/PerformanceDashboard';
+import { TemplateLibrary } from '../components/prompt-studio/TemplateLibrary';
+import { AgentOrchestrator } from '../components/agent-orchestration/AgentOrchestrator';
+import { RealtimeMonitoring } from '../components/prompt-studio/RealtimeMonitoring';
 import { PromptDeploymentManager } from '../components/cicd/PromptDeploymentManager';
-import { PromptPromotionPipeline } from '../components/cicd/PromptPromotionPipeline';
 import { 
-  Sparkles, Wand2, GitBranch, TestTube, 
-  Plus, Layers, TrendingUp, BarChart3, Rocket
+  Sparkles, Wand2, GitBranch, 
+  Plus, Layers, TrendingUp, BarChart3, Rocket, Edit, Play, GitCompare, FlaskConical, Library, Users, Activity
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function PromptStudioPage() {
   const { user } = useAuth();
