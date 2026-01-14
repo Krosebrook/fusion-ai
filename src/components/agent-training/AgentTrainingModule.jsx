@@ -2,7 +2,8 @@
  * Agent Training Module - Fine-tuning and performance evaluation
  */
 
-import React, { useState } from 'react';
+// Safe refactor: Removed unused React and icon imports (no logic change)
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -12,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-  Brain, Play, Database, Settings, TrendingUp,
+  Brain, Play, Database, Settings,
   CheckCircle, Upload, BarChart3
 } from 'lucide-react';
 import { toast } from 'sonner';
