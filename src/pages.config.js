@@ -68,6 +68,7 @@ import WebsiteCloner from './pages/WebsiteCloner';
 import WorkflowBuilder from './pages/WorkflowBuilder';
 import Workflows from './pages/Workflows';
 import AITestingSuite from './pages/AITestingSuite';
+import ABTestManager from './pages/ABTestManager';
 import __Layout from './Layout.jsx';
 
 
@@ -142,6 +143,7 @@ export const PAGES = {
     "WorkflowBuilder": WorkflowBuilder,
     "Workflows": Workflows,
     "AITestingSuite": AITestingSuite,
+    "ABTestManager": ABTestManager,
 }
 
 export const pagesConfig = {
