@@ -7,14 +7,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   FlaskConical, Target, TrendingUp, AlertTriangle, 
   CheckCircle2, Users, Clock, ArrowRight, Sparkles,
-  PlayCircle, Copy, Download
+  PlayCircle, Copy, Download, Rocket
 } from 'lucide-react';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { toast } from 'sonner';
+import { ABTestDeployment } from './ABTestDeployment';
 
 export function ABTestScenarios({ scenarios, onSimulate }) {
   const [expandedScenario, setExpandedScenario] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
+  const [deployingScenario, setDeployingScenario] = useState(null);
 
   const getPriorityColor = (priority) => {
     const colors = {
@@ -132,11 +134,20 @@ Sample Size: ${scenario.recommendedSampleSize}
                     </Button>
                     <Button
                       size="sm"
+                      variant="outline"
                       onClick={() => onSimulate?.(scenario)}
-                      className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600"
+                      className="border-orange-500/30 text-orange-400 hover:bg-orange-500/10"
                     >
                       <PlayCircle className="w-4 h-4 mr-2" />
                       Simulate
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => setDeployingScenario(scenario)}
+                      className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600"
+                    >
+                      <Rocket className="w-4 h-4 mr-2" />
+                      Deploy
                     </Button>
                   </div>
                 </div>
@@ -269,6 +280,13 @@ Sample Size: ${scenario.recommendedSampleSize}
           ))}
         </AnimatePresence>
       </div>
+
+      {/* Deployment Modal */}
+      <ABTestDeployment
+        scenario={deployingScenario}
+        open={!!deployingScenario}
+        onClose={() => setDeployingScenario(null)}
+      />
     </div>
   );
 }
