@@ -21,21 +21,7 @@ export function RealtimeMonitoring() {
     activeAlerts: 0
   });
 
-  // Real-time data subscription
-  useEffect(() => {
-    const interval = setInterval(() => {
-      // Simulate real-time updates
-      setLiveMetrics(prev => ({
-        currentRPS: Math.floor(Math.random() * 100) + 50,
-        avgLatency: Math.floor(Math.random() * 200) + 100,
-        successRate: 95 + Math.random() * 5,
-        totalCost: prev.totalCost + (Math.random() * 0.01),
-        activeAlerts: Math.floor(Math.random() * 3)
-      }));
-    }, 2000);
 
-    return () => clearInterval(interval);
-  }, []);
 
   const { data: recentExecutions = [] } = useQuery({
     queryKey: ['recent-executions', filter],
@@ -43,11 +29,25 @@ export function RealtimeMonitoring() {
     refetchInterval: 5000
   });
 
+  // Calculate real metrics from actual data
+  useEffect(() => {
+    if (recentExecutions.length > 0) {
+      const last5 = recentExecutions.slice(0, 5);
+      setLiveMetrics({
+        currentRPS: last5.length,
+        avgLatency: Math.floor(last5.reduce((sum, e) => sum + (e.latency_ms || 0), 0) / last5.length),
+        successRate: (last5.filter(e => e.status === 'success').length / last5.length) * 100,
+        totalCost: recentExecutions.reduce((sum, e) => sum + (e.cost_usd || 0), 0),
+        activeAlerts: recentExecutions.filter(e => e.status === 'failed').length
+      });
+    }
+  }, [recentExecutions]);
+
   // Calculate metrics
   const timeSeriesData = recentExecutions.slice(0, 20).reverse().map((exec, idx) => ({
     time: idx,
-    latency: exec.latency_ms,
-    cost: exec.cost_usd * 1000,
+    latency: exec.latency_ms || 0,
+    cost: (exec.cost_usd || 0) * 1000,
     tokens: exec.tokens?.total || 0
   }));
 
@@ -200,8 +200,15 @@ export function RealtimeMonitoring() {
       {/* Recent Activity */}
       <CinematicCard className="p-6">
         <h3 className="text-lg font-semibold text-white mb-4">Recent Activity</h3>
-        <div className="space-y-2 max-h-96 overflow-auto">
-          {recentExecutions.slice(0, 15).map((exec) => (
+        {recentExecutions.length === 0 ? (
+          <div className="text-center py-12 text-white/40">
+            <Activity className="w-16 h-16 mx-auto mb-4 opacity-50" />
+            <p className="text-sm">No activity yet</p>
+            <p className="text-xs mt-1">Execute prompts to see real-time monitoring</p>
+          </div>
+        ) : (
+          <div className="space-y-2 max-h-96 overflow-auto">
+            {recentExecutions.slice(0, 15).map((exec) => (
             <div 
               key={exec.id}
               className="p-3 rounded-lg bg-slate-800/30 border border-white/10 flex items-center justify-between hover:bg-slate-800/50 transition-colors"
@@ -237,8 +244,9 @@ export function RealtimeMonitoring() {
                 )}
               </div>
             </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </CinematicCard>
     </div>
   );

@@ -41,18 +41,36 @@ export function AgentOrchestrator() {
   });
 
   const createAgent = async () => {
+    if (!newAgent.name?.trim()) {
+      toast.error('Agent name is required');
+      return;
+    }
+    if (!newAgent.role?.trim()) {
+      toast.error('Agent role is required');
+      return;
+    }
+    if (!newAgent.goal?.trim()) {
+      toast.error('Agent goal is required');
+      return;
+    }
+
     try {
       await base44.entities.AgentDefinition.create({
         ...newAgent,
         status: 'active',
-        version: '1.0.0'
+        version: '1.0.0',
+        configuration: {
+          max_concurrent_tasks: 5,
+          response_timeout_ms: 30000,
+          retry_strategy: 'exponential'
+        }
       });
       queryClient.invalidateQueries({ queryKey: ['agent-definitions'] });
       setShowAgentForm(false);
       setNewAgent({ name: '', role: '', goal: '', capabilities: [], interaction_protocol: 'request_response' });
-      toast.success('Agent created');
+      toast.success('Agent created successfully');
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error?.message || 'Failed to create agent');
     }
   };
 
@@ -140,8 +158,15 @@ export function AgentOrchestrator() {
       {/* Agents Grid */}
       <div>
         <h3 className="text-lg font-semibold text-white mb-4">Available Agents</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {agents.map((agent) => (
+        {agents.length === 0 ? (
+          <CinematicCard className="p-12 text-center">
+            <Users className="w-16 h-16 mx-auto mb-4 text-white/20" />
+            <h3 className="text-xl font-bold text-white mb-2">No Agents Yet</h3>
+            <p className="text-white/60">Create your first agent to get started</p>
+          </CinematicCard>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {agents.map((agent) => (
             <CinematicCard key={agent.id} className="p-4">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-2">
@@ -163,8 +188,9 @@ export function AgentOrchestrator() {
                 <span>{agent.interaction_protocol}</span>
               </div>
             </CinematicCard>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Workflows */}
@@ -185,8 +211,15 @@ export function AgentOrchestrator() {
             New Workflow
           </Button>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {workflows.map((workflow) => (
+        {workflows.length === 0 ? (
+          <CinematicCard className="p-12 text-center">
+            <Workflow className="w-16 h-16 mx-auto mb-4 text-white/20" />
+            <h3 className="text-xl font-bold text-white mb-2">No Workflows Yet</h3>
+            <p className="text-white/60">Create your first multi-agent workflow</p>
+          </CinematicCard>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {workflows.map((workflow) => (
             <CinematicCard key={workflow.id} className="p-4 cursor-pointer" onClick={() => setSelectedWorkflow(workflow)}>
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-2">
@@ -203,8 +236,9 @@ export function AgentOrchestrator() {
                 <span>{workflow.agents?.length || 0} agents</span>
               </div>
             </CinematicCard>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

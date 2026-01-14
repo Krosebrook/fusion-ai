@@ -82,11 +82,26 @@ export function ChainBuilderAdvanced({ onSave, existingChain, onDebug }) {
     setChain({ ...chain, edges: [...chain.edges, newEdge] });
   };
 
-  const handleSave = async () => {
-    if (!chain.name) {
+  const validateChain = () => {
+    if (!chain.name?.trim()) {
       toast.error('Chain name is required');
-      return;
+      return false;
     }
+    if (chain.nodes.length === 0) {
+      toast.error('Chain must have at least one node');
+      return false;
+    }
+    // Check for orphaned nodes
+    const connectedNodes = new Set(chain.edges.flatMap(e => [e.source_node_id, e.target_node_id]));
+    if (chain.nodes.length > 1 && connectedNodes.size < chain.nodes.length) {
+      toast.error('All nodes must be connected');
+      return false;
+    }
+    return true;
+  };
+
+  const handleSave = async () => {
+    if (!validateChain()) return;
     onSave(chain);
   };
 
@@ -170,6 +185,15 @@ export function ChainBuilderAdvanced({ onSave, existingChain, onDebug }) {
           ))}
         </div>
       </CinematicCard>
+
+      {/* Empty State */}
+      {chain.nodes.length === 0 && (
+        <CinematicCard className="p-12 text-center">
+          <GitBranch className="w-16 h-16 mx-auto mb-4 text-white/20" />
+          <h3 className="text-xl font-bold text-white mb-2">No Nodes Yet</h3>
+          <p className="text-white/60 mb-4">Add nodes above to start building your chain</p>
+        </CinematicCard>
+      )}
 
       {/* Nodes */}
       <div className="space-y-4">
