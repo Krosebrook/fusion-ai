@@ -2,13 +2,12 @@
  * Prompt Promotion Pipeline - Environment promotion and gating
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { 
-  GitBranch, CheckCircle, AlertCircle, 
+import { CheckCircle, AlertCircle, 
   Lock, Unlock, ArrowRight 
 } from 'lucide-react';
 

@@ -2,7 +2,7 @@
  * Prompt Rollback Manager - One-click revert with automated triggers
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';

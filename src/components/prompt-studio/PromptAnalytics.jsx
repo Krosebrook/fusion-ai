@@ -2,7 +2,7 @@
  * Prompt Analytics - Advanced performance tracking and analysis
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -14,8 +14,8 @@ import {
   CartesianGrid, Tooltip, ResponsiveContainer, Legend 
 } from 'recharts';
 import { 
-  TrendingUp, Zap, Clock, CheckCircle, 
-  Filter, Calendar, Download 
+  TrendingUp, Zap, 
+  Filter, Download 
 } from 'lucide-react';
 
 export function PromptAnalytics() {

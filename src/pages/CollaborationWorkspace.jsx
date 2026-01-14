@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { Users, MessageSquare, Bell, GitBranch, AtSign, Send, MoreVertical, Smile, Heart, ThumbsUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';

@@ -8,11 +8,9 @@ import { CinematicCard } from '../atoms/CinematicCard';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { 
-  ChevronRight, TrendingUp, Zap, BarChart3,
-  Filter, X
+  ChevronRight, TrendingUp, Zap, BarChart3, X
 } from 'lucide-react';
-import { 
-  LineChart, Line, BarChart, Bar, XAxis, YAxis,
+import { BarChart, Bar, XAxis, YAxis,
   CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
 

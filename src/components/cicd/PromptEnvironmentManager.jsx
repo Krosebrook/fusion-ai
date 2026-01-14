@@ -2,7 +2,7 @@
  * Prompt Environment Manager - Explicit environment configuration and status
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -10,8 +10,7 @@ import { CinematicCard } from '../atoms/CinematicCard';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { 
-  CheckCircle, AlertCircle, Clock, Activity,
-  Settings, Lock, Unlock
+  CheckCircle, AlertCircle, Clock, Activity, Lock, Unlock
 } from 'lucide-react';
 
 export function PromptEnvironmentManager() {

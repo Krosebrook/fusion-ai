@@ -3,7 +3,7 @@
  * Professional prompt creation, testing, versioning, and A/B optimization
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -27,7 +27,7 @@ import { PromptDeploymentManager } from '../components/cicd/PromptDeploymentMana
 import { PromptPromotionPipeline } from '../components/cicd/PromptPromotionPipeline';
 import { 
   Sparkles, Wand2, GitBranch, TestTube, 
-  Plus, Layers, TrendingUp, BarChart3, Rocket, Code
+  Plus, Layers, TrendingUp, BarChart3, Rocket
 } from 'lucide-react';
 
 export default function PromptStudioPage() {

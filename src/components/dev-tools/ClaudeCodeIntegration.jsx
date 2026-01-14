@@ -2,16 +2,14 @@
  * Claude Code Integration - AI-powered development assistant
  */
 
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-  Code, Sparkles, RefreshCw, Eye, Zap,
-  CheckCircle, Copy
+  Code, Sparkles, RefreshCw, Eye, Zap, Copy
 } from 'lucide-react';
 import { toast } from 'sonner';
 import ReactMarkdown from 'react-markdown';

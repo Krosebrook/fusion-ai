@@ -2,19 +2,19 @@
  * A/B Test Analytics - Statistical significance and detailed analysis
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { Badge } from '@/components/ui/badge';
 import { 
-  Award, TrendingUp, BarChart3, AlertCircle, 
-  CheckCircle, Clock 
+  Award, BarChart3, AlertCircle, 
+  CheckCircle 
 } from 'lucide-react';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, 
-  Tooltip, ResponsiveContainer, Legend 
+  Tooltip, ResponsiveContainer 
 } from 'recharts';
 
 export function ABTestAnalytics() {

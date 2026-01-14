@@ -2,14 +2,13 @@
  * SDK Reference - Export API docs for Claude Code
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { 
-  Download, Copy, CheckCircle, Code, FileJson,
+  Download, Copy, Code, FileJson,
   Sparkles, BookOpen
 } from 'lucide-react';
 import { toast } from 'sonner';

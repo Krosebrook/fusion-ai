@@ -2,9 +2,8 @@
  * Prompt Policy Manager - Define and manage governance policies
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
