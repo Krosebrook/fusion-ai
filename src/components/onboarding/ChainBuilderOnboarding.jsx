@@ -57,12 +57,17 @@ export function ChainBuilderOnboarding({ onComplete, onDismiss }) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
             >
-              <div className="flex items-center gap-3 mb-4">
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${steps[step].gradient} flex items-center justify-center`}>
-                  <steps[step].icon className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-white">{steps[step].title}</h3>
-              </div>
+              {(() => {
+                const Icon = steps[step].icon;
+                return (
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${steps[step].gradient} flex items-center justify-center`}>
+                      <Icon className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold text-white">{steps[step].title}</h3>
+                  </div>
+                );
+              })()}
 
               <p className="text-white/70 mb-6 leading-relaxed">{steps[step].content}</p>
 

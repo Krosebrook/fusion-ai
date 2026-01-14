@@ -108,11 +108,15 @@ export function PromptStudioOnboarding({ onComplete, onDismiss }) {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                {/* Step Header */}
-                <div className="flex items-center gap-4 mb-6">
-                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${steps[currentStep].gradient} flex items-center justify-center shadow-2xl`}>
-                    <steps[currentStep].icon className="w-8 h-8 text-white" />
-                  </div>
+                {(() => {
+                  const Icon = steps[currentStep].icon;
+                  return (
+                    <>
+                      {/* Step Header */}
+                      <div className="flex items-center gap-4 mb-6">
+                        <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${steps[currentStep].gradient} flex items-center justify-center shadow-2xl`}>
+                          <Icon className="w-8 h-8 text-white" />
+                        </div>
                   <div className="flex-1">
                     <h2 className="text-2xl font-bold text-white mb-1">
                       {steps[currentStep].title}
@@ -182,6 +186,9 @@ export function PromptStudioOnboarding({ onComplete, onDismiss }) {
                     </Button>
                   )}
                 </div>
+                    </>
+                  );
+                })()}
               </motion.div>
             </AnimatePresence>
           </CinematicCard>
