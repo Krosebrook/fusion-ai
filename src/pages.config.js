@@ -67,6 +67,7 @@ import VisualPipelineBuilder from './pages/VisualPipelineBuilder';
 import WebsiteCloner from './pages/WebsiteCloner';
 import WorkflowBuilder from './pages/WorkflowBuilder';
 import Workflows from './pages/Workflows';
+import AITestingSuite from './pages/AITestingSuite';
 import __Layout from './Layout.jsx';
 
 
@@ -140,6 +141,7 @@ export const PAGES = {
     "WebsiteCloner": WebsiteCloner,
     "WorkflowBuilder": WorkflowBuilder,
     "Workflows": Workflows,
+    "AITestingSuite": AITestingSuite,
 }
 
 export const pagesConfig = {
