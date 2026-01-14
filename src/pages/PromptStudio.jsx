@@ -35,6 +35,8 @@ export default function PromptStudioPage() {
   const [activeTab, setActiveTab] = useState('library');
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [selectedExperiment, setSelectedExperiment] = useState(null);
+  const [debugChain, setDebugChain] = useState(null);
+  const [executionLog, setExecutionLog] = useState(null);
 
   const { data: templates = [] } = useQuery({
     queryKey: ['prompt-templates'],
@@ -134,7 +136,7 @@ export default function PromptStudioPage() {
         >
           <CinematicCard className="p-6">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="bg-slate-900/50 border border-white/10 backdrop-blur-xl p-1 grid grid-cols-4 lg:grid-cols-9 gap-1 w-full h-auto">
+              <TabsList className="bg-slate-900/50 border border-white/10 backdrop-blur-xl p-1 grid grid-cols-3 lg:grid-cols-11 gap-1 w-full h-auto">
                 <TabsTrigger value="library" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-600 data-[state=active]:to-purple-600 text-xs">
                   <Library className="w-3 h-3 mr-1" />
                   <span className="hidden sm:inline">Templates</span>
@@ -151,7 +153,15 @@ export default function PromptStudioPage() {
                   <GitBranch className="w-3 h-3 mr-1" />
                   <span className="hidden sm:inline">Chain</span>
                 </TabsTrigger>
-                <TabsTrigger value="performance" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-600 data-[state=active]:to-emerald-600 text-xs">
+                <TabsTrigger value="orchestration" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-600 data-[state=active]:to-green-600 text-xs">
+                  <Users className="w-3 h-3 mr-1" />
+                  <span className="hidden sm:inline">Agents</span>
+                </TabsTrigger>
+                <TabsTrigger value="monitoring" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-600 data-[state=active]:to-emerald-600 text-xs">
+                  <Activity className="w-3 h-3 mr-1" />
+                  <span className="hidden sm:inline">Live</span>
+                </TabsTrigger>
+                <TabsTrigger value="performance" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-600 data-[state=active]:to-cyan-600 text-xs">
                   <TrendingUp className="w-3 h-3 mr-1" />
                   <span className="hidden sm:inline">Perf</span>
                 </TabsTrigger>
@@ -216,10 +226,52 @@ export default function PromptStudioPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                   >
-                    <ChainBuilder onSave={async (chain) => {
-                      await base44.entities.PromptChain.create(chain);
-                      toast.success('Prompt chain saved');
-                    }} />
+                    {debugChain ? (
+                      <div className="space-y-4">
+                        <ChainDebugger chain={debugChain} executionLog={executionLog} />
+                        <Button onClick={() => setDebugChain(null)} variant="outline" className="border-white/10">
+                          Back to Builder
+                        </Button>
+                      </div>
+                    ) : (
+                      <ChainBuilderAdvanced 
+                        onSave={async (chain) => {
+                          await base44.entities.PromptChain.create(chain);
+                          toast.success('Prompt chain saved');
+                        }}
+                        onDebug={(chain) => {
+                          setDebugChain(chain);
+                          // Simulate execution log
+                          setExecutionLog({
+                            node_logs: chain.nodes.map(n => ({
+                              node_id: n.id,
+                              status: 'success',
+                              input: {},
+                              output: { result: 'Sample output' },
+                              duration_ms: Math.floor(Math.random() * 500) + 100
+                            }))
+                          });
+                        }}
+                      />
+                    )}
+                  </motion.div>
+                </TabsContent>
+
+                <TabsContent value="orchestration" className="mt-6">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <AgentOrchestrator />
+                  </motion.div>
+                </TabsContent>
+
+                <TabsContent value="monitoring" className="mt-6">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <RealtimeMonitoring />
                   </motion.div>
                 </TabsContent>
 
