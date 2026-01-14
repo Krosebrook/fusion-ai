@@ -9,6 +9,7 @@ export function PresetCard({ presetKey, preset, isSelected, onSelect }) {
       onClick={() => onSelect(presetKey)}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
+      transition={{ ease: [0.25, 0.46, 0.45, 0.94] }}
       className={`p-4 rounded-lg border text-left transition-all ${
         isSelected
           ? 'bg-purple-500/20 border-purple-500/50 shadow-lg shadow-purple-500/20'

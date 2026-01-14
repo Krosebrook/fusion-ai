@@ -70,6 +70,7 @@ Sample Size: ${scenario.recommendedSampleSize}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        transition={{ ease: [0.25, 0.46, 0.45, 0.94] }}
         className="flex items-center justify-between"
       >
         <div className="flex items-center gap-3">
@@ -102,7 +103,7 @@ Sample Size: ${scenario.recommendedSampleSize}
               key={scenario.id || index}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
+              transition={{ delay: index * 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
             >
               <CinematicCard className="p-6">
                 {/* Scenario Header */}
