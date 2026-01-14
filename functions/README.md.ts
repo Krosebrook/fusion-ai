@@ -1,317 +1,463 @@
-# FlashFusion CI/CD API Functions
+# FlashFusion API & Architecture Documentation
 
-## 🔐 Authentication
+## 📚 Table of Contents
 
-All API endpoints require authentication via API key in the request header:
-
-```
-X-API-Key: ffai_your_api_key_here
-```
-
-### API Key Format
-- Prefix: `ffai_`
-- Hash: SHA-256
-- Permissions: `trigger_pipeline`, `read_runs`, `read_config`, `webhook`
+1. [API Documentation](#api-documentation)
+2. [Architecture Overview](#architecture-overview)
+3. [Edge Cases & Error Handling](#edge-cases--error-handling)
+4. [Documentation Roadmap](#documentation-roadmap)
 
 ---
 
-## 📡 API Endpoints
+# API Documentation
 
-### 1. Trigger Pipeline Run
-**Endpoint:** `POST /api/trigger-pipeline`
+## Base44 SDK Integration
 
-**Purpose:** Initiate a new pipeline execution
+### Authentication API
 
-**Required Permission:** `trigger_pipeline`
-
-**Request Body:**
-```json
-{
-  "pipeline_id": "string",
-  "branch": "string (optional)"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "run_id": "string",
-  "status": "running",
-  "workflow_id": "string"
-}
-```
-
-**Example:**
-```bash
-curl -X POST https://api.flashfusion.app/api/trigger-pipeline \
-  -H "X-API-Key: ffai_..." \
-  -H "Content-Type: application/json" \
-  -d '{"pipeline_id": "abc123"}'
-```
-
----
-
-### 2. Get Pipeline Status
-**Endpoint:** `GET /api/get-status?run_id=...`
-
-**Purpose:** Check the status of a specific pipeline run
-
-**Required Permission:** `read_runs`
-
-**Query Parameters:**
-- `run_id`: Pipeline run identifier
-
-**Response:**
-```json
-{
-  "success": true,
-  "run": {
-    "id": "string",
-    "status": "success|failed|running",
-    "duration_seconds": 120,
-    "steps": [...],
-    "deployment_url": "https://..."
-  }
-}
-```
-
----
-
-### 3. Get Pipeline Configuration
-**Endpoint:** `GET /api/get-config?pipeline_id=...`
-
-**Purpose:** Retrieve detailed pipeline configuration
-
-**Required Permission:** `read_config`
-
-**Query Parameters:**
-- `pipeline_id`: Pipeline identifier
-
-**Response:**
-```json
-{
-  "success": true,
-  "config": {
-    "id": "string",
-    "name": "string",
-    "provider": "github|gitlab",
-    "project_type": "react|nextjs|...",
-    "repository_name": "owner/repo",
-    "branch": "main",
-    "triggers": {...},
-    "build_command": "npm run build",
-    "quality_gates": {...}
-  }
-}
-```
-
----
-
-### 4. Create API Key
-**Endpoint:** `POST /functions/createAPIKey`
-
-**Purpose:** Generate a new API key with specified permissions
-
-**Authentication:** User session (not API key)
-
-**Request Body:**
-```json
-{
-  "name": "Production Deploy Key",
-  "permissions": ["trigger_pipeline", "read_runs"],
-  "pipeline_ids": ["id1", "id2"],
-  "expires_in_days": 90
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "id": "key_id",
-  "name": "Production Deploy Key",
-  "plaintext_key": "ffai_...",
-  "key_preview": "...abc123"
-}
-```
-
-**⚠️ Important:** Save the `plaintext_key` immediately - it's only shown once!
-
----
-
-## 🪝 Webhooks
-
-### Send Webhook Notification
-**Endpoint:** `POST /functions/sendWebhook`
-
-**Purpose:** Trigger webhook notifications for pipeline events
-
-**Request Body:**
-```json
-{
-  "event_type": "run.completed|run.failed|run.started",
-  "pipeline_id": "string",
-  "payload": {
-    "run_id": "string",
-    "status": "success",
-    "duration": "2m 30s"
-  }
-}
-```
-
-### Webhook Event Types
-- `run.started` - Pipeline execution begins
-- `run.completed` - Pipeline succeeds
-- `run.failed` - Pipeline fails
-- `optimization.available` - AI suggests optimization
-- `deployment.success` - Deployment completes
-
-### Webhook Payload Structure
-```json
-{
-  "event": "run.completed",
-  "timestamp": "2025-11-21T10:30:00Z",
-  "pipeline_id": "abc123",
-  "data": {
-    "run_id": "run_456",
-    "status": "success",
-    "duration": "2m 30s"
-  }
-}
-```
-
-### Webhook Signature Verification
-
-All webhooks include HMAC-SHA256 signature for security:
-
-**Headers:**
-```
-X-FlashFusion-Signature: <hmac_hex>
-X-FlashFusion-Event: run.completed
-```
-
-**Node.js Verification:**
+#### `base44.auth.me()`
+**Returns:** `Promise<User | null>`
 ```javascript
-const crypto = require('crypto');
+const user = await base44.auth.me();
+```
 
-function verifyWebhook(req, secret) {
-  const signature = req.headers['x-flashfusion-signature'];
-  const payload = JSON.stringify(req.body);
+#### `base44.auth.isAuthenticated()`
+**Returns:** `Promise<boolean>`
+
+#### `base44.auth.logout(redirectUrl?: string)`
+
+#### `base44.auth.redirectToLogin(nextUrl?: string)`
+
+---
+
+### Entities API
+
+#### CRUD Operations
+```javascript
+// List all
+await base44.entities.Task.list('-created_date', 50);
+
+// Filter
+await base44.entities.Task.filter({ status: 'active' }, '-updated_date', 20);
+
+// Create
+await base44.entities.Task.create({ title: "New task", status: "todo" });
+
+// Update
+await base44.entities.Task.update(id, { status: "completed" });
+
+// Delete
+await base44.entities.Task.delete(id);
+
+// Real-time subscription
+const unsubscribe = base44.entities.Task.subscribe((event) => {
+  console.log(`${event.type}:`, event.data);
+});
+```
+
+---
+
+### Agents API
+
+```javascript
+// Create conversation
+const conv = await base44.agents.createConversation({
+  agent_name: 'UserJourneyMapper',
+  metadata: { role: 'user', flow: 'onboarding' }
+});
+
+// Add message
+await base44.agents.addMessage(conv, {
+  role: 'user',
+  content: 'Analyze this flow...'
+});
+
+// Subscribe to updates
+const unsub = base44.agents.subscribeToConversation(convId, (data) => {
+  setMessages(data.messages);
+});
+```
+
+---
+
+### Integrations API
+
+```javascript
+// LLM
+await base44.integrations.Core.InvokeLLM({
+  prompt: "...",
+  response_json_schema: { type: "object", properties: {...} },
+  add_context_from_internet: true
+});
+
+// File upload
+const { file_url } = await base44.integrations.Core.UploadFile({ file });
+
+// Image generation
+const { url } = await base44.integrations.Core.GenerateImage({
+  prompt: "Futuristic UI design"
+});
+
+// Email
+await base44.integrations.Core.SendEmail({
+  to: "user@example.com",
+  subject: "...",
+  body: "..."
+});
+```
+
+---
+
+### Analytics API
+
+```javascript
+base44.analytics.track({
+  eventName: "feature_used",
+  properties: { feature: "ab_test", success: true }
+});
+```
+
+---
+
+## Backend Functions
+
+### Structure
+```javascript
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+
+Deno.serve(async (req) => {
+  const base44 = createClientFromRequest(req);
+  const user = await base44.auth.me();
   
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(payload)
-    .digest('hex');
+  if (!user) {
+    return Response.json({ error: 'Unauthorized' }, { status: 401 });
+  }
   
-  return signature === expectedSignature;
-}
-```
-
-**Python Verification:**
-```python
-import hmac
-import hashlib
-import json
-
-def verify_webhook(request, secret):
-    signature = request.headers.get('X-FlashFusion-Signature')
-    payload = json.dumps(request.json)
-    
-    expected_signature = hmac.new(
-        secret.encode(),
-        payload.encode(),
-        hashlib.sha256
-    ).hexdigest()
-    
-    return signature == expected_signature
+  // Business logic
+  const result = await base44.entities.Task.list();
+  
+  return Response.json({ success: true, data: result });
+});
 ```
 
 ---
 
-## 🔍 Error Handling
+### Key Functions
 
-### HTTP Status Codes
-- `200` - Success
-- `400` - Bad Request (missing parameters)
-- `401` - Unauthorized (invalid/missing API key)
-- `403` - Forbidden (insufficient permissions)
-- `404` - Not Found (pipeline/run doesn't exist)
-- `500` - Internal Server Error
+#### `generateABTestScenarios`
+**Input:** `{ analysisContent, role, flow }`  
+**Output:** `{ scenarios: [...] }`
 
-### Error Response Format
-```json
-{
-  "error": "Invalid API key format",
-  "message": "API keys must start with ffai_"
-}
+#### `deployABTest`
+**Input:** `{ scenario, config }`  
+**Output:** `{ success, testId, deployment: {...} }`
+
+---
+
+## Error Codes
+
+| Code | Description |
+|------|-------------|
+| `UNAUTHORIZED` | Not authenticated |
+| `FORBIDDEN` | Insufficient permissions |
+| `NOT_FOUND` | Resource not found |
+| `VALIDATION_ERROR` | Invalid input |
+| `RATE_LIMIT_EXCEEDED` | Too many requests |
+
+---
+
+# Architecture Overview
+
+## System Layers
+
+```
+┌─────────────────────────────────────────┐
+│     Presentation (React + Tailwind)     │
+├─────────────────────────────────────────┤
+│   Business Logic (Hooks + Services)     │
+├─────────────────────────────────────────┤
+│       API Layer (Base44 SDK)            │
+├─────────────────────────────────────────┤
+│   Backend (Deno Functions + Agents)     │
+├─────────────────────────────────────────┤
+│     Data Layer (Base44 Database)        │
+└─────────────────────────────────────────┘
 ```
 
 ---
 
-## 🛡️ Security Best Practices
+## Component Architecture
 
-1. **Store API Keys Securely**
-   - Use environment variables
-   - Never commit to version control
-   - Rotate regularly (90 days recommended)
-
-2. **Least Privilege Principle**
-   - Grant minimum required permissions
-   - Scope keys to specific pipelines when possible
-
-3. **Monitor Usage**
-   - Track `usage_count` and `last_used`
-   - Alert on suspicious patterns
-   - Disable unused keys
-
-4. **Webhook Security**
-   - Always verify HMAC signatures
-   - Use HTTPS endpoints only
-   - Implement rate limiting
+### Atomic Design
+```
+atoms/          # CinematicCard, CinematicButton
+molecules/      # ContentCard, FormField
+organisms/      # user-journey/, prompt-studio/
+pages/          # UserJourneyAnalyzer, Dashboard
+layout/         # Layout.js (sticky nav + aurora)
+```
 
 ---
 
-## 📊 Rate Limits
+## Data Flow Patterns
 
-- **API Calls:** 1000 requests/hour per API key
-- **Webhooks:** 100 events/minute per endpoint
+### User Journey Analysis
+```
+Preset → Config → Agent Conversation → Real-time Stream → A/B Tests → Deploy
+```
 
-Exceeding limits returns `429 Too Many Requests`
-
----
-
-## 🚀 Quick Start
-
-1. **Generate API Key**
-   ```bash
-   # In FlashFusion dashboard: API → Create API Key
-   ```
-
-2. **Trigger Pipeline**
-   ```bash
-   curl -X POST https://api.flashfusion.app/api/trigger-pipeline \
-     -H "X-API-Key: ffai_your_key" \
-     -d '{"pipeline_id": "your_pipeline_id"}'
-   ```
-
-3. **Check Status**
-   ```bash
-   curl https://api.flashfusion.app/api/get-status?run_id=run_123 \
-     -H "X-API-Key: ffai_your_key"
-   ```
-
-4. **Setup Webhook**
-   ```bash
-   # In dashboard: API → Webhooks → Create
-   # Configure: URL, events, secret
-   ```
+### Real-time Sync
+```javascript
+useEffect(() => {
+  const unsub = base44.entities.Task.subscribe((event) => {
+    if (event.type === 'create') setTasks(prev => [...prev, event.data]);
+  });
+  return unsub;
+}, []);
+```
 
 ---
 
-## 📝 Support
+## State Management
 
-For issues or questions:
-- Documentation: https://docs.flashfusion.app
-- Support: support@flashfusion.app
-- Status: https://status.flashfusion.app
+### React Query
+```javascript
+useQuery({
+  queryKey: ['tasks'],
+  queryFn: fetchTasks,
+  staleTime: 5 * 60 * 1000,
+  refetchOnWindowFocus: true
+});
+```
+
+---
+
+## Security
+
+### Auth Flow
+```
+Landing → Check Auth → Login → OAuth → JWT → Silent Refresh
+```
+
+### Permissions
+- `owner` → Full access
+- `admin` → Manage users
+- `user` → Own data only
+
+---
+
+## Performance
+
+### Code Splitting
+```javascript
+const Page = lazy(() => import('./pages/Page'));
+```
+
+### Optimization
+- Bundle size: <500KB initial
+- React Query caching
+- Image lazy loading
+- Virtual scrolling
+
+---
+
+# Edge Cases & Error Handling
+
+## Authentication
+
+### Token Expiration
+**Handling:** Automatic silent refresh at 80% token lifetime
+
+### Concurrent Tab Logout
+**Handling:** Storage event listener syncs logout across tabs
+
+### OAuth Failure
+**Handling:** User-friendly error + retry button
+
+---
+
+## Data Sync
+
+### WebSocket Disconnect
+**Handling:** Exponential backoff reconnection (max 3 attempts)
+
+### Stale Data
+**Handling:** `refetchOnReconnect` + `refetchOnWindowFocus`
+
+### Conflicting Updates
+**Handling:** Last write wins + optimistic UI with rollback
+
+---
+
+## AI Agents
+
+### Response Timeout (>60s)
+**Handling:** Promise.race with timeout + background completion
+
+### Malformed Output
+**Handling:** JSON validation + error logging + user notification
+
+### Tool Failure
+**Handling:** Agent receives error message + can retry
+
+---
+
+## Forms
+
+### Empty Submission
+**Handling:** Client-side validation + disabled button
+
+### XSS Injection
+**Handling:** React auto-escape + ReactMarkdown safe mode
+
+### Large Input (>10,000 chars)
+**Handling:** maxLength + slice + warning toast
+
+---
+
+## File Upload
+
+### Unsupported Type
+**Handling:** MIME type validation + error message
+
+### Upload Interruption
+**Handling:** AbortController cleanup on unmount
+
+---
+
+## A/B Testing
+
+### Insufficient Sample
+**Handling:** Calculate required size + progress indicator + warnings
+
+### Performance Degradation
+**Handling:** Daily monitoring + email alerts + emergency stop
+
+### Traffic Allocation Bug
+**Handling:** Deterministic bucketing + drift detection
+
+---
+
+## Mobile
+
+### Touch Conflicts
+**Handling:** Delta comparison (horizontal vs vertical movement)
+
+### Safari Viewport
+**Handling:** Dynamic `--vh` CSS variable
+
+---
+
+## Performance
+
+### Memory Leaks
+**Handling:** Always unsubscribe in cleanup
+
+### Infinite Render
+**Handling:** useMemo for stable references
+
+---
+
+# Documentation Roadmap
+
+## Top 10 Priorities
+
+### 1. **Component Library Storybook** 🎨
+- Interactive playground
+- Props documentation
+- Usage examples
+- Visual regression tests
+- **Est:** 2-3 days
+
+### 2. **User Guide / Tutorials** 📖
+- Getting started
+- Step-by-step workflows
+- Video walkthroughs
+- FAQs
+- **Est:** 3-4 days
+
+### 3. **Testing Strategy** 🧪
+- Unit testing guidelines
+- E2E with Playwright
+- Visual regression
+- Mocking strategies
+- **Est:** 2 days
+
+### 4. **Security & Compliance** 🔒
+- Auth best practices
+- GDPR checklist
+- SOC2 requirements
+- Incident response
+- **Est:** 2 days
+
+### 5. **Design System** 🎨
+- Visual language
+- Color palette
+- Typography scale
+- Motion principles
+- **Est:** 3 days
+
+### 6. **CI/CD Pipeline** 🚀
+- Architecture overview
+- Deployment strategies
+- Quality gates
+- Monitoring
+- **Est:** 2 days
+
+### 7. **AI Agent Development** 🤖
+- Custom agent creation
+- Prompt engineering
+- Multi-agent patterns
+- Performance optimization
+- **Est:** 2-3 days
+
+### 8. **Performance Optimization** ⚡
+- Bundle analysis
+- Code splitting
+- Web Vitals
+- Caching strategies
+- **Est:** 2 days
+
+### 9. **Database Schema** 💾
+- ERD diagrams
+- Migration strategies
+- Query optimization
+- Audit trails
+- **Est:** 1-2 days
+
+### 10. **Internationalization** 🌍
+- i18n architecture
+- Translation workflow
+- RTL support
+- Localization
+- **Est:** 1-2 days
+
+---
+
+## Documentation Standards
+
+✅ **Requirements:**
+- Table of contents (>3 pages)
+- Runnable code examples
+- Screenshots/diagrams
+- Last updated date
+- Related links
+
+✅ **Quality:**
+- 90% coverage
+- <2% broken links
+- 4.5+ star rating
+- Peer reviewed
+
+---
+
+## Contact & Contributions
+
+For questions or contributions:
+1. Check existing docs
+2. Search GitHub issues
+3. Submit PR with improvements
+4. Join community Slack
+
+**Maintained by:** FlashFusion Team  
+**Last Updated:** 2026-01-14
