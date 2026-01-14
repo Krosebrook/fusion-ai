@@ -32,7 +32,7 @@ import {
 
 export default function PromptStudioPage() {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState('editor');
+  const [activeTab, setActiveTab] = useState('library');
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [selectedExperiment, setSelectedExperiment] = useState(null);
 
@@ -50,7 +50,7 @@ export default function PromptStudioPage() {
     totalTemplates: templates.length,
     activeExperiments: experiments.filter(e => e.status === 'running').length,
     avgSuccessRate: templates.length > 0 
-      ? (templates.reduce((sum, t) => sum + (t.success_rate || 0), 0) / templates.length * 100).toFixed(1)
+      ? ((templates.reduce((sum, t) => sum + (t.success_rate || 0), 0) / templates.length) * 100).toFixed(1)
       : 0,
     totalExecutions: templates.reduce((sum, t) => sum + (t.usage_count || 0), 0)
   };
@@ -104,8 +104,8 @@ export default function PromptStudioPage() {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {[
-            { label: 'Templates', value: stats.totalTemplates, icon: Layers, color: 'from-blue-500 to-cyan-500' },
-            { label: 'Active Tests', value: stats.activeExperiments, icon: TestTube, color: 'from-purple-500 to-pink-500' },
+            { label: 'Templates', value: stats.totalTemplates, icon: Library, color: 'from-blue-500 to-cyan-500' },
+            { label: 'Active Tests', value: stats.activeExperiments, icon: FlaskConical, color: 'from-purple-500 to-pink-500' },
             { label: 'Success Rate', value: `${stats.avgSuccessRate}%`, icon: TrendingUp, color: 'from-green-500 to-emerald-500' },
             { label: 'Executions', value: stats.totalExecutions, icon: Sparkles, color: 'from-orange-500 to-amber-500' }
           ].map((stat, idx) => (
