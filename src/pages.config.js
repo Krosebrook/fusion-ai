@@ -7,6 +7,7 @@ import AIFeaturePlanner from './pages/AIFeaturePlanner';
 import AIPipelineGenerator from './pages/AIPipelineGenerator';
 import AIStudio from './pages/AIStudio';
 import AITemplates from './pages/AITemplates';
+import APIDocumentation from './pages/APIDocumentation';
 import APIGenerator from './pages/APIGenerator';
 import APIIntegration from './pages/APIIntegration';
 import AccessControl from './pages/AccessControl';
@@ -18,6 +19,8 @@ import AgentOrchestrationHub from './pages/AgentOrchestrationHub';
 import AgentOrchestrator from './pages/AgentOrchestrator';
 import Analytics from './pages/Analytics';
 import AppBuilder from './pages/AppBuilder';
+import AppEvaluator from './pages/AppEvaluator';
+import Auth from './pages/Auth';
 import CICDAnalytics from './pages/CICDAnalytics';
 import CICDAutomation from './pages/CICDAutomation';
 import CinematicDemo from './pages/CinematicDemo';
@@ -36,14 +39,7 @@ import Home from './pages/Home';
 import IntegrationManager from './pages/IntegrationManager';
 import Integrations from './pages/Integrations';
 import IntegrationsHub from './pages/IntegrationsHub';
-// Safe refactor: Lazy load largest pages for better performance (code splitting)
-// MarketingSuite (753 lines), APIDocumentation (709 lines), AppEvaluator (706 lines), Auth (705 lines)
-import { lazy } from 'react';
-const MarketingSuite = lazy(() => import('./pages/MarketingSuite'));
-const APIDocumentation = lazy(() => import('./pages/APIDocumentation'));
-const AppEvaluator = lazy(() => import('./pages/AppEvaluator'));
-const Auth = lazy(() => import('./pages/Auth'));
-
+import MarketingSuite from './pages/MarketingSuite';
 import MediaStudio from './pages/MediaStudio';
 import MyGenerations from './pages/MyGenerations';
 import MyPlugins from './pages/MyPlugins';

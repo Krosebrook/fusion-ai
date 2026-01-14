@@ -127,40 +127,66 @@ export default function PromptStudioPage() {
         </div>
 
         {/* Main Studio Interface */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="bg-slate-900/50 border border-white/10 backdrop-blur-xl p-1 grid grid-cols-7 gap-1 w-full h-auto">
-            <TabsTrigger value="editor" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-pink-600 text-xs">
-              <Wand2 className="w-3 h-3 mr-1" />
-              <span className="hidden sm:inline">Editor</span>
-            </TabsTrigger>
-            <TabsTrigger value="test" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-cyan-600 text-xs">
-              <TestTube className="w-3 h-3 mr-1" />
-              <span className="hidden sm:inline">Test</span>
-            </TabsTrigger>
-            <TabsTrigger value="versions" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-600 data-[state=active]:to-emerald-600 text-xs">
-              <GitBranch className="w-3 h-3 mr-1" />
-              <span className="hidden sm:inline">Versions</span>
-            </TabsTrigger>
-            <TabsTrigger value="ab-test" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:to-amber-600 text-xs">
-              <TrendingUp className="w-3 h-3 mr-1" />
-              <span className="hidden sm:inline">A/B</span>
-            </TabsTrigger>
-            <TabsTrigger value="analytics" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-600 data-[state=active]:to-blue-600 text-xs">
-              <BarChart3 className="w-3 h-3 mr-1" />
-              <span className="hidden sm:inline">Analytics</span>
-            </TabsTrigger>
-            <TabsTrigger value="deploy" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-600 data-[state=active]:to-red-600 text-xs">
-              <Rocket className="w-3 h-3 mr-1" />
-              <span className="hidden sm:inline">Deploy</span>
-            </TabsTrigger>
-            <TabsTrigger value="library" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-600 data-[state=active]:to-purple-600 text-xs">
-              <Layers className="w-3 h-3 mr-1" />
-              <span className="hidden sm:inline">Lib</span>
-            </TabsTrigger>
-          </TabsList>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <CinematicCard className="p-6">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <TabsList className="bg-slate-900/50 border border-white/10 backdrop-blur-xl p-1 grid grid-cols-4 lg:grid-cols-9 gap-1 w-full h-auto">
+                <TabsTrigger value="library" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-600 data-[state=active]:to-purple-600 text-xs">
+                  <Library className="w-3 h-3 mr-1" />
+                  <span className="hidden sm:inline">Templates</span>
+                </TabsTrigger>
+                <TabsTrigger value="editor" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-pink-600 text-xs">
+                  <Edit className="w-3 h-3 mr-1" />
+                  <span className="hidden sm:inline">Editor</span>
+                </TabsTrigger>
+                <TabsTrigger value="test" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-cyan-600 text-xs">
+                  <Play className="w-3 h-3 mr-1" />
+                  <span className="hidden sm:inline">Test</span>
+                </TabsTrigger>
+                <TabsTrigger value="chain" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-600 data-[state=active]:to-teal-600 text-xs">
+                  <GitBranch className="w-3 h-3 mr-1" />
+                  <span className="hidden sm:inline">Chain</span>
+                </TabsTrigger>
+                <TabsTrigger value="performance" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-600 data-[state=active]:to-emerald-600 text-xs">
+                  <TrendingUp className="w-3 h-3 mr-1" />
+                  <span className="hidden sm:inline">Perf</span>
+                </TabsTrigger>
+                <TabsTrigger value="versions" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-yellow-600 data-[state=active]:to-orange-600 text-xs">
+                  <GitCompare className="w-3 h-3 mr-1" />
+                  <span className="hidden sm:inline">Versions</span>
+                </TabsTrigger>
+                <TabsTrigger value="experiments" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:to-red-600 text-xs">
+                  <FlaskConical className="w-3 h-3 mr-1" />
+                  <span className="hidden sm:inline">A/B</span>
+                </TabsTrigger>
+                <TabsTrigger value="analytics" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-600 data-[state=active]:to-purple-600 text-xs">
+                  <BarChart3 className="w-3 h-3 mr-1" />
+                  <span className="hidden sm:inline">Analytics</span>
+                </TabsTrigger>
+                <TabsTrigger value="deploy" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-600 data-[state=active]:to-pink-600 text-xs">
+                  <Rocket className="w-3 h-3 mr-1" />
+                  <span className="hidden sm:inline">Deploy</span>
+                </TabsTrigger>
+              </TabsList>
 
-          <AnimatePresence mode="wait">
-            <TabsContent value="editor" className="mt-6">
+              <AnimatePresence mode="wait">
+                <TabsContent value="library" className="mt-6">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <TemplateLibrary onSelectTemplate={(tmpl) => {
+                      setSelectedTemplate(tmpl);
+                      setActiveTab('editor');
+                    }} />
+                  </motion.div>
+                </TabsContent>
+
+                <TabsContent value="editor" className="mt-6">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -176,106 +202,79 @@ export default function PromptStudioPage() {
               </motion.div>
             </TabsContent>
 
-            <TabsContent value="test" className="mt-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-              >
-                <PromptTester template={selectedTemplate} />
-              </motion.div>
-            </TabsContent>
+                <TabsContent value="test" className="mt-6">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <PromptTester template={selectedTemplate} />
+                  </motion.div>
+                </TabsContent>
 
-            <TabsContent value="versions" className="mt-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-              >
-                <VersionComparison templates={templates} />
-              </motion.div>
-            </TabsContent>
+                <TabsContent value="chain" className="mt-6">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <ChainBuilder onSave={async (chain) => {
+                      await base44.entities.PromptChain.create(chain);
+                      toast.success('Prompt chain saved');
+                    }} />
+                  </motion.div>
+                </TabsContent>
 
-            <TabsContent value="ab-test" className="mt-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-              >
-                <ABTestManager 
-                  templates={templates}
-                  experiments={experiments}
-                  onSelectExperiment={setSelectedExperiment}
-                />
-              </motion.div>
-            </TabsContent>
+                <TabsContent value="performance" className="mt-6">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <PerformanceDashboard templateId={selectedTemplate?.id} />
+                  </motion.div>
+                </TabsContent>
 
-            <TabsContent value="analytics" className="mt-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-              >
-                <div className="space-y-6">
-                  <InteractiveDashboard experiments={experiments} versions={executionLogs} />
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <CorrelationMatrix logs={executionLogs} />
-                    <PerformanceHeatmap logs={executionLogs} />
-                  </div>
-                  <PromptAnalytics />
-                  {selectedTemplate && <PredictiveAnalytics templateId={selectedTemplate.id} />}
-                  <CustomMetricsBuilder />
-                </div>
-              </motion.div>
-            </TabsContent>
+                <TabsContent value="versions" className="mt-6">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <VersionComparison templates={templates} />
+                  </motion.div>
+                </TabsContent>
 
-            <TabsContent value="ab-test" className="mt-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-              >
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <ABTestManager 
-                    templates={templates}
-                    experiments={experiments}
-                    onSelectExperiment={setSelectedExperiment}
-                  />
-                  <ABTestAnalytics />
-                </div>
-              </motion.div>
-            </TabsContent>
+                <TabsContent value="experiments" className="mt-6">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <ABTestManager 
+                      templates={templates}
+                      experiments={experiments}
+                      onSelectExperiment={setSelectedExperiment}
+                    />
+                  </motion.div>
+                </TabsContent>
 
-            <TabsContent value="deploy" className="mt-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-              >
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <PromptDeploymentManager />
-                  {selectedTemplate && <PromptPromotionPipeline version={selectedTemplate} />}
-                </div>
-              </motion.div>
-            </TabsContent>
+                <TabsContent value="analytics" className="mt-6">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <PromptAnalytics />
+                  </motion.div>
+                </TabsContent>
 
-            <TabsContent value="library" className="mt-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-              >
-                <PromptLibrary 
-                  templates={templates}
-                  onSelectTemplate={(template) => {
-                    setSelectedTemplate(template);
-                    setActiveTab('editor');
-                  }}
-                />
-              </motion.div>
-            </TabsContent>
-          </AnimatePresence>
-        </Tabs>
+                <TabsContent value="deploy" className="mt-6">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <PromptDeploymentManager />
+                  </motion.div>
+                </TabsContent>
+              </AnimatePresence>
+            </Tabs>
+          </CinematicCard>
+        </motion.div>
       </div>
     </div>
   );
