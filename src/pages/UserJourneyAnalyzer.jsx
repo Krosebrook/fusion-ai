@@ -1,23 +1,15 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { 
-  GitBranch, Users, Shield, Crown, TrendingUp, 
-  AlertCircle, CheckCircle, Zap, MessageSquare, 
-  Download, Copy, Eye, FlaskConical
-} from 'lucide-react';
+import { GitBranch } from 'lucide-react';
 import { CinematicCard } from '../components/atoms/CinematicCard';
-import ReactMarkdown from 'react-markdown';
 import { toast } from 'sonner';
-import { MermaidDiagram } from '../components/visualization/MermaidDiagram';
 import { ABTestScenarios } from '../components/user-journey/ABTestScenarios';
+import { PresetCard } from '../components/user-journey/PresetCard';
+import { JourneyConfig } from '../components/user-journey/JourneyConfig';
+import { AnalysisResults } from '../components/user-journey/AnalysisResults';
+import { JOURNEY_PRESETS, USER_ROLES, FLOW_TYPES } from '../components/user-journey/constants';
 
 export default function UserJourneyAnalyzerPage() {
   const [selectedRole, setSelectedRole] = useState('user');
@@ -28,11 +20,8 @@ export default function UserJourneyAnalyzerPage() {
   const [selectedPreset, setSelectedPreset] = useState(null);
   const [abTestScenarios, setAbTestScenarios] = useState(null);
   const [generatingTests, setGeneratingTests] = useState(false);
-  const queryClient = useQueryClient();
 
   const agentName = 'UserJourneyMapper';
-
-  const presets = {
     'first-recognition': {
       name: 'New User First-Time Recognition',
       role: 'user',
@@ -128,43 +117,8 @@ Identify friction points: confusing approval requirements, lack of visibility in
 
 Identify friction points: lengthy signup forms, unclear value proposition, overwhelming feature tours, difficulty finding relevant connections, lack of immediate value, poor mobile experience, confusing next steps. Generate a detailed Mermaid flowchart with drop-off points, intervention opportunities, and success indicators.`
     },
-    'admin-bulk-actions': {
-      name: 'Admin Bulk User Management',
-      role: 'admin',
-      flow: 'custom',
-      icon: '👥',
-      description: 'Admin performs bulk operations on user accounts',
-      prompt: `Analyze the admin workflow for performing bulk operations on multiple user accounts:
-1. Accessing user management dashboard
-2. Defining selection criteria (department, role, activity level, date joined)
-3. Previewing affected users
-4. Selecting bulk action (role change, deactivation, messaging, export)
-5. Confirming action with safeguards
-6. Processing and progress tracking
-7. Handling errors/exceptions
-8. Reviewing completion report
-9. Undoing if needed
-
-Identify friction points: unclear selection criteria, no preview of impact, accidental actions, slow processing, lack of progress visibility, inadequate error handling, no undo option, missing audit logs. Generate a detailed Mermaid flowchart with safety checks and rollback procedures.`
-    }
-  };
-
-  const flows = {
-    onboarding: 'User Onboarding Journey',
-    recognition: 'Giving Recognition Flow',
-    moderation: 'Content Moderation Review',
-    gamification: 'Gamification Rule Configuration',
-    custom: 'Custom Flow Analysis'
-  };
-
-  const roles = {
-    user: { icon: Users, color: 'from-blue-500 to-cyan-500', label: 'User' },
-    admin: { icon: Shield, color: 'from-purple-500 to-pink-500', label: 'Admin' },
-    owner: { icon: Crown, color: 'from-orange-500 to-amber-500', label: 'Owner' }
-  };
-
   const handlePresetSelect = (presetKey) => {
-    const preset = presets[presetKey];
+    const preset = JOURNEY_PRESETS[presetKey];
     setSelectedPreset(presetKey);
     setSelectedRole(preset.role);
     setSelectedFlow(preset.flow);
@@ -195,7 +149,7 @@ Identify friction points: unclear selection criteria, no preview of impact, acci
       const prompt = customPrompt || 
         (selectedFlow === 'custom' 
           ? 'Please describe the user flow you want to analyze.'
-          : `Analyze the ${flows[selectedFlow]} for a ${roles[selectedRole].label} role. Map out the complete user journey, identify all friction points, and generate a visual flowchart with specific recommendations for optimization.`);
+          : `Analyze the ${FLOW_TYPES[selectedFlow]} for a ${USER_ROLES[selectedRole].label} role. Map out the complete user journey, identify all friction points, and generate a visual flowchart with specific recommendations for optimization.`);
 
       await base44.agents.addMessage(conv, {
         role: 'user',
@@ -304,38 +258,14 @@ Identify friction points: unclear selection criteria, no preview of impact, acci
           <p className="text-white/60 text-sm mb-6">Select a complex scenario to analyze with pre-configured settings</p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-            {Object.entries(presets).map(([key, preset]) => (
-              <motion.button
+            {Object.entries(JOURNEY_PRESETS).map(([key, preset]) => (
+              <PresetCard
                 key={key}
-                onClick={() => handlePresetSelect(key)}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className={`p-4 rounded-lg border text-left transition-all ${
-                  selectedPreset === key
-                    ? 'bg-purple-500/20 border-purple-500/50 shadow-lg shadow-purple-500/20'
-                    : 'bg-slate-800/30 border-white/10 hover:border-purple-500/30'
-                }`}
-              >
-                <div className="flex items-start gap-3">
-                  <span className="text-3xl">{preset.icon}</span>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-white font-semibold text-sm mb-1 line-clamp-2">
-                      {preset.name}
-                    </h3>
-                    <p className="text-white/60 text-xs mb-2 line-clamp-2">
-                      {preset.description}
-                    </p>
-                    <div className="flex items-center gap-2">
-                      <Badge className="text-xs bg-slate-700/50 border-white/10">
-                        {roles[preset.role].label}
-                      </Badge>
-                      {selectedPreset === key && (
-                        <CheckCircle className="w-4 h-4 text-purple-400" />
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </motion.button>
+                presetKey={key}
+                preset={preset}
+                isSelected={selectedPreset === key}
+                onSelect={handlePresetSelect}
+              />
             ))}
           </div>
 
@@ -344,7 +274,7 @@ Identify friction points: unclear selection criteria, no preview of impact, acci
               variant="outline"
               size="sm"
               onClick={handleClearPreset}
-              className="border-white/10 mb-4"
+              className="border-white/10"
             >
               Clear Preset
             </Button>
@@ -357,74 +287,17 @@ Identify friction points: unclear selection criteria, no preview of impact, acci
             {selectedPreset ? 'Review Configuration' : 'Custom Configuration'}
           </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            {/* Role Selection */}
-            <div>
-              <label className="text-sm text-white/60 mb-2 block">User Role</label>
-              <Select value={selectedRole} onValueChange={setSelectedRole}>
-                <SelectTrigger className="bg-slate-800/50 border-white/10">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-slate-800 border-white/10">
-                  {Object.entries(roles).map(([key, role]) => (
-                    <SelectItem key={key} value={key}>
-                      <div className="flex items-center gap-2">
-                        <role.icon className="w-4 h-4" />
-                        {role.label}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Flow Selection */}
-            <div>
-              <label className="text-sm text-white/60 mb-2 block">User Flow</label>
-              <Select value={selectedFlow} onValueChange={setSelectedFlow}>
-                <SelectTrigger className="bg-slate-800/50 border-white/10">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-slate-800 border-white/10">
-                  {Object.entries(flows).map(([key, label]) => (
-                    <SelectItem key={key} value={key}>{label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          {(selectedFlow === 'custom' || selectedPreset) && (
-            <div className="mb-6">
-              <label className="text-sm text-white/60 mb-2 block">
-                {selectedPreset ? 'Preset Prompt (Edit if needed)' : 'Custom Flow Description'}
-              </label>
-              <Textarea
-                value={customPrompt}
-                onChange={(e) => setCustomPrompt(e.target.value)}
-                placeholder="Describe the custom user flow you want to analyze..."
-                className="bg-slate-800/50 border-white/10 text-white min-h-[120px]"
-              />
-            </div>
-          )}
-
-          <Button
-            onClick={handleStartAnalysis}
-            disabled={analyzing || (selectedFlow === 'custom' && !customPrompt && !selectedPreset)}
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-          >
-            {analyzing ? (
-              <>
-                <Zap className="w-4 h-4 mr-2 animate-pulse" />
-                Analyzing Journey...
-              </>
-            ) : (
-              <>
-                <GitBranch className="w-4 h-4 mr-2" />
-                Start Analysis
-              </>
-            )}
-          </Button>
+          <JourneyConfig
+            selectedRole={selectedRole}
+            selectedFlow={selectedFlow}
+            selectedPreset={selectedPreset}
+            customPrompt={customPrompt}
+            analyzing={analyzing}
+            onRoleChange={setSelectedRole}
+            onFlowChange={setSelectedFlow}
+            onPromptChange={setCustomPrompt}
+            onStartAnalysis={handleStartAnalysis}
+          />
         </CinematicCard>
 
         {/* Results Panel */}
@@ -435,82 +308,12 @@ Identify friction points: unclear selection criteria, no preview of impact, acci
               animate={{ opacity: 1, y: 0 }}
             >
               <CinematicCard className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-white">Analysis Results</h2>
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => copyToClipboard(conversation.messages?.[conversation.messages.length - 1]?.content || '')}
-                      className="border-white/10"
-                    >
-                      <Copy className="w-4 h-4 mr-2" />
-                      Copy
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={generateABTests}
-                      disabled={generatingTests}
-                      className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600"
-                    >
-                      {generatingTests ? (
-                        <>
-                          <Zap className="w-4 h-4 mr-2 animate-pulse" />
-                          Generating...
-                        </>
-                      ) : (
-                        <>
-                          <FlaskConical className="w-4 h-4 mr-2" />
-                          Generate A/B Tests
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  {conversation.messages?.map((message, idx) => (
-                    <div
-                      key={idx}
-                      className={`p-4 rounded-lg ${
-                        message.role === 'user' 
-                          ? 'bg-blue-500/10 border border-blue-500/20' 
-                          : 'bg-slate-800/50 border border-white/10'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2 mb-2">
-                        {message.role === 'user' ? (
-                          <MessageSquare className="w-4 h-4 text-blue-400" />
-                        ) : (
-                          <GitBranch className="w-4 h-4 text-purple-400" />
-                        )}
-                        <span className="text-sm text-white/60 capitalize">{message.role}</span>
-                      </div>
-                      <ReactMarkdown 
-                        className="prose prose-invert prose-sm max-w-none"
-                        components={{
-                          code: ({ inline, className, children, ...props }) => {
-                            const match = /language-(\w+)/.exec(className || '');
-                            if (!inline && match && match[1] === 'mermaid') {
-                              return <MermaidDiagram chart={String(children).trim()} />;
-                            }
-                            return inline ? (
-                              <code className="bg-slate-700 px-1 py-0.5 rounded text-sm" {...props}>
-                                {children}
-                              </code>
-                            ) : (
-                              <pre className="bg-slate-900 p-4 rounded-lg overflow-auto">
-                                <code {...props}>{children}</code>
-                              </pre>
-                            );
-                          }
-                        }}
-                      >
-                        {message.content}
-                      </ReactMarkdown>
-                    </div>
-                  ))}
-                </div>
+                <AnalysisResults
+                  conversation={conversation}
+                  generatingTests={generatingTests}
+                  onCopy={copyToClipboard}
+                  onGenerateTests={generateABTests}
+                />
               </CinematicCard>
             </motion.div>
           </AnimatePresence>
