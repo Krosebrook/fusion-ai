@@ -6,12 +6,14 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Activity, Zap, DollarSign, CheckCircle2, 
-  AlertCircle, Clock, TrendingUp, Filter, Bell 
+  AlertCircle, Clock, TrendingUp, Filter, Bell, HelpCircle
 } from 'lucide-react';
 import { CinematicCard } from '../atoms/CinematicCard';
+import { MonitoringOnboarding } from '../onboarding/MonitoringOnboarding';
 import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export function RealtimeMonitoring() {
+  const [showHelp, setShowHelp] = useState(false);
   const [filter, setFilter] = useState({ environment: 'all', timeRange: '1h' });
   const [liveMetrics, setLiveMetrics] = useState({
     currentRPS: 0,
@@ -86,6 +88,9 @@ export function RealtimeMonitoring() {
             </div>
           </div>
           <div className="flex gap-3">
+            <Button onClick={() => setShowHelp(true)} variant="outline" size="sm" className="border-white/10">
+              <HelpCircle className="w-4 h-4" />
+            </Button>
             <Select value={filter.environment} onValueChange={(v) => setFilter({ ...filter, environment: v })}>
               <SelectTrigger className="w-40 bg-slate-800/50 border-white/10 text-white">
                 <SelectValue />
@@ -248,6 +253,14 @@ export function RealtimeMonitoring() {
           </div>
         )}
       </CinematicCard>
+
+      {/* Onboarding */}
+      {showHelp && (
+        <MonitoringOnboarding
+          onComplete={() => setShowHelp(false)}
+          onDismiss={() => setShowHelp(false)}
+        />
+      )}
     </div>
   );
 }

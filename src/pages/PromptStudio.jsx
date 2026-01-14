@@ -3,7 +3,7 @@
  * Professional prompt creation, testing, versioning, and A/B optimization
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -37,6 +37,7 @@ export default function PromptStudioPage() {
   const [selectedExperiment, setSelectedExperiment] = useState(null);
   const [debugChain, setDebugChain] = useState(null);
   const [executionLog, setExecutionLog] = useState(null);
+  const [showOnboarding, setShowOnboarding] = useState(null);
 
   const { data: templates = [] } = useQuery({
     queryKey: ['prompt-templates'],
@@ -47,6 +48,16 @@ export default function PromptStudioPage() {
     queryKey: ['prompt-experiments'],
     queryFn: () => base44.entities.PromptExperiment.list('-created_at', 20)
   });
+
+  // Check if user needs onboarding
+  useEffect(() => {
+    base44.auth.me().then(user => {
+      const completed = user?.onboarding_completed_modules || [];
+      if (!completed.includes('prompt_studio')) {
+        setShowOnboarding('main');
+      }
+    }).catch(() => {});
+  }, []);
 
   const stats = {
     totalTemplates: templates.length,
@@ -90,16 +101,25 @@ export default function PromptStudioPage() {
               </div>
             </div>
 
-            <Button 
-              onClick={() => {
-                setSelectedTemplate(null);
-                setActiveTab('editor');
-              }}
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg shadow-purple-500/30"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              New Prompt
-            </Button>
+            <div className="flex gap-3">
+              <Button
+                onClick={() => setShowOnboarding('main')}
+                variant="outline"
+                className="border-white/10 text-white/80"
+              >
+                Tour
+              </Button>
+              <Button 
+                onClick={() => {
+                  setSelectedTemplate(null);
+                  setActiveTab('editor');
+                }}
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg shadow-purple-500/30"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                New Prompt
+              </Button>
+            </div>
           </div>
         </motion.div>
 
@@ -327,6 +347,32 @@ export default function PromptStudioPage() {
             </Tabs>
           </CinematicCard>
         </motion.div>
+
+        {/* Onboarding Wizards */}
+        {showOnboarding === 'main' && (
+          <PromptStudioOnboarding
+            onComplete={() => setShowOnboarding(null)}
+            onDismiss={() => setShowOnboarding(null)}
+          />
+        )}
+        {showOnboarding === 'chain' && (
+          <ChainBuilderOnboarding
+            onComplete={() => setShowOnboarding(null)}
+            onDismiss={() => setShowOnboarding(null)}
+          />
+        )}
+        {showOnboarding === 'monitoring' && (
+          <MonitoringOnboarding
+            onComplete={() => setShowOnboarding(null)}
+            onDismiss={() => setShowOnboarding(null)}
+          />
+        )}
+        {showOnboarding === 'orchestration' && (
+          <AgentOrchestrationOnboarding
+            onComplete={() => setShowOnboarding(null)}
+            onDismiss={() => setShowOnboarding(null)}
+          />
+        )}
       </div>
     </div>
   );

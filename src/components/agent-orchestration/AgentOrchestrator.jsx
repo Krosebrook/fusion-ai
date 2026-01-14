@@ -5,13 +5,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Users, Plus, Settings, MessageSquare, Target, Workflow } from 'lucide-react';
+import { Users, Plus, Settings, MessageSquare, Target, Workflow, HelpCircle } from 'lucide-react';
 import { CinematicCard } from '../atoms/CinematicCard';
+import { AgentOrchestrationOnboarding } from '../onboarding/AgentOrchestrationOnboarding';
 import { toast } from 'sonner';
 
 export function AgentOrchestrator() {
   const [selectedWorkflow, setSelectedWorkflow] = useState(null);
   const [showAgentForm, setShowAgentForm] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: workflows = [] } = useQuery({
@@ -88,13 +90,18 @@ export function AgentOrchestrator() {
               <p className="text-white/60 text-sm">Define multi-agent workflows and collaboration</p>
             </div>
           </div>
-          <Button
-            onClick={() => setShowAgentForm(!showAgentForm)}
-            className="bg-gradient-to-r from-cyan-500 to-blue-600"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            New Agent
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={() => setShowHelp(true)} variant="outline" size="sm" className="border-white/10">
+              <HelpCircle className="w-4 h-4" />
+            </Button>
+            <Button
+              onClick={() => setShowAgentForm(!showAgentForm)}
+              className="bg-gradient-to-r from-cyan-500 to-blue-600"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              New Agent
+            </Button>
+          </div>
         </div>
       </CinematicCard>
 
@@ -240,6 +247,14 @@ export function AgentOrchestrator() {
           </div>
         )}
       </div>
+
+      {/* Onboarding */}
+      {showHelp && (
+        <AgentOrchestrationOnboarding
+          onComplete={() => setShowHelp(false)}
+          onDismiss={() => setShowHelp(false)}
+        />
+      )}
     </div>
   );
 }

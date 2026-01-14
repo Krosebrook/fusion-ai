@@ -6,11 +6,13 @@ import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { GitBranch, Plus, Trash2, Play, Save, ArrowRight, Settings, AlertCircle, CheckCircle2, GitMerge } from 'lucide-react';
+import { GitBranch, Plus, Trash2, Play, Save, ArrowRight, Settings, AlertCircle, CheckCircle2, GitMerge, HelpCircle } from 'lucide-react';
 import { CinematicCard } from '../atoms/CinematicCard';
+import { ChainBuilderOnboarding } from '../onboarding/ChainBuilderOnboarding';
 import { toast } from 'sonner';
 
 export function ChainBuilderAdvanced({ onSave, existingChain, onDebug }) {
+  const [showHelp, setShowHelp] = useState(false);
   const [chain, setChain] = useState(existingChain || {
     name: '',
     description: '',
@@ -117,10 +119,15 @@ export function ChainBuilderAdvanced({ onSave, existingChain, onDebug }) {
             <h3 className="text-xl font-bold text-white">Advanced Chain Builder</h3>
             <p className="text-white/60 text-sm">Build complex multi-step workflows with conditional logic</p>
           </div>
-          <Button onClick={handleSave} className="bg-gradient-to-r from-green-500 to-emerald-600">
-            <Save className="w-4 h-4 mr-2" />
-            Save Chain
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={() => setShowHelp(true)} variant="outline" size="sm" className="border-white/10">
+              <HelpCircle className="w-4 h-4" />
+            </Button>
+            <Button onClick={handleSave} className="bg-gradient-to-r from-green-500 to-emerald-600">
+              <Save className="w-4 h-4 mr-2" />
+              Save Chain
+            </Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -370,6 +377,14 @@ export function ChainBuilderAdvanced({ onSave, existingChain, onDebug }) {
           Debug Chain
         </Button>
       </div>
+
+      {/* Onboarding */}
+      {showHelp && (
+        <ChainBuilderOnboarding
+          onComplete={() => setShowHelp(false)}
+          onDismiss={() => setShowHelp(false)}
+        />
+      )}
     </div>
   );
 }
