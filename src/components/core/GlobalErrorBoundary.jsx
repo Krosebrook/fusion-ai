@@ -1,7 +1,7 @@
 import React from 'react';
 import { AlertTriangle, Home, RefreshCw, Bug } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { performanceMonitor } from './PerformanceMonitor';
+import { PerformanceMonitor } from './PerformanceMonitor';
 
 export class GlobalErrorBoundary extends React.Component {
   constructor(props) {
@@ -28,10 +28,11 @@ export class GlobalErrorBoundary extends React.Component {
     this.logErrorToService(error, errorInfo);
 
     // Track in performance monitor
-    performanceMonitor.trackInteraction('error', 'GlobalErrorBoundary', {
-      error: error.toString(),
-      stack: errorInfo.componentStack
-    });
+    try {
+      PerformanceMonitor.metrics['error_boundary_triggered'] = Date.now();
+    } catch (e) {
+      // Performance monitoring failed, ignore
+    }
   }
 
   logErrorToService(error, errorInfo) {
