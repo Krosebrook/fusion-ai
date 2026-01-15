@@ -162,7 +162,8 @@ function LayoutContent({ children }) {
     { name: "Integrations", path: createPageUrl("Integrations"), icon: Link2 },
     { name: "Activity", path: createPageUrl("ActivityDashboard"), icon: Activity },
     { name: "Collaboration", path: createPageUrl("CollaborationWorkspace"), icon: UsersIcon },
-    { name: "RBAC", path: createPageUrl("RBACManager"), icon: Shield }
+    { name: "RBAC", path: createPageUrl("RBACManager"), icon: Shield },
+    ...(user?.role === 'admin' ? [{ name: "Admin", path: createPageUrl("Admin"), icon: Shield }] : [])
   ];
   
   const toolComponents = [
