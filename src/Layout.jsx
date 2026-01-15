@@ -185,6 +185,12 @@ function LayoutContent({ children }) {
       description: "Create educational materials, lesson plans, and assessments.",
       icon: BookOpen,
     },
+    {
+      title: "App Marketplace",
+      href: createPageUrl("Marketplace"),
+      description: "Discover and access all FlashFusion applications in one place.",
+      icon: Rocket,
+    },
   ];
 
   const cicdComponents = [
