@@ -1,3 +1,4 @@
+import ABTestManager from './pages/ABTestManager';
 import AICodeAgent from './pages/AICodeAgent';
 import AICodeGen from './pages/AICodeGen';
 import AICodeReview from './pages/AICodeReview';
@@ -7,6 +8,7 @@ import AIFeaturePlanner from './pages/AIFeaturePlanner';
 import AIPipelineGenerator from './pages/AIPipelineGenerator';
 import AIStudio from './pages/AIStudio';
 import AITemplates from './pages/AITemplates';
+import AITestingSuite from './pages/AITestingSuite';
 import APIDocumentation from './pages/APIDocumentation';
 import APIGenerator from './pages/APIGenerator';
 import APIIntegration from './pages/APIIntegration';
@@ -67,12 +69,13 @@ import VisualPipelineBuilder from './pages/VisualPipelineBuilder';
 import WebsiteCloner from './pages/WebsiteCloner';
 import WorkflowBuilder from './pages/WorkflowBuilder';
 import Workflows from './pages/Workflows';
-import AITestingSuite from './pages/AITestingSuite';
-import ABTestManager from './pages/ABTestManager';
+import Admin from './pages/Admin';
+import Marketplace from './pages/Marketplace';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "ABTestManager": ABTestManager,
     "AICodeAgent": AICodeAgent,
     "AICodeGen": AICodeGen,
     "AICodeReview": AICodeReview,
@@ -82,6 +85,7 @@ export const PAGES = {
     "AIPipelineGenerator": AIPipelineGenerator,
     "AIStudio": AIStudio,
     "AITemplates": AITemplates,
+    "AITestingSuite": AITestingSuite,
     "APIDocumentation": APIDocumentation,
     "APIGenerator": APIGenerator,
     "APIIntegration": APIIntegration,
@@ -142,8 +146,8 @@ export const PAGES = {
     "WebsiteCloner": WebsiteCloner,
     "WorkflowBuilder": WorkflowBuilder,
     "Workflows": Workflows,
-    "AITestingSuite": AITestingSuite,
-    "ABTestManager": ABTestManager,
+    "Admin": Admin,
+    "Marketplace": Marketplace,
 }
 
 export const pagesConfig = {
