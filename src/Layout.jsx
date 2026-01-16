@@ -11,6 +11,8 @@ import { AuthProvider } from "@/components/hooks/useAuth";
 import { GlobalErrorBoundary } from "@/components/core/GlobalErrorBoundary";
 import NotificationCenter from "./components/collaboration/NotificationCenter";
 import { AuroraBackground } from "./components/effects/AuroraBackground";
+import { PWAInstallPrompt } from "@/components/pwa/PWAInstallPrompt";
+import { OfflineIndicator } from "@/components/pwa/OfflineIndicator";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -962,16 +964,20 @@ function LayoutContent({ children }) {
       }}>
         <p>© 2024 FlashFusion. Transform ideas into reality with AI.</p>
       </footer>
-    </div>
-  );
-}
 
-export default function Layout({ children }) {
-  return (
-    <GlobalErrorBoundary>
+      {/* PWA Components */}
+      <PWAInstallPrompt />
+      <OfflineIndicator />
+      </div>
+      );
+      }
+
+      export default function Layout({ children }) {
+      return (
+      <GlobalErrorBoundary>
       <AuthProvider>
         <LayoutContent>{children}</LayoutContent>
       </AuthProvider>
-    </GlobalErrorBoundary>
-  );
-}
+      </GlobalErrorBoundary>
+      );
+      }
