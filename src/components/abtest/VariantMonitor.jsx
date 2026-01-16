@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { CheckCircle2, TrendingUp, Clock } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 
 export function VariantMonitor({ test, metrics }) {
   const variantAMetrics = metrics.filter(m => m.variant === 'variant_a');

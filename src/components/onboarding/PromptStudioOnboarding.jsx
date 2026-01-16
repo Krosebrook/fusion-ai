@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { X, ArrowRight, ArrowLeft, Check, Wand2, Play, GitBranch, Activity } from 'lucide-react';
+import { X, ArrowRight, ArrowLeft, Check, Wand2, GitBranch, Activity } from 'lucide-react';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';

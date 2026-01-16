@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Wand2, Code, Loader2, CheckCircle2 } from 'lucide-react';
+import { Wand2, Loader2, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export function TestGenerator({ onGenerate }) {

@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { createPageUrl } from "@/utils";
 import { 
   Search, Filter, Star, TrendingUp, Zap, ExternalLink,
   Sparkles, Code, BarChart3, Workflow, TestTube, Rocket

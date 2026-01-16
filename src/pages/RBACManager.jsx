@@ -4,7 +4,6 @@
  * Central admin interface for managing roles, permissions, and audit logs.
  * Includes role creation, user assignment, and compliance monitoring.
  */
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
