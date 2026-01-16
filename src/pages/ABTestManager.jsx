@@ -1,8 +1,23 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+/**
+ * A/B Test Manager Page
+ * 
+ * Provides comprehensive A/B testing management interface for deployment pipelines.
+ * Supports variant comparison, traffic splitting, and automatic winner promotion.
+ * 
+ * Features:
+ * - Real-time variant performance monitoring
+ * - Dynamic traffic distribution control
+ * - Configurable success criteria with weighted metrics
+ * - Automatic promotion based on statistical confidence
+ * - Visual comparison charts and timeline graphs
+ * 
+ * @component
+ */
+import { useState, useCallback, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Play, Pause, CheckCircle2, TrendingUp, Activity, Settings } from 'lucide-react';
+import { Plus, Play, Pause, CheckCircle2, TrendingUp, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CinematicCard } from '@/components/atoms/CinematicCard';
@@ -13,49 +28,94 @@ import { SuccessCriteriaConfig } from '@/components/abtest/SuccessCriteriaConfig
 import { AutoPromotionPanel } from '@/components/abtest/AutoPromotionPanel';
 import { toast } from 'sonner';
 
+// Query keys for React Query caching
+const QUERY_KEYS = {
+  AB_TESTS: ['ab-tests'],
+  AB_METRICS: ['ab-metrics'],
+};
+
+// Tab filter types
+const TAB_FILTERS = {
+  ACTIVE: 'active',
+  COMPLETED: 'completed',
+  ALL: 'all',
+};
+
 export default function ABTestManagerPage() {
-  const [activeTab, setActiveTab] = useState('active');
+  const [activeTab, setActiveTab] = useState(TAB_FILTERS.ACTIVE);
   const [selectedTest, setSelectedTest] = useState(null);
   const [showCreator, setShowCreator] = useState(false);
   const queryClient = useQueryClient();
 
-  const { data: tests = [] } = useQuery({
-    queryKey: ['ab-tests'],
-    queryFn: () => base44.entities.ABTestConfig.list('-created_date', 50)
+  // Fetch A/B tests with automatic caching
+  const { data: tests = [], isLoading: testsLoading } = useQuery({
+    queryKey: QUERY_KEYS.AB_TESTS,
+    queryFn: () => base44.entities.ABTestConfig.list('-created_date', 50),
+    staleTime: 30000, // Cache for 30 seconds
   });
 
-  const { data: metrics = [] } = useQuery({
-    queryKey: ['ab-metrics'],
-    queryFn: () => base44.entities.ABTestMetrics.list('-timestamp', 100)
+  // Fetch metrics with automatic caching
+  const { data: metrics = [], isLoading: metricsLoading } = useQuery({
+    queryKey: QUERY_KEYS.AB_METRICS,
+    queryFn: () => base44.entities.ABTestMetrics.list('-timestamp', 100),
+    staleTime: 10000, // Cache for 10 seconds
   });
 
+  // Mutation for pausing active tests
   const pauseTestMutation = useMutation({
     mutationFn: (testId) => base44.entities.ABTestConfig.update(testId, { status: 'paused' }),
     onSuccess: () => {
-      queryClient.invalidateQueries(['ab-tests']);
-      toast.success('Test paused');
-    }
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.AB_TESTS });
+      toast.success('Test paused successfully');
+    },
+    onError: () => {
+      toast.error('Failed to pause test');
+    },
   });
 
+  // Mutation for resuming paused tests
   const resumeTestMutation = useMutation({
     mutationFn: (testId) => base44.entities.ABTestConfig.update(testId, { status: 'active' }),
     onSuccess: () => {
-      queryClient.invalidateQueries(['ab-tests']);
-      toast.success('Test resumed');
-    }
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.AB_TESTS });
+      toast.success('Test resumed successfully');
+    },
+    onError: () => {
+      toast.error('Failed to resume test');
+    },
   });
 
-  const stats = {
+  // Memoized statistics calculation
+  const stats = useMemo(() => ({
     active: tests.filter(t => t.status === 'active').length,
     completed: tests.filter(t => t.status === 'completed').length,
-    totalVariants: tests.length * 2
-  };
+    totalVariants: tests.length * 2,
+  }), [tests]);
 
-  const filteredTests = activeTab === 'active' 
-    ? tests.filter(t => t.status === 'active')
-    : activeTab === 'completed'
-    ? tests.filter(t => t.status === 'completed')
-    : tests;
+  // Memoized filtered tests based on active tab
+  const filteredTests = useMemo(() => {
+    switch (activeTab) {
+      case TAB_FILTERS.ACTIVE:
+        return tests.filter(t => t.status === 'active');
+      case TAB_FILTERS.COMPLETED:
+        return tests.filter(t => t.status === 'completed');
+      default:
+        return tests;
+    }
+  }, [tests, activeTab]);
+
+  // Handler for test creation success
+  const handleTestCreated = useCallback(() => {
+    setShowCreator(false);
+    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.AB_TESTS });
+    toast.success('A/B test created successfully!');
+  }, [queryClient]);
+
+  // Handler for closing modals
+  const handleCloseModal = useCallback(() => {
+    setSelectedTest(null);
+    setShowCreator(false);
+  }, []);
 
   return (
     <div className="min-h-screen p-6 space-y-6">
@@ -211,70 +271,92 @@ export default function ABTestManagerPage() {
         </Tabs>
       </CinematicCard>
 
-      {/* Test Details Modal */}
-      {selectedTest && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
-          onClick={() => setSelectedTest(null)}
-        >
+      {/* Test Details Modal with AnimatePresence for exit animations */}
+      <AnimatePresence>
+        {selectedTest && (
           <motion.div
-            onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-4xl max-h-96 overflow-y-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+            onClick={handleCloseModal}
           >
-            <CinematicCard className="p-6">
-              <Tabs defaultValue="monitor" className="w-full">
-                <TabsList className="bg-slate-800/50 border border-white/10 mb-4">
-                  <TabsTrigger value="monitor">Monitor</TabsTrigger>
-                  <TabsTrigger value="traffic">Traffic Split</TabsTrigger>
-                  <TabsTrigger value="criteria">Success Criteria</TabsTrigger>
-                  <TabsTrigger value="promotion">Auto Promotion</TabsTrigger>
-                </TabsList>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+            >
+              <CinematicCard className="p-6">
+                <Tabs defaultValue="monitor" className="w-full">
+                  <TabsList className="bg-slate-800/50 border border-white/10 mb-4">
+                    <TabsTrigger value="monitor">Monitor</TabsTrigger>
+                    <TabsTrigger value="traffic">Traffic Split</TabsTrigger>
+                    <TabsTrigger value="criteria">Success Criteria</TabsTrigger>
+                    <TabsTrigger value="promotion">Auto Promotion</TabsTrigger>
+                  </TabsList>
 
-                <TabsContent value="monitor">
-                  <VariantMonitor test={selectedTest} metrics={metrics.filter(m => m.test_id === selectedTest.id)} />
-                </TabsContent>
-                <TabsContent value="traffic">
-                  <TrafficSplitter test={selectedTest} onUpdate={() => queryClient.invalidateQueries(['ab-tests'])} />
-                </TabsContent>
-                <TabsContent value="criteria">
-                  <SuccessCriteriaConfig test={selectedTest} onUpdate={() => queryClient.invalidateQueries(['ab-tests'])} />
-                </TabsContent>
-                <TabsContent value="promotion">
-                  <AutoPromotionPanel test={selectedTest} onUpdate={() => queryClient.invalidateQueries(['ab-tests'])} />
-                </TabsContent>
-              </Tabs>
-            </CinematicCard>
+                  <TabsContent value="monitor">
+                    <VariantMonitor 
+                      test={selectedTest} 
+                      metrics={metrics.filter(m => m.test_id === selectedTest.id)} 
+                    />
+                  </TabsContent>
+                  <TabsContent value="traffic">
+                    <TrafficSplitter 
+                      test={selectedTest} 
+                      onUpdate={() => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.AB_TESTS })} 
+                    />
+                  </TabsContent>
+                  <TabsContent value="criteria">
+                    <SuccessCriteriaConfig 
+                      test={selectedTest} 
+                      onUpdate={() => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.AB_TESTS })} 
+                    />
+                  </TabsContent>
+                  <TabsContent value="promotion">
+                    <AutoPromotionPanel 
+                      test={selectedTest} 
+                      onUpdate={() => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.AB_TESTS })} 
+                    />
+                  </TabsContent>
+                </Tabs>
+              </CinematicCard>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
+        )}
+      </AnimatePresence>
 
-      {/* Creator Modal */}
-      {showCreator && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
-          onClick={() => setShowCreator(false)}
-        >
+      {/* Creator Modal with AnimatePresence for exit animations */}
+      <AnimatePresence>
+        {showCreator && (
           <motion.div
-            onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-2xl"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+            onClick={handleCloseModal}
           >
-            <ABTestCreator
-              onCreated={() => {
-                setShowCreator(false);
-                queryClient.invalidateQueries(['ab-tests']);
-                toast.success('A/B test created!');
-              }}
-              onDismiss={() => setShowCreator(false)}
-            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-2xl"
+            >
+              <ABTestCreator
+                onCreated={handleTestCreated}
+                onDismiss={handleCloseModal}
+              />
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
+        )}
+      </AnimatePresence>
     </div>
   );
 }
