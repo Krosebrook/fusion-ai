@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import RoleManager from "../components/rbac/RoleManager";
-import UserRoleAssignment from "../components/rbac/UserRoleAssignment";
+import { RoleManager } from "@/components/rbac/RoleManager";
+import { UserAssignment } from "@/components/rbac/UserAssignment";
 
 export default function AccessControlPage() {
   return (
@@ -42,7 +42,7 @@ export default function AccessControlPage() {
             </TabsContent>
 
             <TabsContent value="assignments">
-              <UserRoleAssignment />
+              <UserAssignment />
             </TabsContent>
           </Tabs>
         </motion.div>
