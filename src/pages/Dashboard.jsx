@@ -17,8 +17,12 @@ import { CustomPluginDashboard } from '@/components/plugins/CustomPluginDashboar
 import { onboardingService } from '@/components/services/OnboardingService';
 import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
+import { usePageTracking } from '@/components/hooks/usePageTracking';
+import PersonalizedInsightsCard from '@/components/dashboard/PersonalizedInsights';
 
 export default function DashboardPage() {
+  usePageTracking('Dashboard');
+  
   const { user } = useAuth();
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [checkingOnboarding, setCheckingOnboarding] = useState(true);
@@ -83,6 +87,9 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen p-6 md:p-10">
       <div className="max-w-7xl mx-auto">
+        {/* AI Personalized Insights */}
+        <PersonalizedInsightsCard />
+
         {/* Cinematic Welcome Header */}
         <motion.div
           className="mb-12"

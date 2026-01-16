@@ -110,7 +110,10 @@ export default function Marketplace() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <Link to={app.is_internal ? app.app_url : '#'}>
+                  <Link
+                    to={app.is_internal ? app.app_url : '#'}
+                    onClick={() => PersonalizationService.trackAppClick(app.id, app.name)}
+                  >
                     <Card className="p-6 bg-gradient-to-br from-slate-800/80 to-slate-900/80 border-slate-700 hover:border-purple-500 transition-all cursor-pointer group">
                       <div className="flex items-start justify-between mb-4">
                         <div className={`p-3 rounded-xl bg-gradient-to-br ${categoryColors[app.category] || 'from-slate-600 to-slate-700'}`}>
@@ -191,7 +194,10 @@ export default function Marketplace() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
                 >
-                  <Link to={app.is_internal ? app.app_url : '#'}>
+                  <Link
+                    to={app.is_internal ? app.app_url : '#'}
+                    onClick={() => PersonalizationService.trackAppClick(app.id, app.name)}
+                  >
                     <Card className="p-6 bg-slate-800/50 border-slate-700 hover:border-cyan-500 transition-all cursor-pointer group h-full">
                       <div className="flex items-start justify-between mb-4">
                         <div className={`p-3 rounded-xl bg-gradient-to-br ${categoryColors[app.category] || 'from-slate-600 to-slate-700'}`}>
