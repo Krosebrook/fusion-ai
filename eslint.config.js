@@ -13,6 +13,8 @@ export default [
       "*.config.js",
       "**/*.ts.jsx",
       "**/*.tsx.jsx",
+      "**/*.md.jsx", // Exclude markdown JSX files
+      "**/*.md.js",  // Exclude markdown JS files
     ],
   },
   {
