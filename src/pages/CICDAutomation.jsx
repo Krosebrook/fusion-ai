@@ -10,12 +10,13 @@ import EnvironmentManager from "../components/cicd/EnvironmentManager";
 import { Rocket, GitBranch, Activity, Plus, RefreshCw, Server, BarChart3, Shield, Lock, Wand2, Code2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { PermissionGuard, usePermissions } from "../components/rbac/PermissionGuard";
+import { PermissionGuard } from "@/components/rbac/PermissionGuard";
+import { useUserPermissions } from "@/components/hooks/useUserPermissions";
 import { AutomatedDeploymentPanel } from "../components/cicd/AutomatedDeploymentPanel";
 
 export default function CICDAutomationPage() {
   const navigate = useNavigate();
-  const { hasPermission, isAdmin } = usePermissions();
+  const { isAdmin } = useUserPermissions();
   const [showConfig, setShowConfig] = useState(false);
   const [showEnvironments, setShowEnvironments] = useState(false);
   const [showDeployments, setShowDeployments] = useState(false);
@@ -232,7 +233,7 @@ export default function CICDAutomationPage() {
                 Configure Pipeline
               </Button>
             </PermissionGuard>
-            {isAdmin() && (
+            {isAdmin && (
               <Button
                 onClick={() => navigate(createPageUrl("AccessControl"))}
                 variant="outline"
