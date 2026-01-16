@@ -34,6 +34,8 @@ const categoryColors = {
 };
 
 export default function Marketplace() {
+  usePageTracking('Marketplace');
+  
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
@@ -82,7 +84,12 @@ export default function Marketplace() {
             <Input
               placeholder="Search apps, features, categories..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                if (e.target.value) {
+                  PersonalizationService.trackSearch(e.target.value);
+                }
+              }}
               className="pl-12 h-14 bg-slate-800/50 border-slate-700 text-lg"
             />
           </div>

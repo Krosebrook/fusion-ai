@@ -14,6 +14,7 @@ import APIGenerator from './pages/APIGenerator';
 import APIIntegration from './pages/APIIntegration';
 import AccessControl from './pages/AccessControl';
 import ActivityDashboard from './pages/ActivityDashboard';
+import Admin from './pages/Admin';
 import AdvancedAnalytics from './pages/AdvancedAnalytics';
 import AgentManagement from './pages/AgentManagement';
 import AgentOrchestration from './pages/AgentOrchestration';
@@ -42,6 +43,7 @@ import IntegrationManager from './pages/IntegrationManager';
 import Integrations from './pages/Integrations';
 import IntegrationsHub from './pages/IntegrationsHub';
 import MarketingSuite from './pages/MarketingSuite';
+import Marketplace from './pages/Marketplace';
 import MediaStudio from './pages/MediaStudio';
 import MyGenerations from './pages/MyGenerations';
 import MyPlugins from './pages/MyPlugins';
@@ -69,8 +71,6 @@ import VisualPipelineBuilder from './pages/VisualPipelineBuilder';
 import WebsiteCloner from './pages/WebsiteCloner';
 import WorkflowBuilder from './pages/WorkflowBuilder';
 import Workflows from './pages/Workflows';
-import Admin from './pages/Admin';
-import Marketplace from './pages/Marketplace';
 import __Layout from './Layout.jsx';
 
 
@@ -91,6 +91,7 @@ export const PAGES = {
     "APIIntegration": APIIntegration,
     "AccessControl": AccessControl,
     "ActivityDashboard": ActivityDashboard,
+    "Admin": Admin,
     "AdvancedAnalytics": AdvancedAnalytics,
     "AgentManagement": AgentManagement,
     "AgentOrchestration": AgentOrchestration,
@@ -119,6 +120,7 @@ export const PAGES = {
     "Integrations": Integrations,
     "IntegrationsHub": IntegrationsHub,
     "MarketingSuite": MarketingSuite,
+    "Marketplace": Marketplace,
     "MediaStudio": MediaStudio,
     "MyGenerations": MyGenerations,
     "MyPlugins": MyPlugins,
@@ -146,8 +148,6 @@ export const PAGES = {
     "WebsiteCloner": WebsiteCloner,
     "WorkflowBuilder": WorkflowBuilder,
     "Workflows": Workflows,
-    "Admin": Admin,
-    "Marketplace": Marketplace,
 }
 
 export const pagesConfig = {
