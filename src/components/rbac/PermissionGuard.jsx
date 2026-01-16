@@ -1,91 +1,87 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+/**
+ * Permission Guard Component
+ * 
+ * Conditionally renders content based on user permissions.
+ * Supports granular access control at global, project, and test levels.
+ * 
+ * @component
+ * @example
+ * <PermissionGuard permission="edit_tests" resource={test} fallback={<AccessDenied />}>
+ *   <EditTestForm />
+ * </PermissionGuard>
+ */
+import { useMemo } from 'react';
+import { motion } from 'framer-motion';
+import { base44 } from '@/api/base44Client';
+import { useUserPermissions } from '@/components/hooks/useUserPermissions';
+import { Lock } from 'lucide-react';
 
-const PermissionContext = createContext(null);
+export function PermissionGuard({
+  permission,
+  resource = null,
+  fallback = null,
+  children,
+  requireAll = false,
+}) {
+  const { user, hasPermission, isAdmin } = useUserPermissions();
 
-export function PermissionProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [userRole, setUserRole] = useState(null);
-  const [role, setRole] = useState(null);
+  const hasAccess = useMemo(() => {
+    // Admin users always have access
+    if (isAdmin) return true;
 
-  const { data: roles = [] } = useQuery({
-    queryKey: ['roles'],
-    queryFn: () => base44.entities.Role.list(),
-    initialData: []
-  });
-
-  useEffect(() => {
-    loadUser();
-  }, []);
-
-  const loadUser = async () => {
-    try {
-      const currentUser = await base44.auth.me();
-      setUser(currentUser);
-
-      const assignments = await base44.entities.UserRole.filter({ 
-        user_email: currentUser.email,
-        active: true 
-      });
-      
-      if (assignments.length > 0) {
-        setUserRole(assignments[0]);
-        const userRoleData = roles.find(r => r.id === assignments[0].role_id);
-        setRole(userRoleData);
-      } else {
-        // Default viewer role if none assigned
-        const viewerRole = roles.find(r => r.slug === 'viewer');
-        if (viewerRole) setRole(viewerRole);
-      }
-    } catch (error) {
-      console.error('Failed to load user permissions:', error);
-    }
-  };
-
-  const hasPermission = (resource, action, resourceId = null) => {
-    if (!role) return false;
-    
-    // Check if user has the specific permission
-    const resourcePerms = role.permissions?.[resource];
-    if (!resourcePerms || !resourcePerms[action]) return false;
-
-    // Check scope restrictions
-    if (userRole?.scope && resourceId) {
-      if (resource === 'repositories' && userRole.scope.repository_ids) {
-        return userRole.scope.repository_ids.includes(resourceId);
-      }
-      if (resource === 'environments' && userRole.scope.environment_ids) {
-        return userRole.scope.environment_ids.includes(resourceId);
-      }
+    // If permission is an array, check if user has all or any
+    if (Array.isArray(permission)) {
+      return requireAll
+        ? permission.every(p => hasPermission(p, resource))
+        : permission.some(p => hasPermission(p, resource));
     }
 
-    return true;
-  };
+    // Single permission check
+    return hasPermission(permission, resource);
+  }, [permission, resource, hasPermission, isAdmin, requireAll]);
 
-  const isAdmin = () => role?.slug === 'administrator';
+  if (!hasAccess) {
+    return fallback || <DefaultAccessDenied />;
+  }
 
+  return children;
+}
+
+/**
+ * Default Access Denied UI
+ */
+function DefaultAccessDenied() {
   return (
-    <PermissionContext.Provider value={{ user, role, userRole, hasPermission, isAdmin, loadUser }}>
-      {children}
-    </PermissionContext.Provider>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="flex items-center justify-center p-8 text-center"
+    >
+      <div>
+        <Lock className="w-8 h-8 text-red-400 mx-auto mb-3" />
+        <p className="text-white/60">You don't have permission to access this.</p>
+      </div>
+    </motion.div>
   );
 }
 
-export function usePermissions() {
-  const context = useContext(PermissionContext);
-  if (!context) {
-    throw new Error('usePermissions must be used within PermissionProvider');
-  }
-  return context;
+/**
+ * Admin-Only Wrapper
+ */
+export function AdminOnly({ children, fallback = null }) {
+  const { isAdmin } = useUserPermissions();
+  return isAdmin ? children : fallback || <DefaultAccessDenied />;
 }
 
-export function PermissionGuard({ resource, action, resourceId, children, fallback = null }) {
-  const { hasPermission } = usePermissions();
-  
-  if (!hasPermission(resource, action, resourceId)) {
-    return fallback;
-  }
-  
-  return children;
+/**
+ * Test-Level Permission Guard
+ */
+export function TestPermissionGuard({ testId, permission, children, fallback = null }) {
+  const { hasPermissionForTest } = useUserPermissions();
+
+  return hasPermissionForTest(testId, permission) ? (
+    children
+  ) : (
+    fallback || <DefaultAccessDenied />
+  );
 }

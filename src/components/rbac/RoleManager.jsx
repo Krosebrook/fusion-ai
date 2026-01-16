@@ -1,225 +1,233 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Shield, Plus, Edit2, Trash2, Lock } from "lucide-react";
-import { usePermissions } from "./PermissionGuard";
+/**
+ * Role Manager Component
+ * 
+ * Admin interface for creating, editing, and managing custom roles.
+ * Configure permissions and scope for each role.
+ */
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { CinematicCard } from '@/components/atoms/CinematicCard';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Plus, Trash2, Edit2, Shield } from 'lucide-react';
+import { toast } from 'sonner';
 
-const permissionGroups = [
-  {
-    name: 'pipelines',
-    label: 'Pipelines',
-    icon: '⚡',
-    actions: ['create', 'read', 'update', 'delete', 'trigger']
+const PERMISSION_GROUPS = {
+  tests: {
+    label: 'A/B Test Management',
+    permissions: [
+      { key: 'view_tests', label: 'View Tests' },
+      { key: 'create_tests', label: 'Create Tests' },
+      { key: 'edit_tests', label: 'Edit Tests' },
+      { key: 'pause_tests', label: 'Pause/Resume Tests' },
+      { key: 'promote_tests', label: 'Promote Winners' },
+    ],
   },
-  {
-    name: 'environments',
-    label: 'Environments',
-    icon: '🌍',
-    actions: ['create', 'read', 'update', 'delete']
+  analytics: {
+    label: 'Analytics & Reports',
+    permissions: [
+      { key: 'view_analytics', label: 'View Analytics' },
+      { key: 'export_reports', label: 'Export Reports' },
+    ],
   },
-  {
-    name: 'analytics',
-    label: 'Analytics',
-    icon: '📊',
-    actions: ['view']
+  admin: {
+    label: 'Administration',
+    permissions: [
+      { key: 'manage_users', label: 'Manage Users' },
+      { key: 'manage_roles', label: 'Manage Roles' },
+      { key: 'view_audit_logs', label: 'View Audit Logs' },
+    ],
   },
-  {
-    name: 'repositories',
-    label: 'Repositories',
-    icon: '📦',
-    actions: ['connect', 'read']
-  },
-  {
-    name: 'roles',
-    label: 'Role Management',
-    icon: '👥',
-    actions: ['manage']
-  }
-];
+};
 
-export default function RoleManager() {
-  const { isAdmin } = usePermissions();
-  const queryClient = useQueryClient();
+export function RoleManager() {
   const [showForm, setShowForm] = useState(false);
   const [editingRole, setEditingRole] = useState(null);
+  const [formData, setFormData] = useState({ name: '', description: '', permissions: [], scope: 'global' });
+  const queryClient = useQueryClient();
 
+  // Fetch roles
   const { data: roles = [] } = useQuery({
     queryKey: ['roles'],
-    queryFn: () => base44.entities.Role.list('-created_date')
+    queryFn: () => base44.entities.Role.list(),
   });
 
-  const [formData, setFormData] = useState({
-    name: "",
-    slug: "",
-    description: "",
-    permissions: {},
-    color: "#8B5CF6",
-    active: true
-  });
-
-  const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.Role.create(data),
+  // Create/Update role mutation
+  const rolesMutation = useMutation({
+    mutationFn: async (data) => {
+      if (editingRole) {
+        return base44.entities.Role.update(editingRole.id, data);
+      }
+      return base44.entities.Role.create(data);
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries(['roles']);
-      resetForm();
-    }
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Role.update(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries(['roles']);
+      queryClient.invalidateQueries({ queryKey: ['roles'] });
+      setShowForm(false);
       setEditingRole(null);
-    }
+      setFormData({ name: '', description: '', permissions: [], scope: 'global' });
+      toast.success(`Role ${editingRole ? 'updated' : 'created'} successfully`);
+    },
+    onError: () => {
+      toast.error('Failed to save role');
+    },
   });
 
-  const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.Role.delete(id),
-    onSuccess: () => queryClient.invalidateQueries(['roles'])
+  // Delete role mutation
+  const deleteRoleMutation = useMutation({
+    mutationFn: (roleId) => base44.entities.Role.delete(roleId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['roles'] });
+      toast.success('Role deleted successfully');
+    },
+    onError: () => {
+      toast.error('Failed to delete role');
+    },
   });
 
-  const resetForm = () => {
-    setFormData({
-      name: "",
-      slug: "",
-      description: "",
-      permissions: {},
-      color: "#8B5CF6",
-      active: true
-    });
-    setShowForm(false);
-    setEditingRole(null);
+  const handlePermissionToggle = (permission) => {
+    setFormData(prev => ({
+      ...prev,
+      permissions: prev.permissions.includes(permission)
+        ? prev.permissions.filter(p => p !== permission)
+        : [...prev.permissions, permission],
+    }));
   };
 
   const handleSubmit = () => {
-    if (editingRole) {
-      updateMutation.mutate({ id: editingRole.id, data: formData });
-    } else {
-      createMutation.mutate(formData);
+    if (!formData.name || formData.permissions.length === 0) {
+      toast.error('Role name and permissions are required');
+      return;
     }
+    rolesMutation.mutate(formData);
   };
 
-  const startEdit = (role) => {
+  const handleEdit = (role) => {
     setEditingRole(role);
-    setFormData(role);
+    setFormData({
+      name: role.name,
+      description: role.description || '',
+      permissions: role.permissions || [],
+      scope: role.scope || 'global',
+    });
     setShowForm(true);
   };
 
-  const togglePermission = (resource, action) => {
-    const updated = { ...formData };
-    if (!updated.permissions[resource]) {
-      updated.permissions[resource] = {};
-    }
-    updated.permissions[resource][action] = !updated.permissions[resource][action];
-    setFormData(updated);
-  };
-
-  if (!isAdmin()) {
-    return (
-      <div className="p-8 rounded-xl border border-red-500/30 bg-red-500/10 text-center">
-        <Lock className="w-12 h-12 text-red-400 mx-auto mb-4" />
-        <p className="text-red-400">Administrator access required</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-6">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="space-y-6"
+    >
+      {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-            Role Management
-          </h2>
-          <p className="text-sm text-gray-400 mt-1">Define roles and permissions for your team</p>
+        <div className="flex items-center gap-3">
+          <Shield className="w-6 h-6 text-cyan-400" />
+          <h2 className="text-2xl font-bold text-white">Role Management</h2>
         </div>
-        <Button onClick={() => setShowForm(true)} className="bg-gradient-to-r from-purple-500 to-pink-500">
+        <Button
+          onClick={() => {
+            setEditingRole(null);
+            setFormData({ name: '', description: '', permissions: [], scope: 'global' });
+            setShowForm(!showForm);
+          }}
+          className="bg-gradient-to-r from-cyan-500 to-blue-600"
+        >
           <Plus className="w-4 h-4 mr-2" />
           New Role
         </Button>
       </div>
 
       {/* Role Form */}
-      <AnimatePresence>
-        {showForm && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="rounded-2xl border border-white/10 overflow-hidden"
-            style={{
-              background: "linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.98) 100%)",
-              backdropFilter: "blur(20px)"
-            }}
-          >
-            <div className="p-6 space-y-6">
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-white">Role Name</Label>
-                  <Input
-                    value={formData.name}
-                    onChange={(e) => {
-                      const name = e.target.value;
-                      setFormData({ 
-                        ...formData, 
-                        name,
-                        slug: name.toLowerCase().replace(/\s+/g, '-')
-                      });
-                    }}
-                    placeholder="Developer"
-                    className="bg-white/5 border-white/10 text-white"
-                  />
-                </div>
-                <div>
-                  <Label className="text-white">Description</Label>
-                  <Input
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    placeholder="Can manage pipelines and environments"
-                    className="bg-white/5 border-white/10 text-white"
-                  />
-                </div>
+      {showForm && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <CinematicCard className="p-6">
+            <h3 className="text-lg font-semibold text-white mb-4">
+              {editingRole ? 'Edit Role' : 'Create New Role'}
+            </h3>
+
+            <div className="space-y-4 mb-6">
+              <div>
+                <label className="text-white/80 text-sm mb-2 block">Role Name</label>
+                <Input
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder="e.g., Analyst, Tester"
+                  className="bg-slate-800/50 border-white/10"
+                />
               </div>
 
-              <div className="space-y-4">
-                <h4 className="text-sm font-bold text-white uppercase tracking-wide">Permissions</h4>
-                {permissionGroups.map((group) => (
-                  <div key={group.name} className="p-4 rounded-xl bg-white/5 border border-white/10">
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="text-xl">{group.icon}</span>
-                      <h5 className="text-sm font-semibold text-white">{group.label}</h5>
-                    </div>
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                      {group.actions.map((action) => (
-                        <label key={action} className="flex items-center gap-2 cursor-pointer">
-                          <Switch
-                            checked={formData.permissions[group.name]?.[action] || false}
-                            onCheckedChange={() => togglePermission(group.name, action)}
-                          />
-                          <span className="text-xs text-gray-300 capitalize">{action}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+              <div>
+                <label className="text-white/80 text-sm mb-2 block">Description</label>
+                <Input
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  placeholder="Role description"
+                  className="bg-slate-800/50 border-white/10"
+                />
               </div>
 
-              <div className="flex justify-end gap-3 pt-4 border-t border-white/10">
-                <Button variant="outline" onClick={resetForm} className="border-white/10 text-gray-300">
-                  Cancel
-                </Button>
-                <Button onClick={handleSubmit} className="bg-gradient-to-r from-purple-500 to-pink-500">
-                  {editingRole ? 'Update' : 'Create'} Role
-                </Button>
+              <div>
+                <label className="text-white/80 text-sm mb-2 block">Scope</label>
+                <select
+                  value={formData.scope}
+                  onChange={(e) => setFormData({ ...formData, scope: e.target.value })}
+                  className="w-full px-3 py-2 rounded-lg bg-slate-800/50 border border-white/10 text-white"
+                >
+                  <option value="global">Global</option>
+                  <option value="project">Project-Level</option>
+                  <option value="test">Test-Level</option>
+                </select>
               </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+
+            {/* Permissions */}
+            <div className="space-y-4 mb-6">
+              <p className="text-white/80 text-sm font-semibold">Permissions</p>
+              {Object.entries(PERMISSION_GROUPS).map(([groupKey, group]) => (
+                <div key={groupKey} className="p-4 rounded-lg bg-white/5 border border-white/10">
+                  <p className="text-white font-semibold mb-3">{group.label}</p>
+                  <div className="space-y-2">
+                    {group.permissions.map(({ key, label }) => (
+                      <label key={key} className="flex items-center gap-3 cursor-pointer hover:bg-white/5 p-2 rounded transition">
+                        <input
+                          type="checkbox"
+                          checked={formData.permissions.includes(key)}
+                          onChange={() => handlePermissionToggle(key)}
+                          className="w-4 h-4 rounded border-white/20"
+                        />
+                        <span className="text-white/80">{label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex gap-3">
+              <Button
+                onClick={() => setShowForm(false)}
+                variant="outline"
+                className="border-white/10 flex-1"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSubmit}
+                disabled={rolesMutation.isPending}
+                className="bg-gradient-to-r from-cyan-500 to-blue-600 flex-1"
+              >
+                {rolesMutation.isPending ? 'Saving...' : 'Save Role'}
+              </Button>
+            </div>
+          </CinematicCard>
+        </motion.div>
+      )}
 
       {/* Roles List */}
       <div className="grid gap-4">
@@ -229,57 +237,56 @@ export default function RoleManager() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: idx * 0.05 }}
-            className="rounded-xl border border-white/10 overflow-hidden"
-            style={{
-              background: "linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.9) 100%)",
-              backdropFilter: "blur(10px)"
-            }}
           >
-            <div className="p-6">
+            <CinematicCard className="p-6">
               <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center"
-                    style={{ backgroundColor: `${role.color}20` }}
-                  >
-                    <Shield className="w-6 h-6" style={{ color: role.color }} />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-white">{role.name}</h3>
-                    <p className="text-xs text-gray-400">{role.description}</p>
-                  </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                    {role.name}
+                    {role.is_system && (
+                      <span className="text-xs px-2 py-1 rounded-full bg-cyan-500/20 text-cyan-400">
+                        System
+                      </span>
+                    )}
+                  </h3>
+                  <p className="text-white/60 text-sm mt-1">{role.description}</p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Button size="sm" variant="ghost" onClick={() => startEdit(role)}>
-                    <Edit2 className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => deleteMutation.mutate(role.id)}
-                    className="text-red-400"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
+                {!role.is_system && (
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => handleEdit(role)}
+                      size="sm"
+                      variant="ghost"
+                      className="text-blue-400 hover:bg-blue-500/10"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      onClick={() => deleteRoleMutation.mutate(role.id)}
+                      size="sm"
+                      variant="ghost"
+                      className="text-red-400 hover:bg-red-500/10"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                )}
               </div>
 
               <div className="flex flex-wrap gap-2">
-                {Object.entries(role.permissions || {}).map(([resource, actions]) => 
-                  Object.entries(actions).filter(([_, enabled]) => enabled).map(([action]) => (
-                    <span
-                      key={`${resource}-${action}`}
-                      className="px-2 py-1 rounded text-xs bg-white/5 text-gray-300 border border-white/10"
-                    >
-                      {resource}.{action}
-                    </span>
-                  ))
-                )}
+                {role.permissions?.map(perm => (
+                  <span
+                    key={perm}
+                    className="text-xs px-2 py-1 rounded-full bg-white/10 text-white/80"
+                  >
+                    {perm.replace(/_/g, ' ')}
+                  </span>
+                ))}
               </div>
-            </div>
+            </CinematicCard>
           </motion.div>
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 }
