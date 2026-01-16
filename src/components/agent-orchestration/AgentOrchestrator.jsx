@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Users, Plus, Settings, MessageSquare, Target, Workflow, HelpCircle } from 'lucide-react';
+import { Users, Plus, Target, Workflow, HelpCircle } from 'lucide-react';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { AgentOrchestrationOnboarding } from '../onboarding/AgentOrchestrationOnboarding';
 import { toast } from 'sonner';

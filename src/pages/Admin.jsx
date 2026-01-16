@@ -1,4 +1,3 @@
-import React from "react";
 import { useAuth } from "@/components/hooks/useAuth";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";

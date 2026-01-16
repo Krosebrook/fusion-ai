@@ -8,8 +8,8 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import {
-  Sparkles, Rocket, ArrowRight, Star, TrendingUp, Zap,
-  Code, BarChart3, Workflow, Users, Globe, Shield
+  Sparkles, Rocket, ArrowRight, Star, Zap,
+  Code, BarChart3, Users, Globe, Shield
 } from "lucide-react";
 
 export default function HomePage() {

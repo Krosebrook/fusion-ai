@@ -15,7 +15,6 @@ import { PromptEditor } from '../components/prompt-studio/PromptEditor';
 import { PromptTester } from '../components/prompt-studio/PromptTester';
 import { VersionComparison } from '../components/prompt-studio/VersionComparison';
 import { ABTestManager } from '../components/prompt-studio/ABTestManager';
-import { PromptLibrary } from '../components/prompt-studio/PromptLibrary';
 import { PromptAnalytics } from '../components/prompt-studio/PromptAnalytics';
 import { ChainBuilderAdvanced } from '../components/prompt-studio/ChainBuilderAdvanced';
 import { ChainDebugger } from '../components/prompt-studio/ChainDebugger';
@@ -26,7 +25,7 @@ import { RealtimeMonitoring } from '../components/prompt-studio/RealtimeMonitori
 import { PromptDeploymentManager } from '../components/cicd/PromptDeploymentManager';
 import { 
   Sparkles, Wand2, GitBranch, 
-  Plus, Layers, TrendingUp, BarChart3, Rocket, Edit, Play, GitCompare, FlaskConical, Library, Users, Activity
+  Plus, TrendingUp, BarChart3, Rocket, Edit, Play, GitCompare, FlaskConical, Library, Users, Activity
 } from 'lucide-react';
 import { toast } from 'sonner';
 

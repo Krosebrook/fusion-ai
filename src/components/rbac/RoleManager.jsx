@@ -11,7 +11,6 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { CinematicCard } from '@/components/atoms/CinematicCard';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Plus, Trash2, Edit2, Shield } from 'lucide-react';
 import { toast } from 'sonner';
 

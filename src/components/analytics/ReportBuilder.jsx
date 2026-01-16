@@ -6,11 +6,10 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CinematicCard } from '@/components/atoms/CinematicCard';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Download, FileText, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 
-export function ReportBuilder({ test, metrics }) {
+export function ReportBuilder({ test, metrics: _metrics }) {
   const [sections, setSections] = useState({
     summary: true,
     trends: true,

@@ -4,13 +4,12 @@
  * Entry point for new user onboarding flow with interactive tours,
  * tutorials, and guided first A/B test creation.
  */
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { OnboardingFlow } from '@/components/onboarding/OnboardingFlow';
 import { useUserPermissions } from '@/components/hooks/useUserPermissions';
-import { Rocket } from 'lucide-react';
 
 export default function OnboardingPage() {
   const { user } = useUserPermissions();

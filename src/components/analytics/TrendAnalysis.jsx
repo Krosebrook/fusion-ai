@@ -4,11 +4,11 @@
  */
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ComposedChart, Bar } from 'recharts';
+import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { CinematicCard } from '@/components/atoms/CinematicCard';
 import { TrendingUp, ArrowUp, ArrowDown } from 'lucide-react';
 
-export function TrendAnalysis({ test, metrics }) {
+export function TrendAnalysis({ test: _test, metrics }) {
   // Prepare trend data
   const trendData = useMemo(() => {
     return metrics

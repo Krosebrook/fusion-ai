@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { GitBranch, Plus, Trash2, Play, Save, ArrowRight, Settings } from 'lucide-react';
+import { GitBranch, Plus, Trash2, Play, Save, ArrowRight } from 'lucide-react';
 import { CinematicCard } from '../atoms/CinematicCard';
 import { toast } from 'sonner';
 
