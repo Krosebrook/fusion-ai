@@ -4,7 +4,7 @@
  */
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, HeatMap } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { CinematicCard } from '@/components/atoms/CinematicCard';
 import { Users, Calendar } from 'lucide-react';
 
