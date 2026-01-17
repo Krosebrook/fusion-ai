@@ -75,6 +75,7 @@ import WorkflowBuilder from './pages/WorkflowBuilder';
 import Workflows from './pages/Workflows';
 import CICDHub from './pages/CICDHub';
 import UserJourneys from './pages/UserJourneys';
+import IntegrationAdminHub from './pages/IntegrationAdminHub';
 import __Layout from './Layout.jsx';
 
 
@@ -156,6 +157,7 @@ export const PAGES = {
     "Workflows": Workflows,
     "CICDHub": CICDHub,
     "UserJourneys": UserJourneys,
+    "IntegrationAdminHub": IntegrationAdminHub,
 }
 
 export const pagesConfig = {
