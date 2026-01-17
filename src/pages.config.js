@@ -73,6 +73,8 @@ import VisualPipelineBuilder from './pages/VisualPipelineBuilder';
 import WebsiteCloner from './pages/WebsiteCloner';
 import WorkflowBuilder from './pages/WorkflowBuilder';
 import Workflows from './pages/Workflows';
+import CICDHub from './pages/CICDHub';
+import UserJourneys from './pages/UserJourneys';
 import __Layout from './Layout.jsx';
 
 
@@ -152,6 +154,8 @@ export const PAGES = {
     "WebsiteCloner": WebsiteCloner,
     "WorkflowBuilder": WorkflowBuilder,
     "Workflows": Workflows,
+    "CICDHub": CICDHub,
+    "UserJourneys": UserJourneys,
 }
 
 export const pagesConfig = {
