@@ -5,6 +5,7 @@ import AICodeReview from './pages/AICodeReview';
 import AIDeployment from './pages/AIDeployment';
 import AIDocumentation from './pages/AIDocumentation';
 import AIFeaturePlanner from './pages/AIFeaturePlanner';
+import AIOptimization from './pages/AIOptimization';
 import AIPipelineGenerator from './pages/AIPipelineGenerator';
 import AIStudio from './pages/AIStudio';
 import AITemplates from './pages/AITemplates';
@@ -31,6 +32,7 @@ import CollaborationWorkspace from './pages/CollaborationWorkspace';
 import Commerce from './pages/Commerce';
 import ContentStudio from './pages/ContentStudio';
 import Copilot from './pages/Copilot';
+import CustomDashboards from './pages/CustomDashboards';
 import Dashboard from './pages/Dashboard';
 import DeploymentCenter from './pages/DeploymentCenter';
 import DeveloperConsole from './pages/DeveloperConsole';
@@ -71,8 +73,6 @@ import VisualPipelineBuilder from './pages/VisualPipelineBuilder';
 import WebsiteCloner from './pages/WebsiteCloner';
 import WorkflowBuilder from './pages/WorkflowBuilder';
 import Workflows from './pages/Workflows';
-import CustomDashboards from './pages/CustomDashboards';
-import AIOptimization from './pages/AIOptimization';
 import __Layout from './Layout.jsx';
 
 
@@ -84,6 +84,7 @@ export const PAGES = {
     "AIDeployment": AIDeployment,
     "AIDocumentation": AIDocumentation,
     "AIFeaturePlanner": AIFeaturePlanner,
+    "AIOptimization": AIOptimization,
     "AIPipelineGenerator": AIPipelineGenerator,
     "AIStudio": AIStudio,
     "AITemplates": AITemplates,
@@ -110,6 +111,7 @@ export const PAGES = {
     "Commerce": Commerce,
     "ContentStudio": ContentStudio,
     "Copilot": Copilot,
+    "CustomDashboards": CustomDashboards,
     "Dashboard": Dashboard,
     "DeploymentCenter": DeploymentCenter,
     "DeveloperConsole": DeveloperConsole,
@@ -150,8 +152,6 @@ export const PAGES = {
     "WebsiteCloner": WebsiteCloner,
     "WorkflowBuilder": WorkflowBuilder,
     "Workflows": Workflows,
-    "CustomDashboards": CustomDashboards,
-    "AIOptimization": AIOptimization,
 }
 
 export const pagesConfig = {

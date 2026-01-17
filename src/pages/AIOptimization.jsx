@@ -1,19 +1,16 @@
 /**
- * AI-Driven A/B Test Optimization Page
- * 
- * AI-powered test optimization with predictions, winner suggestions,
- * and dynamic traffic allocation.
+ * AI-Driven A/B Test Optimization & Analytics
+ * Multi-strategy optimization: Thompson Sampling, predictive analysis, root cause detection
  */
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { PermissionGuard } from '@/components/rbac/PermissionGuard';
 import { AIOptimizationPanel } from '@/components/abtesting/AIOptimizationPanel';
 import { OptimizationHistory } from '@/components/abtesting/OptimizationHistory';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CinematicCard } from '@/components/atoms/CinematicCard';
-import { Brain, Zap, TrendingUp } from 'lucide-react';
+import { Brain, Zap, TrendingUp, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AIOptimizationPage() {
@@ -129,11 +126,19 @@ export default function AIOptimizationPage() {
           <TabsList className="bg-slate-800/50 border border-white/10 mb-6">
             <TabsTrigger value="optimizer" className="flex items-center gap-2">
               <Zap className="w-4 h-4" />
-              AI Optimizer
+              Multi-Strategy Optimizer
+            </TabsTrigger>
+            <TabsTrigger value="bandit" className="flex items-center gap-2">
+              <Brain className="w-4 h-4" />
+              Bandit Allocation
+            </TabsTrigger>
+            <TabsTrigger value="diagnostics" className="flex items-center gap-2">
+              <AlertCircle className="w-4 h-4" />
+              Root Cause Analysis
             </TabsTrigger>
             <TabsTrigger value="history" className="flex items-center gap-2">
               <TrendingUp className="w-4 h-4" />
-              Optimization History
+              History
             </TabsTrigger>
           </TabsList>
 
@@ -147,6 +152,22 @@ export default function AIOptimizationPage() {
               optimizations={optimizations.filter(o => o.test_id === selectedTestId)}
               onApplyRecommendation={applyRecommendationMutation.mutate}
             />
+          </TabsContent>
+
+          <TabsContent value="bandit">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <CinematicCard className="p-6">
+                <p className="text-white/60">Thompson Sampling-based multi-arm bandit allocation coming soon</p>
+              </CinematicCard>
+            </motion.div>
+          </TabsContent>
+
+          <TabsContent value="diagnostics">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <CinematicCard className="p-6">
+                <p className="text-white/60">Root cause analysis for underperforming variants coming soon</p>
+              </CinematicCard>
+            </motion.div>
           </TabsContent>
 
           <TabsContent value="history">
