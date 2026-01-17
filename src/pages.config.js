@@ -72,6 +72,7 @@ import WebsiteCloner from './pages/WebsiteCloner';
 import WorkflowBuilder from './pages/WorkflowBuilder';
 import Workflows from './pages/Workflows';
 import CustomDashboards from './pages/CustomDashboards';
+import AIOptimization from './pages/AIOptimization';
 import __Layout from './Layout.jsx';
 
 
@@ -150,6 +151,7 @@ export const PAGES = {
     "WorkflowBuilder": WorkflowBuilder,
     "Workflows": Workflows,
     "CustomDashboards": CustomDashboards,
+    "AIOptimization": AIOptimization,
 }
 
 export const pagesConfig = {
