@@ -3,24 +3,21 @@
  * 
  * Responsive grid for arranging and resizing widgets.
  */
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CinematicCard } from '@/components/atoms/CinematicCard';
-import { ConversionFunnelWidget } from './widgets/ConversionFunnelWidget';
-import { UserSegmentationWidget } from './widgets/UserSegmentationWidget';
-import { ROITrackingWidget } from './widgets/ROITrackingWidget';
-import { VariantPerformanceWidget } from './widgets/VariantPerformanceWidget';
 import { X, GripHorizontal } from 'lucide-react';
 
 const WIDGET_COMPONENTS = {
-  conversion_funnel: ConversionFunnelWidget,
-  user_segmentation: UserSegmentationWidget,
-  roi_tracking: ROITrackingWidget,
-  variant_performance: VariantPerformanceWidget,
+  conversion_funnel: () => <div className="text-white/60">Conversion Funnel Widget</div>,
+  user_segmentation: () => <div className="text-white/60">User Segmentation Widget</div>,
+  roi_tracking: () => <div className="text-white/60">ROI Tracking Widget</div>,
+  variant_performance: () => <div className="text-white/60">Variant Performance Widget</div>,
 };
 
 export function DashboardGrid({ widgets, onUpdateWidget, onRemoveWidget }) {
-  const [dragging, setDragging] = motion.useState(null);
-  const [resizing, setResizing] = motion.useState(null);
+  const [dragging, setDragging] = useState(null);
+  const [resizing, setResizing] = useState(null);
 
   const handleDragStart = (e, widgetId) => {
     setDragging(widgetId);
