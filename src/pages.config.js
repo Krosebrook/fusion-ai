@@ -1,89 +1,79 @@
-/**
- * Pages Configuration
- * 
- * Uses React.lazy for code splitting to improve initial load performance.
- * Critical pages (Home, Auth) are eagerly loaded, others are lazy loaded.
- */
-
-import { lazy } from 'react';
-
-// Eagerly loaded - critical pages
-import Home from './pages/Home';
+import ABTestManager from './pages/ABTestManager';
+import AICodeAgent from './pages/AICodeAgent';
+import AICodeGen from './pages/AICodeGen';
+import AICodeReview from './pages/AICodeReview';
+import AIDeployment from './pages/AIDeployment';
+import AIDocumentation from './pages/AIDocumentation';
+import AIFeaturePlanner from './pages/AIFeaturePlanner';
+import AIPipelineGenerator from './pages/AIPipelineGenerator';
+import AIStudio from './pages/AIStudio';
+import AITemplates from './pages/AITemplates';
+import AITestingSuite from './pages/AITestingSuite';
+import APIDocumentation from './pages/APIDocumentation';
+import APIGenerator from './pages/APIGenerator';
+import APIIntegration from './pages/APIIntegration';
+import AccessControl from './pages/AccessControl';
+import ActivityDashboard from './pages/ActivityDashboard';
+import Admin from './pages/Admin';
+import AdvancedAnalytics from './pages/AdvancedAnalytics';
+import AgentManagement from './pages/AgentManagement';
+import AgentOrchestration from './pages/AgentOrchestration';
+import AgentOrchestrationHub from './pages/AgentOrchestrationHub';
+import AgentOrchestrator from './pages/AgentOrchestrator';
+import Analytics from './pages/Analytics';
+import AppBuilder from './pages/AppBuilder';
+import AppEvaluator from './pages/AppEvaluator';
 import Auth from './pages/Auth';
+import CICDAnalytics from './pages/CICDAnalytics';
+import CICDAutomation from './pages/CICDAutomation';
+import CinematicDemo from './pages/CinematicDemo';
+import CollaborationWorkspace from './pages/CollaborationWorkspace';
+import Commerce from './pages/Commerce';
+import ContentStudio from './pages/ContentStudio';
+import Copilot from './pages/Copilot';
+import Dashboard from './pages/Dashboard';
+import DeploymentCenter from './pages/DeploymentCenter';
+import DeveloperConsole from './pages/DeveloperConsole';
+import DeveloperDashboard from './pages/DeveloperDashboard';
+import DeveloperTools from './pages/DeveloperTools';
+import EnhancedAnalytics from './pages/EnhancedAnalytics';
+import ExtendedAnalytics from './pages/ExtendedAnalytics';
+import Home from './pages/Home';
+import IntegrationManager from './pages/IntegrationManager';
+import Integrations from './pages/Integrations';
+import IntegrationsHub from './pages/IntegrationsHub';
+import MarketingSuite from './pages/MarketingSuite';
+import Marketplace from './pages/Marketplace';
+import MediaStudio from './pages/MediaStudio';
+import MyGenerations from './pages/MyGenerations';
+import MyPlugins from './pages/MyPlugins';
+import Onboarding from './pages/Onboarding';
+import Orchestration from './pages/Orchestration';
+import PipelineOptimization from './pages/PipelineOptimization';
+import PluginDashboards from './pages/PluginDashboards';
+import PluginDevStudio from './pages/PluginDevStudio';
+import PluginMarketplace from './pages/PluginMarketplace';
+import PluginSDK from './pages/PluginSDK';
+import Profile from './pages/Profile';
+import PromptHub from './pages/PromptHub';
+import PromptLibrary from './pages/PromptLibrary';
+import PromptStudio from './pages/PromptStudio';
+import RBACManager from './pages/RBACManager';
+import Secrets from './pages/Secrets';
+import SecretsVault from './pages/SecretsVault';
+import Security from './pages/Security';
+import SecurityMonitoring from './pages/SecurityMonitoring';
+import Settings from './pages/Settings';
+import Share from './pages/Share';
+import Tools from './pages/Tools';
+import UserJourneyAnalyzer from './pages/UserJourneyAnalyzer';
+import VisualPipelineBuilder from './pages/VisualPipelineBuilder';
+import WebsiteCloner from './pages/WebsiteCloner';
+import WorkflowBuilder from './pages/WorkflowBuilder';
+import Workflows from './pages/Workflows';
+import CustomDashboards from './pages/CustomDashboards';
 import __Layout from './Layout.jsx';
 
-// Lazy loaded pages for better performance
-const ABTestManager = lazy(() => import('./pages/ABTestManager'));
-const AICodeAgent = lazy(() => import('./pages/AICodeAgent'));
-const AICodeGen = lazy(() => import('./pages/AICodeGen'));
-const AICodeReview = lazy(() => import('./pages/AICodeReview'));
-const AIDeployment = lazy(() => import('./pages/AIDeployment'));
-const AIDocumentation = lazy(() => import('./pages/AIDocumentation'));
-const AIFeaturePlanner = lazy(() => import('./pages/AIFeaturePlanner'));
-const AIPipelineGenerator = lazy(() => import('./pages/AIPipelineGenerator'));
-const AIStudio = lazy(() => import('./pages/AIStudio'));
-const AITemplates = lazy(() => import('./pages/AITemplates'));
-const AITestingSuite = lazy(() => import('./pages/AITestingSuite'));
-const APIDocumentation = lazy(() => import('./pages/APIDocumentation'));
-const APIGenerator = lazy(() => import('./pages/APIGenerator'));
-const APIIntegration = lazy(() => import('./pages/APIIntegration'));
-const AccessControl = lazy(() => import('./pages/AccessControl'));
-const ActivityDashboard = lazy(() => import('./pages/ActivityDashboard'));
-const Admin = lazy(() => import('./pages/Admin'));
-const AdvancedAnalytics = lazy(() => import('./pages/AdvancedAnalytics'));
-const AgentManagement = lazy(() => import('./pages/AgentManagement'));
-const AgentOrchestration = lazy(() => import('./pages/AgentOrchestration'));
-const AgentOrchestrationHub = lazy(() => import('./pages/AgentOrchestrationHub'));
-const AgentOrchestrator = lazy(() => import('./pages/AgentOrchestrator'));
-const Analytics = lazy(() => import('./pages/Analytics'));
-const AppBuilder = lazy(() => import('./pages/AppBuilder'));
-const AppEvaluator = lazy(() => import('./pages/AppEvaluator'));
-const CICDAnalytics = lazy(() => import('./pages/CICDAnalytics'));
-const CICDAutomation = lazy(() => import('./pages/CICDAutomation'));
-const CinematicDemo = lazy(() => import('./pages/CinematicDemo'));
-const CollaborationWorkspace = lazy(() => import('./pages/CollaborationWorkspace'));
-const Commerce = lazy(() => import('./pages/Commerce'));
-const ContentStudio = lazy(() => import('./pages/ContentStudio'));
-const Copilot = lazy(() => import('./pages/Copilot'));
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const DeploymentCenter = lazy(() => import('./pages/DeploymentCenter'));
-const DeveloperConsole = lazy(() => import('./pages/DeveloperConsole'));
-const DeveloperDashboard = lazy(() => import('./pages/DeveloperDashboard'));
-const DeveloperTools = lazy(() => import('./pages/DeveloperTools'));
-const EnhancedAnalytics = lazy(() => import('./pages/EnhancedAnalytics'));
-const ExtendedAnalytics = lazy(() => import('./pages/ExtendedAnalytics'));
-const IntegrationManager = lazy(() => import('./pages/IntegrationManager'));
-const Integrations = lazy(() => import('./pages/Integrations'));
-const IntegrationsHub = lazy(() => import('./pages/IntegrationsHub'));
-const MarketingSuite = lazy(() => import('./pages/MarketingSuite'));
-const Marketplace = lazy(() => import('./pages/Marketplace'));
-const MediaStudio = lazy(() => import('./pages/MediaStudio'));
-const MyGenerations = lazy(() => import('./pages/MyGenerations'));
-const MyPlugins = lazy(() => import('./pages/MyPlugins'));
-const Onboarding = lazy(() => import('./pages/Onboarding'));
-const Orchestration = lazy(() => import('./pages/Orchestration'));
-const PipelineOptimization = lazy(() => import('./pages/PipelineOptimization'));
-const PluginDashboards = lazy(() => import('./pages/PluginDashboards'));
-const PluginDevStudio = lazy(() => import('./pages/PluginDevStudio'));
-const PluginMarketplace = lazy(() => import('./pages/PluginMarketplace'));
-const PluginSDK = lazy(() => import('./pages/PluginSDK'));
-const Profile = lazy(() => import('./pages/Profile'));
-const PromptHub = lazy(() => import('./pages/PromptHub'));
-const PromptLibrary = lazy(() => import('./pages/PromptLibrary'));
-const PromptStudio = lazy(() => import('./pages/PromptStudio'));
-const RBACManager = lazy(() => import('./pages/RBACManager'));
-const Secrets = lazy(() => import('./pages/Secrets'));
-const SecretsVault = lazy(() => import('./pages/SecretsVault'));
-const Security = lazy(() => import('./pages/Security'));
-const SecurityMonitoring = lazy(() => import('./pages/SecurityMonitoring'));
-const Settings = lazy(() => import('./pages/Settings'));
-const Share = lazy(() => import('./pages/Share'));
-const Tools = lazy(() => import('./pages/Tools'));
-const UserJourneyAnalyzer = lazy(() => import('./pages/UserJourneyAnalyzer'));
-const VisualPipelineBuilder = lazy(() => import('./pages/VisualPipelineBuilder'));
-const WebsiteCloner = lazy(() => import('./pages/WebsiteCloner'));
-const WorkflowBuilder = lazy(() => import('./pages/WorkflowBuilder'));
-const Workflows = lazy(() => import('./pages/Workflows'));
 
 export const PAGES = {
     "ABTestManager": ABTestManager,
@@ -159,6 +149,7 @@ export const PAGES = {
     "WebsiteCloner": WebsiteCloner,
     "WorkflowBuilder": WorkflowBuilder,
     "Workflows": Workflows,
+    "CustomDashboards": CustomDashboards,
 }
 
 export const pagesConfig = {
