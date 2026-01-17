@@ -27,6 +27,7 @@ import AppEvaluator from './pages/AppEvaluator';
 import Auth from './pages/Auth';
 import CICDAnalytics from './pages/CICDAnalytics';
 import CICDAutomation from './pages/CICDAutomation';
+import CICDHub from './pages/CICDHub';
 import CinematicDemo from './pages/CinematicDemo';
 import CollaborationWorkspace from './pages/CollaborationWorkspace';
 import Commerce from './pages/Commerce';
@@ -41,6 +42,7 @@ import DeveloperTools from './pages/DeveloperTools';
 import EnhancedAnalytics from './pages/EnhancedAnalytics';
 import ExtendedAnalytics from './pages/ExtendedAnalytics';
 import Home from './pages/Home';
+import IntegrationAdminHub from './pages/IntegrationAdminHub';
 import IntegrationManager from './pages/IntegrationManager';
 import Integrations from './pages/Integrations';
 import IntegrationsHub from './pages/IntegrationsHub';
@@ -69,13 +71,11 @@ import Settings from './pages/Settings';
 import Share from './pages/Share';
 import Tools from './pages/Tools';
 import UserJourneyAnalyzer from './pages/UserJourneyAnalyzer';
+import UserJourneys from './pages/UserJourneys';
 import VisualPipelineBuilder from './pages/VisualPipelineBuilder';
 import WebsiteCloner from './pages/WebsiteCloner';
 import WorkflowBuilder from './pages/WorkflowBuilder';
 import Workflows from './pages/Workflows';
-import CICDHub from './pages/CICDHub';
-import UserJourneys from './pages/UserJourneys';
-import IntegrationAdminHub from './pages/IntegrationAdminHub';
 import __Layout from './Layout.jsx';
 
 
@@ -109,6 +109,7 @@ export const PAGES = {
     "Auth": Auth,
     "CICDAnalytics": CICDAnalytics,
     "CICDAutomation": CICDAutomation,
+    "CICDHub": CICDHub,
     "CinematicDemo": CinematicDemo,
     "CollaborationWorkspace": CollaborationWorkspace,
     "Commerce": Commerce,
@@ -123,6 +124,7 @@ export const PAGES = {
     "EnhancedAnalytics": EnhancedAnalytics,
     "ExtendedAnalytics": ExtendedAnalytics,
     "Home": Home,
+    "IntegrationAdminHub": IntegrationAdminHub,
     "IntegrationManager": IntegrationManager,
     "Integrations": Integrations,
     "IntegrationsHub": IntegrationsHub,
@@ -151,13 +153,11 @@ export const PAGES = {
     "Share": Share,
     "Tools": Tools,
     "UserJourneyAnalyzer": UserJourneyAnalyzer,
+    "UserJourneys": UserJourneys,
     "VisualPipelineBuilder": VisualPipelineBuilder,
     "WebsiteCloner": WebsiteCloner,
     "WorkflowBuilder": WorkflowBuilder,
     "Workflows": Workflows,
-    "CICDHub": CICDHub,
-    "UserJourneys": UserJourneys,
-    "IntegrationAdminHub": IntegrationAdminHub,
 }
 
 export const pagesConfig = {
