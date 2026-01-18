@@ -70,7 +70,7 @@ export default function HomePage() {
                     </Button>
                   </Link>
                   <Link to={createPageUrl("Marketplace")}>
-                    <Button variant="outline" className="border-slate-600 hover:bg-slate-800 px-8 py-6 text-lg">
+                    <Button variant="outline" className="bg-[#6b5b9f] px-8 py-6 text-lg font-medium rounded-md inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border shadow-sm hover:text-accent-foreground h-9 border-slate-600 hover:bg-slate-800">
                       Explore Marketplace
                       <ArrowRight className="w-5 h-5 ml-2" />
                     </Button>
