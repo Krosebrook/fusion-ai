@@ -76,7 +76,6 @@ import VisualPipelineBuilder from './pages/VisualPipelineBuilder';
 import WebsiteCloner from './pages/WebsiteCloner';
 import WorkflowBuilder from './pages/WorkflowBuilder';
 import Workflows from './pages/Workflows';
-import PortfolioTracker from './pages/PortfolioTracker';
 import __Layout from './Layout.jsx';
 
 
@@ -159,7 +158,6 @@ export const PAGES = {
     "WebsiteCloner": WebsiteCloner,
     "WorkflowBuilder": WorkflowBuilder,
     "Workflows": Workflows,
-    "PortfolioTracker": PortfolioTracker,
 }
 
 export const pagesConfig = {
