@@ -406,28 +406,36 @@ export default function ABTestManagerPage() {
                   </TabsList>
 
                   <TabsContent value="monitor">
-                    <VariantMonitor 
-                      test={selectedTest} 
-                      metrics={metrics.filter(m => m.test_id === selectedTest.id)} 
-                    />
+                   <Suspense fallback={<LoadingPlaceholder />}>
+                     <VariantMonitor 
+                       test={selectedTest} 
+                       metrics={metrics.filter(m => m.test_id === selectedTest.id)} 
+                     />
+                   </Suspense>
                   </TabsContent>
                   <TabsContent value="traffic">
-                    <TrafficSplitter 
-                      test={selectedTest} 
-                      onUpdate={() => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.AB_TESTS })} 
-                    />
+                   <Suspense fallback={<LoadingPlaceholder />}>
+                     <TrafficSplitter 
+                       test={selectedTest} 
+                       onUpdate={() => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.AB_TESTS })} 
+                     />
+                   </Suspense>
                   </TabsContent>
                   <TabsContent value="criteria">
-                    <SuccessCriteriaConfig 
-                      test={selectedTest} 
-                      onUpdate={() => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.AB_TESTS })} 
-                    />
+                   <Suspense fallback={<LoadingPlaceholder />}>
+                     <SuccessCriteriaConfig 
+                       test={selectedTest} 
+                       onUpdate={() => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.AB_TESTS })} 
+                     />
+                   </Suspense>
                   </TabsContent>
                   <TabsContent value="promotion">
-                    <AutoPromotionPanel 
-                      test={selectedTest} 
-                      onUpdate={() => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.AB_TESTS })} 
-                    />
+                   <Suspense fallback={<LoadingPlaceholder />}>
+                     <AutoPromotionPanel 
+                       test={selectedTest} 
+                       onUpdate={() => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.AB_TESTS })} 
+                     />
+                   </Suspense>
                   </TabsContent>
                 </Tabs>
               </CinematicCard>
