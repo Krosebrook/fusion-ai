@@ -87,26 +87,52 @@ export default function ABTestManagerPage() {
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
   });
 
-  // Mutation for pausing active tests
+  // Mutation for pausing active tests with optimistic updates
   const pauseTestMutation = useMutation({
     mutationFn: (testId) => base44.entities.ABTestConfig.update(testId, { status: 'paused' }),
+    onMutate: async (testId) => {
+      await queryClient.cancelQueries({ queryKey: QUERY_KEYS.AB_TESTS });
+      const previousTests = queryClient.getQueryData(QUERY_KEYS.AB_TESTS);
+      
+      queryClient.setQueryData(QUERY_KEYS.AB_TESTS, (old = []) => 
+        old.map(test => test.id === testId ? { ...test, status: 'paused' } : test)
+      );
+      
+      return { previousTests };
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.AB_TESTS });
       toast.success('Test paused successfully');
     },
-    onError: () => {
+    onError: (_error, _variables, context) => {
+      if (context?.previousTests) {
+        queryClient.setQueryData(QUERY_KEYS.AB_TESTS, context.previousTests);
+      }
       toast.error('Failed to pause test');
     },
   });
 
-  // Mutation for resuming paused tests
+  // Mutation for resuming paused tests with optimistic updates
   const resumeTestMutation = useMutation({
     mutationFn: (testId) => base44.entities.ABTestConfig.update(testId, { status: 'active' }),
+    onMutate: async (testId) => {
+      await queryClient.cancelQueries({ queryKey: QUERY_KEYS.AB_TESTS });
+      const previousTests = queryClient.getQueryData(QUERY_KEYS.AB_TESTS);
+      
+      queryClient.setQueryData(QUERY_KEYS.AB_TESTS, (old = []) => 
+        old.map(test => test.id === testId ? { ...test, status: 'active' } : test)
+      );
+      
+      return { previousTests };
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.AB_TESTS });
       toast.success('Test resumed successfully');
     },
-    onError: () => {
+    onError: (_error, _variables, context) => {
+      if (context?.previousTests) {
+        queryClient.setQueryData(QUERY_KEYS.AB_TESTS, context.previousTests);
+      }
       toast.error('Failed to resume test');
     },
   });
