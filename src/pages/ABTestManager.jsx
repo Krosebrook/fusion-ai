@@ -51,6 +51,8 @@ export default function ABTestManagerPage() {
   const [activeTab, setActiveTab] = useState(TAB_FILTERS.ACTIVE);
   const [selectedTest, setSelectedTest] = useState(null);
   const [showCreator, setShowCreator] = useState(false);
+  const [creatorMode, setCreatorMode] = useState('standard'); // 'standard' or 'multi'
+  const [showAISuggestions, setShowAISuggestions] = useState(false);
   const queryClient = useQueryClient();
 
   // Fetch A/B tests with automatic caching and error handling
@@ -221,14 +223,51 @@ export default function ABTestManagerPage() {
           </h1>
           <p className="text-white/60">Deploy variants and automatically promote winners</p>
         </div>
-        <Button
-          onClick={() => setShowCreator(true)}
-          className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 transition-all duration-300"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          New A/B Test
-        </Button>
+        <div className="flex gap-3">
+          <Button
+            onClick={() => setShowAISuggestions(!showAISuggestions)}
+            variant="outline"
+            className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10"
+          >
+            <Sparkles className="w-4 h-4 mr-2" />
+            AI Suggestions
+          </Button>
+          <Button
+            onClick={() => {
+              setCreatorMode('standard');
+              setShowCreator(true);
+            }}
+            className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 transition-all duration-300"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            New A/B Test
+          </Button>
+          <Button
+            onClick={() => {
+              setCreatorMode('multi');
+              setShowCreator(true);
+            }}
+            className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 transition-all duration-300"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Multi-Variant
+          </Button>
+        </div>
       </motion.div>
+
+      {/* AI Suggestions */}
+      <AnimatePresence>
+        {showAISuggestions && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+          >
+            <AITestSuggestions onTestCreated={handleTestCreated} />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -430,12 +469,25 @@ export default function ABTestManagerPage() {
                    </Suspense>
                   </TabsContent>
                   <TabsContent value="promotion">
-                   <Suspense fallback={<LoadingPlaceholder />}>
-                     <AutoPromotionPanel 
-                       test={selectedTest} 
-                       onUpdate={() => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.AB_TESTS })} 
-                     />
-                   </Suspense>
+                    <Suspense fallback={<LoadingPlaceholder />}>
+                      <AutoPromotionPanel 
+                        test={selectedTest} 
+                        onUpdate={() => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.AB_TESTS })} 
+                      />
+                    </Suspense>
+                  </TabsContent>
+                  <TabsContent value="analytics">
+                    <Suspense fallback={<LoadingPlaceholder />}>
+                      <div className="space-y-6">
+                        <CohortAnalysisWidget testId={selectedTest.id} />
+                        <FunnelVisualizationWidget testId={selectedTest.id} />
+                        <StatisticalSignificanceWidget 
+                          testId={selectedTest.id}
+                          variantA={selectedTest.variants[0]?.name}
+                          variantB={selectedTest.variants[1]?.name}
+                        />
+                      </div>
+                    </Suspense>
                   </TabsContent>
                 </Tabs>
               </CinematicCard>
@@ -464,10 +516,17 @@ export default function ABTestManagerPage() {
               className="w-full max-w-2xl"
             >
               <Suspense fallback={<LoadingPlaceholder />}>
-                <ABTestCreator
-                  onCreated={handleTestCreated}
-                  onDismiss={handleCloseModal}
-                />
+                {creatorMode === 'multi' ? (
+                  <MultiVariantCreator
+                    onCreated={handleTestCreated}
+                    onDismiss={handleCloseModal}
+                  />
+                ) : (
+                  <ABTestCreator
+                    onCreated={handleTestCreated}
+                    onDismiss={handleCloseModal}
+                  />
+                )}
               </Suspense>
             </motion.div>
           </motion.div>

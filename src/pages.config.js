@@ -1,4 +1,5 @@
 import ABTestManager from './pages/ABTestManager';
+import abtestmanagerMd from './pages/ABTestManager.md';
 import AICodeAgent from './pages/AICodeAgent';
 import AICodeGen from './pages/AICodeGen';
 import AICodeReview from './pages/AICodeReview';
@@ -81,6 +82,7 @@ import __Layout from './Layout.jsx';
 
 export const PAGES = {
     "ABTestManager": ABTestManager,
+    "ABTestManager.md": abtestmanagerMd,
     "AICodeAgent": AICodeAgent,
     "AICodeGen": AICodeGen,
     "AICodeReview": AICodeReview,
