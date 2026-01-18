@@ -169,12 +169,50 @@ export default function ABTestManagerPage() {
     setShowCreator(false);
   }, []);
 
+  // Loading skeleton for initial render
+  if (testsLoading) {
+    return (
+      <div className="min-h-screen p-6 space-y-6">
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <Skeleton className="h-10 w-64 mb-2 bg-white/10" />
+            <Skeleton className="h-5 w-96 bg-white/10" />
+          </div>
+          <Skeleton className="h-10 w-32 bg-white/10" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {[1, 2, 3].map(i => (
+            <Skeleton key={i} className="h-24 bg-white/10" />
+          ))}
+        </div>
+        <Skeleton className="h-96 bg-white/10" />
+      </div>
+    );
+  }
+
+  // Error state with retry
+  if (testsError) {
+    return (
+      <div className="min-h-screen p-6 flex items-center justify-center">
+        <CinematicCard className="p-8 text-center max-w-md">
+          <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-white mb-2">Failed to Load Tests</h2>
+          <p className="text-white/60 mb-6">Unable to fetch A/B test data. Please try again.</p>
+          <Button onClick={() => refetchTests()} className="bg-gradient-to-r from-cyan-500 to-blue-600">
+            Retry
+          </Button>
+        </CinematicCard>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen p-6 space-y-6">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
         className="flex justify-between items-center"
       >
         <div>
@@ -185,7 +223,7 @@ export default function ABTestManagerPage() {
         </div>
         <Button
           onClick={() => setShowCreator(true)}
-          className="bg-gradient-to-r from-cyan-500 to-blue-600"
+          className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 transition-all duration-300"
         >
           <Plus className="w-4 h-4 mr-2" />
           New A/B Test
