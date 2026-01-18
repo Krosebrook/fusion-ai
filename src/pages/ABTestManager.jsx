@@ -53,18 +53,38 @@ export default function ABTestManagerPage() {
   const [showCreator, setShowCreator] = useState(false);
   const queryClient = useQueryClient();
 
-  // Fetch A/B tests with automatic caching
-  const { data: tests = [], isLoading: testsLoading } = useQuery({
+  // Fetch A/B tests with automatic caching and error handling
+  const { data: tests = [], isLoading: testsLoading, isError: testsError, refetch: refetchTests } = useQuery({
     queryKey: QUERY_KEYS.AB_TESTS,
-    queryFn: () => base44.entities.ABTestConfig.list('-created_date', 50),
+    queryFn: async () => {
+      try {
+        return await base44.entities.ABTestConfig.list('-created_date', 50);
+      } catch (error) {
+        toast.error('Failed to load A/B tests');
+        throw error;
+      }
+    },
     staleTime: 30000, // Cache for 30 seconds
+    gcTime: 300000, // Keep in cache for 5 minutes
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
   });
 
-  // Fetch metrics with automatic caching
-  const { data: metrics = [], isLoading: metricsLoading } = useQuery({
+  // Fetch metrics with automatic caching and error handling
+  const { data: metrics = [], isLoading: metricsLoading, isError: metricsError } = useQuery({
     queryKey: QUERY_KEYS.AB_METRICS,
-    queryFn: () => base44.entities.ABTestMetrics.list('-timestamp', 100),
+    queryFn: async () => {
+      try {
+        return await base44.entities.ABTestMetrics.list('-timestamp', 100);
+      } catch (error) {
+        toast.error('Failed to load metrics');
+        throw error;
+      }
+    },
     staleTime: 10000, // Cache for 10 seconds
+    gcTime: 60000, // Keep in cache for 1 minute
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
   });
 
   // Mutation for pausing active tests
