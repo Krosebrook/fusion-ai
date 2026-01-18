@@ -59,7 +59,11 @@ export function DealSourcingStep({ data = {}, onChange }) {
   return (
     <div className="space-y-8">
       {/* Industries */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }} 
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      >
         <div className="flex items-center justify-between mb-4">
           <label className="text-lg font-semibold text-white">Target Industries</label>
           <button
@@ -94,7 +98,11 @@ export function DealSourcingStep({ data = {}, onChange }) {
       </motion.div>
 
       {/* Investment Range */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        transition={{ delay: 0.1, duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      >
         <div className="flex items-center justify-between mb-4">
           <label className="text-lg font-semibold text-white">Investment Size Range</label>
           <button
@@ -146,7 +154,11 @@ export function DealSourcingStep({ data = {}, onChange }) {
       </motion.div>
 
       {/* Deal Structures */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        transition={{ delay: 0.2, duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      >
         <div className="flex items-center justify-between mb-4">
           <label className="text-lg font-semibold text-white">Preferred Deal Structures</label>
           <button
@@ -181,7 +193,11 @@ export function DealSourcingStep({ data = {}, onChange }) {
       </motion.div>
 
       {/* Deal Stages */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        transition={{ delay: 0.3, duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      >
         <label className="text-lg font-semibold text-white mb-4 block">Deal Stage Focus</label>
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
           {DEAL_STAGES.map(stage => (
@@ -207,7 +223,11 @@ export function DealSourcingStep({ data = {}, onChange }) {
       </motion.div>
 
       {/* Geography */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        transition={{ delay: 0.4, duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      >
         <label className="text-lg font-semibold text-white mb-4 block">Geographic Preference</label>
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
           {GEOGRAPHIES.map(geo => (
@@ -227,7 +247,11 @@ export function DealSourcingStep({ data = {}, onChange }) {
       </motion.div>
 
       {/* Risk Tolerance */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        transition={{ delay: 0.5, duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      >
         <label className="text-lg font-semibold text-white mb-4 block">Risk Tolerance</label>
         <div className="grid grid-cols-3 gap-4">
           {[

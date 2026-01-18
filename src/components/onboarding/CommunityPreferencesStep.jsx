@@ -28,7 +28,11 @@ export function CommunityPreferencesStep({ data = {}, onChange }) {
   return (
     <div className="space-y-8">
       {/* Peer Groups */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }} 
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      >
         <div className="flex items-center justify-between mb-4">
           <label className="text-lg font-semibold text-white">Types of Peer Networks</label>
           <button
@@ -63,7 +67,11 @@ export function CommunityPreferencesStep({ data = {}, onChange }) {
       </motion.div>
 
       {/* Engagement Mode */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        transition={{ delay: 0.1, duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      >
         <label className="text-lg font-semibold text-white mb-4 block">Primary Engagement Mode</label>
         <div className="grid grid-cols-3 gap-4">
           {[
@@ -88,7 +96,11 @@ export function CommunityPreferencesStep({ data = {}, onChange }) {
       </motion.div>
 
       {/* Notification Frequency */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        transition={{ delay: 0.2, duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      >
         <div className="flex items-center justify-between mb-4">
           <label className="text-lg font-semibold text-white">Communication Frequency</label>
           <button
@@ -129,7 +141,11 @@ export function CommunityPreferencesStep({ data = {}, onChange }) {
       </motion.div>
 
       {/* Privacy Settings */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        transition={{ delay: 0.3, duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      >
         <label className="text-lg font-semibold text-white mb-4 block">Privacy & Sharing</label>
         <div className="space-y-3">
           <label className="flex items-center gap-3 p-4 rounded-lg bg-white/10 hover:bg-white/20 transition-all cursor-pointer">

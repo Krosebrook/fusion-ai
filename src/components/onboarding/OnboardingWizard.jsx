@@ -76,10 +76,34 @@ export function OnboardingWizard({ onComplete }) {
     }));
   };
 
-  const handleNext = () => {
+  const canProceed = () => {
     const currentStepObj = STEPS[currentStep];
+    if (!currentStepObj.required) return true;
+
+    const data = profileData[currentStepObj.id] || {};
+    
+    if (currentStepObj.id === 'deal_sourcing') {
+      return data.target_industries?.length > 0 && 
+             data.risk_tolerance &&
+             data.investment_range?.min_usd &&
+             data.investment_range?.max_usd &&
+             data.investment_range.min_usd < data.investment_range.max_usd;
+    }
+    
+    if (currentStepObj.id === 'portfolio_goals') {
+      return data.time_horizon && data.target_annual_return;
+    }
+    
+    return true;
+  };
+
+  const handleNext = () => {
+    if (!canProceed()) {
+      return;
+    }
     if (currentStep < STEPS.length - 1) {
       setCurrentStep(currentStep + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -168,7 +192,10 @@ export function OnboardingWizard({ onComplete }) {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.3 }}
+            transition={{ 
+              duration: 0.5, 
+              ease: [0.4, 0, 0.2, 1] // Cubic bezier for cinema-grade easing
+            }}
           >
             <CinematicCard className="p-8 mb-8">
               {/* Step Title */}
@@ -209,11 +236,16 @@ export function OnboardingWizard({ onComplete }) {
               )}
 
               {/* Regular Steps */}
-              {StepComponent && (
+              {StepComponent && step.id !== 'review' && (
                 <StepComponent
                   data={profileData[step.id] || {}}
                   onChange={(data) => handleStepChange(step.id, data)}
                 />
+              )}
+
+              {/* Review Step - Pass Full Profile */}
+              {step.id === 'review' && (
+                <ReviewStep data={profileData} />
               )}
 
               {/* Navigation */}
@@ -231,17 +263,25 @@ export function OnboardingWizard({ onComplete }) {
                 {currentStep === STEPS.length - 1 ? (
                   <Button
                     onClick={handleComplete}
-                    disabled={isLoading}
-                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 flex items-center gap-2"
+                    disabled={isLoading || !canProceed()}
+                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
                   >
-                    {isLoading ? 'Saving...' : 'Complete Setup'} ✨
+                    {isLoading ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>Complete Setup ✨</>
+                    )}
                   </Button>
                 ) : (
                   <Button
                     onClick={handleNext}
-                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 flex items-center gap-2"
+                    disabled={!canProceed()}
+                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
                   >
-                    Next
+                    {canProceed() ? 'Next' : 'Complete Required Fields'}
                     <ChevronRight className="w-4 h-4" />
                   </Button>
                 )}

@@ -22,7 +22,11 @@ export function ReviewStep({ data = {} }) {
   return (
     <div className="space-y-8">
       {/* Deal Sourcing Summary */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }} 
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      >
         <h3 className="text-xl font-bold text-white mb-4">📊 Deal Sourcing</h3>
         <div className="space-y-3">
           <SectionRow
@@ -57,7 +61,11 @@ export function ReviewStep({ data = {} }) {
       </motion.div>
 
       {/* Portfolio Goals Summary */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        transition={{ delay: 0.1, duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      >
         <h3 className="text-xl font-bold text-white mb-4">🎯 Portfolio Goals</h3>
         <div className="space-y-3">
           <SectionRow
@@ -96,7 +104,11 @@ export function ReviewStep({ data = {} }) {
       </motion.div>
 
       {/* Community Summary */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        transition={{ delay: 0.2, duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      >
         <h3 className="text-xl font-bold text-white mb-4">👥 Community & Privacy</h3>
         <div className="space-y-3">
           <SectionRow

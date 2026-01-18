@@ -14,7 +14,11 @@ export function PortfolioGoalsStep({ data = {}, onChange }) {
   return (
     <div className="space-y-8">
       {/* Time Horizon */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }} 
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      >
         <div className="flex items-center justify-between mb-4">
           <label className="text-lg font-semibold text-white">Investment Time Horizon</label>
           <button
@@ -54,7 +58,11 @@ export function PortfolioGoalsStep({ data = {}, onChange }) {
       </motion.div>
 
       {/* Target Annual Return */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        transition={{ delay: 0.1, duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      >
         <div className="flex items-center justify-between mb-4">
           <label className="text-lg font-semibold text-white">Target Annual Return (%)</label>
           <button
@@ -88,7 +96,11 @@ export function PortfolioGoalsStep({ data = {}, onChange }) {
       </motion.div>
 
       {/* Diversification */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        transition={{ delay: 0.2, duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      >
         <label className="text-lg font-semibold text-white mb-4 block">Diversification Preference</label>
         <div className="grid grid-cols-3 gap-4">
           {[
@@ -113,7 +125,11 @@ export function PortfolioGoalsStep({ data = {}, onChange }) {
       </motion.div>
 
       {/* Sector Priorities */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        transition={{ delay: 0.3, duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      >
         <label className="text-lg font-semibold text-white mb-4 block">Top 3 Sector Priorities (Optional)</label>
         <p className="text-white/60 text-sm mb-4">
           List sectors where you want portfolio concentration. E.g., 40% FinTech, 30% HealthTech, 30% Other.
@@ -149,7 +165,11 @@ export function PortfolioGoalsStep({ data = {}, onChange }) {
       </motion.div>
 
       {/* Asset Classes */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        transition={{ delay: 0.4, duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      >
         <label className="text-lg font-semibold text-white mb-4 block">Asset Class Focus</label>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {['Venture Capital', 'Private Equity', 'Real Estate', 'Alternative Assets', 'Angel Deals'].map(ac => (
