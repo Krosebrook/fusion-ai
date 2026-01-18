@@ -451,26 +451,43 @@ export default function ABTestManagerPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
             onClick={handleCloseModal}
           >
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.2 }}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
               onClick={(e) => e.stopPropagation()}
               className="w-full max-w-2xl"
             >
-              <ABTestCreator
-                onCreated={handleTestCreated}
-                onDismiss={handleCloseModal}
-              />
+              <Suspense fallback={<LoadingPlaceholder />}>
+                <ABTestCreator
+                  onCreated={handleTestCreated}
+                  onDismiss={handleCloseModal}
+                />
+              </Suspense>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
+  );
+}
+
+// Loading placeholder component for Suspense boundaries
+function LoadingPlaceholder() {
+  return (
+    <div className="space-y-4 p-6">
+      <Skeleton className="h-8 w-48 bg-white/10" />
+      <Skeleton className="h-32 w-full bg-white/10" />
+      <Skeleton className="h-32 w-full bg-white/10" />
+      <div className="flex gap-4">
+        <Skeleton className="h-10 w-24 bg-white/10" />
+        <Skeleton className="h-10 w-24 bg-white/10" />
+      </div>
     </div>
   );
 }
