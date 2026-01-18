@@ -236,16 +236,32 @@ export default function ABTestManagerPage() {
           { label: 'Active Tests', value: stats.active, icon: Activity, gradient: 'from-green-500 to-emerald-600' },
           { label: 'Completed', value: stats.completed, icon: CheckCircle2, gradient: 'from-blue-500 to-cyan-600' },
           { label: 'Total Variants', value: stats.totalVariants, icon: TrendingUp, gradient: 'from-purple-500 to-pink-600' }
-        ].map((stat) => (
-          <motion.div key={stat.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <CinematicCard className="p-6">
+        ].map((stat, index) => (
+          <motion.div 
+            key={stat.label} 
+            initial={{ opacity: 0, y: 20 }} 
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ 
+              duration: 0.5, 
+              delay: index * 0.1,
+              ease: [0.4, 0, 0.2, 1]
+            }}
+          >
+            <CinematicCard className="p-6 hover:scale-[1.02] transition-transform duration-300">
               <div className="flex items-center gap-4">
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center`}>
+                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center shadow-lg`}>
                   <stat.icon className="w-6 h-6 text-white" />
                 </div>
                 <div>
                   <p className="text-white/60 text-sm">{stat.label}</p>
-                  <p className="text-2xl font-bold text-white">{stat.value}</p>
+                  <motion.p 
+                    className="text-2xl font-bold text-white"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: index * 0.1 + 0.2 }}
+                  >
+                    {stat.value}
+                  </motion.p>
                 </div>
               </div>
             </CinematicCard>
