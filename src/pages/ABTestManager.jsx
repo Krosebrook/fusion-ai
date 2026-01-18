@@ -10,23 +10,29 @@
  * - Configurable success criteria with weighted metrics
  * - Automatic promotion based on statistical confidence
  * - Visual comparison charts and timeline graphs
+ * - Optimistic updates for instant UI feedback
+ * - Lazy loading for performance optimization
+ * - Error boundaries and retry logic
  * 
  * @component
  */
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, Suspense, lazy } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Play, Pause, CheckCircle2, TrendingUp, Activity } from 'lucide-react';
+import { Plus, Play, Pause, CheckCircle2, TrendingUp, Activity, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CinematicCard } from '@/components/atoms/CinematicCard';
-import { ABTestCreator } from '@/components/abtest/ABTestCreator';
-import { TrafficSplitter } from '@/components/abtest/TrafficSplitter';
-import { VariantMonitor } from '@/components/abtest/VariantMonitor';
-import { SuccessCriteriaConfig } from '@/components/abtest/SuccessCriteriaConfig';
-import { AutoPromotionPanel } from '@/components/abtest/AutoPromotionPanel';
+import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
+
+// Lazy load heavy components for performance
+const ABTestCreator = lazy(() => import('@/components/abtest/ABTestCreator'));
+const TrafficSplitter = lazy(() => import('@/components/abtest/TrafficSplitter'));
+const VariantMonitor = lazy(() => import('@/components/abtest/VariantMonitor'));
+const SuccessCriteriaConfig = lazy(() => import('@/components/abtest/SuccessCriteriaConfig'));
+const AutoPromotionPanel = lazy(() => import('@/components/abtest/AutoPromotionPanel'));
 
 // Query keys for React Query caching
 const QUERY_KEYS = {
