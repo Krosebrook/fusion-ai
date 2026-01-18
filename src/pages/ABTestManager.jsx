@@ -20,7 +20,7 @@ import { useState, useCallback, useMemo, Suspense, lazy } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Play, Pause, CheckCircle2, TrendingUp, Activity, AlertCircle } from 'lucide-react';
+import { Plus, Play, Pause, CheckCircle2, TrendingUp, Activity, AlertCircle, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CinematicCard } from '@/components/atoms/CinematicCard';
@@ -29,10 +29,15 @@ import { toast } from 'sonner';
 
 // Lazy load heavy components for performance
 const ABTestCreator = lazy(() => import('@/components/abtest/ABTestCreator'));
+const MultiVariantCreator = lazy(() => import('@/components/abtest/MultiVariantCreator'));
 const TrafficSplitter = lazy(() => import('@/components/abtest/TrafficSplitter'));
 const VariantMonitor = lazy(() => import('@/components/abtest/VariantMonitor'));
 const SuccessCriteriaConfig = lazy(() => import('@/components/abtest/SuccessCriteriaConfig'));
 const AutoPromotionPanel = lazy(() => import('@/components/abtest/AutoPromotionPanel'));
+const AITestSuggestions = lazy(() => import('@/components/abtesting/AITestSuggestions'));
+const CohortAnalysisWidget = lazy(() => import('@/components/analytics/CohortAnalysisWidget'));
+const FunnelVisualizationWidget = lazy(() => import('@/components/analytics/FunnelVisualizationWidget'));
+const StatisticalSignificanceWidget = lazy(() => import('@/components/analytics/StatisticalSignificanceWidget'));
 
 // Query keys for React Query caching
 const QUERY_KEYS = {
@@ -437,11 +442,12 @@ export default function ABTestManagerPage() {
             >
               <CinematicCard className="p-6">
                 <Tabs defaultValue="monitor" className="w-full">
-                  <TabsList className="bg-slate-800/50 border border-white/10 mb-4">
+                  <TabsList className="grid grid-cols-5 bg-slate-800/50 border border-white/10 mb-4">
                     <TabsTrigger value="monitor">Monitor</TabsTrigger>
-                    <TabsTrigger value="traffic">Traffic Split</TabsTrigger>
-                    <TabsTrigger value="criteria">Success Criteria</TabsTrigger>
-                    <TabsTrigger value="promotion">Auto Promotion</TabsTrigger>
+                    <TabsTrigger value="traffic">Traffic</TabsTrigger>
+                    <TabsTrigger value="criteria">Criteria</TabsTrigger>
+                    <TabsTrigger value="promotion">Promotion</TabsTrigger>
+                    <TabsTrigger value="analytics">Analytics</TabsTrigger>
                   </TabsList>
 
                   <TabsContent value="monitor">
