@@ -127,6 +127,7 @@ export default function RBACManagerPage() {
           </Tabs>
         </motion.div>
       </div>
+      </div>
     </PermissionGuard>
   );
 }
