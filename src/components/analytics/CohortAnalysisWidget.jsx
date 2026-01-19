@@ -9,24 +9,52 @@ import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { CinematicCard } from '@/components/atoms/CinematicCard';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { Users, Calendar, TrendingUp } from 'lucide-react';
+import { Users, Calendar, TrendingUp, Download, Filter } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { toast } from 'sonner';
 
 export function CohortAnalysisWidget({ testId }) {
   const [timeframe, setTimeframe] = useState('week');
+  const [segmentBy, setSegmentBy] = useState('all');
+  const [segmentValue, setSegmentValue] = useState('all');
+  const [showFilters, setShowFilters] = useState(false);
 
   const { data: cohorts = [], isLoading } = useQuery({
-    queryKey: ['cohort-analysis', testId, timeframe],
+    queryKey: ['cohort-analysis', testId, timeframe, segmentBy, segmentValue],
     queryFn: async () => {
       const result = await base44.functions.invoke('analyzeCohorts', { 
         test_id: testId,
-        timeframe 
+        timeframe,
+        segment_by: segmentBy !== 'all' ? segmentBy : undefined,
+        segment_value: segmentValue !== 'all' ? segmentValue : undefined
       });
       return result.data?.cohorts || [];
     },
     enabled: !!testId,
     staleTime: 2 * 60 * 1000,
   });
+
+  const exportToCSV = () => {
+    if (!cohorts.length) {
+      toast.error('No data to export');
+      return;
+    }
+
+    const headers = ['Period', 'Users', 'Retention Rate'];
+    const rows = cohorts.map(c => [c.period, c.user_count, `${c.retention_rate}%`]);
+    const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `cohort-analysis-${testId}-${new Date().toISOString()}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+    toast.success('Cohort data exported');
+  };
 
   if (isLoading) {
     return (
@@ -53,6 +81,19 @@ export function CohortAnalysisWidget({ testId }) {
         </div>
 
         <div className="flex gap-2">
+          <Button 
+            onClick={() => setShowFilters(!showFilters)} 
+            variant="outline" 
+            size="sm"
+            className="border-white/20"
+          >
+            <Filter className="w-4 h-4 mr-2" />
+            Filters
+          </Button>
+          <Button onClick={exportToCSV} variant="outline" size="sm" className="border-white/20">
+            <Download className="w-4 h-4 mr-2" />
+            CSV
+          </Button>
           {['day', 'week', 'month'].map((tf) => (
             <button
               key={tf}
@@ -68,6 +109,68 @@ export function CohortAnalysisWidget({ testId }) {
           ))}
         </div>
       </div>
+
+      {/* Segmentation Filters */}
+      {showFilters && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          className="mb-6 p-4 bg-white/5 rounded-lg border border-white/10"
+        >
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-xs text-white/60 mb-2 block">Segment By</label>
+              <Select value={segmentBy} onValueChange={setSegmentBy}>
+                <SelectTrigger className="bg-white/5 border-white/20 text-white">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Users</SelectItem>
+                  <SelectItem value="acquisition_channel">Acquisition Channel</SelectItem>
+                  <SelectItem value="user_role">User Role</SelectItem>
+                  <SelectItem value="device_type">Device Type</SelectItem>
+                  <SelectItem value="country">Country</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {segmentBy !== 'all' && (
+              <div>
+                <label className="text-xs text-white/60 mb-2 block">Value</label>
+                <Select value={segmentValue} onValueChange={setSegmentValue}>
+                  <SelectTrigger className="bg-white/5 border-white/20 text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All</SelectItem>
+                    {segmentBy === 'acquisition_channel' && (
+                      <>
+                        <SelectItem value="organic">Organic</SelectItem>
+                        <SelectItem value="paid">Paid</SelectItem>
+                        <SelectItem value="social">Social</SelectItem>
+                        <SelectItem value="referral">Referral</SelectItem>
+                      </>
+                    )}
+                    {segmentBy === 'user_role' && (
+                      <>
+                        <SelectItem value="admin">Admin</SelectItem>
+                        <SelectItem value="user">User</SelectItem>
+                      </>
+                    )}
+                    {segmentBy === 'device_type' && (
+                      <>
+                        <SelectItem value="desktop">Desktop</SelectItem>
+                        <SelectItem value="mobile">Mobile</SelectItem>
+                        <SelectItem value="tablet">Tablet</SelectItem>
+                      </>
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+          </div>
+        </motion.div>
+      )}
 
       {/* Cohort Stats */}
       <div className="grid grid-cols-3 gap-4 mb-6">

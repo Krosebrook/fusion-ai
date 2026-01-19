@@ -3,23 +3,58 @@
  * Displays multi-stage conversion funnel with drop-off analysis
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { CinematicCard } from '@/components/atoms/CinematicCard';
-import { Filter, TrendingDown, AlertCircle } from 'lucide-react';
+import { Filter, TrendingDown, AlertCircle, Download } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { toast } from 'sonner';
 
 export function FunnelVisualizationWidget({ testId }) {
+  const [segmentBy, setSegmentBy] = useState('all');
+  const [segmentValue, setSegmentValue] = useState('all');
+  const [showFilters, setShowFilters] = useState(false);
+
   const { data: funnel, isLoading } = useQuery({
-    queryKey: ['funnel-visualization', testId],
+    queryKey: ['funnel-visualization', testId, segmentBy, segmentValue],
     queryFn: async () => {
-      const result = await base44.functions.invoke('calculateFunnel', { test_id: testId });
+      const result = await base44.functions.invoke('calculateFunnel', { 
+        test_id: testId,
+        segment_by: segmentBy !== 'all' ? segmentBy : undefined,
+        segment_value: segmentValue !== 'all' ? segmentValue : undefined
+      });
       return result.data?.funnel || [];
     },
     enabled: !!testId,
     staleTime: 2 * 60 * 1000,
   });
+
+  const exportToCSV = () => {
+    if (!funnel?.length) {
+      toast.error('No data to export');
+      return;
+    }
+
+    const headers = ['Stage', 'Users', 'Conversion Rate', 'Drop-off Rate'];
+    const rows = funnel.map((stage, idx) => {
+      const conversionRate = idx === 0 ? 100 : (stage.users / funnel[0].users) * 100;
+      const dropOffRate = idx > 0 ? ((funnel[idx - 1].users - stage.users) / funnel[idx - 1].users) * 100 : 0;
+      return [stage.name, stage.users, `${conversionRate.toFixed(2)}%`, `${dropOffRate.toFixed(2)}%`];
+    });
+    const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `funnel-analysis-${testId}-${new Date().toISOString()}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+    toast.success('Funnel data exported');
+  };
 
   if (isLoading) {
     return (
@@ -36,15 +71,95 @@ export function FunnelVisualizationWidget({ testId }) {
 
   return (
     <CinematicCard className="p-6">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center">
-          <Filter className="w-5 h-5 text-white" />
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center">
+            <Filter className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-white">Conversion Funnel</h3>
+            <p className="text-sm text-white/60">Stage-by-stage user flow analysis</p>
+          </div>
         </div>
-        <div>
-          <h3 className="text-lg font-bold text-white">Conversion Funnel</h3>
-          <p className="text-sm text-white/60">Stage-by-stage user flow analysis</p>
+
+        <div className="flex gap-2">
+          <Button 
+            onClick={() => setShowFilters(!showFilters)} 
+            variant="outline" 
+            size="sm"
+            className="border-white/20"
+          >
+            <Filter className="w-4 h-4 mr-2" />
+            Filters
+          </Button>
+          <Button onClick={exportToCSV} variant="outline" size="sm" className="border-white/20">
+            <Download className="w-4 h-4 mr-2" />
+            CSV
+          </Button>
         </div>
       </div>
+
+      {/* Segmentation Filters */}
+      {showFilters && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          className="mb-6 p-4 bg-white/5 rounded-lg border border-white/10"
+        >
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-xs text-white/60 mb-2 block">Segment By</label>
+              <Select value={segmentBy} onValueChange={setSegmentBy}>
+                <SelectTrigger className="bg-white/5 border-white/20 text-white">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Users</SelectItem>
+                  <SelectItem value="acquisition_channel">Acquisition Channel</SelectItem>
+                  <SelectItem value="user_role">User Role</SelectItem>
+                  <SelectItem value="device_type">Device Type</SelectItem>
+                  <SelectItem value="country">Country</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {segmentBy !== 'all' && (
+              <div>
+                <label className="text-xs text-white/60 mb-2 block">Value</label>
+                <Select value={segmentValue} onValueChange={setSegmentValue}>
+                  <SelectTrigger className="bg-white/5 border-white/20 text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All</SelectItem>
+                    {segmentBy === 'acquisition_channel' && (
+                      <>
+                        <SelectItem value="organic">Organic</SelectItem>
+                        <SelectItem value="paid">Paid</SelectItem>
+                        <SelectItem value="social">Social</SelectItem>
+                        <SelectItem value="referral">Referral</SelectItem>
+                      </>
+                    )}
+                    {segmentBy === 'user_role' && (
+                      <>
+                        <SelectItem value="admin">Admin</SelectItem>
+                        <SelectItem value="user">User</SelectItem>
+                      </>
+                    )}
+                    {segmentBy === 'device_type' && (
+                      <>
+                        <SelectItem value="desktop">Desktop</SelectItem>
+                        <SelectItem value="mobile">Mobile</SelectItem>
+                        <SelectItem value="tablet">Tablet</SelectItem>
+                      </>
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+          </div>
+        </motion.div>
+      )}
 
       <div className="space-y-4">
         {funnel?.map((stage, index) => {
