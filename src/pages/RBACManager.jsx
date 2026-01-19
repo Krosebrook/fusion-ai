@@ -12,11 +12,12 @@ import { CinematicCard } from '@/components/atoms/CinematicCard';
 import { RoleManager } from '@/components/rbac/RoleManager';
 import { AuditLogViewer } from '@/components/rbac/AuditLogViewer';
 import { UserAssignment } from '@/components/rbac/UserAssignment';
+import { PermissionGuard } from '@/components/rbac/PermissionGuard';
 import { Shield, Lock, Eye } from 'lucide-react';
 import { useUserPermissions } from '@/components/hooks/useUserPermissions';
 
 export default function RBACManagerPage() {
-  const { isAdmin, permissions } = useUserPermissions();
+  const { user, hasPermission } = useUserPermissions();
 
   // Fetch stats
   const { data: roles = [] } = useQuery({
@@ -34,22 +35,9 @@ export default function RBACManagerPage() {
     queryFn: () => base44.entities.AuditLog.list('-timestamp', 100),
   });
 
-  if (!isAdmin) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-6">
-        <CinematicCard className="p-12 text-center max-w-md">
-          <Lock className="w-12 h-12 text-red-400 mx-auto mb-4" />
-          <h1 className="text-2xl font-bold text-white mb-2">Access Denied</h1>
-          <p className="text-white/60">
-            Only administrators can access the RBAC manager.
-          </p>
-        </CinematicCard>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6">
+    <PermissionGuard permission="role_manage">
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -139,6 +127,6 @@ export default function RBACManagerPage() {
           </Tabs>
         </motion.div>
       </div>
-    </div>
+    </PermissionGuard>
   );
 }
