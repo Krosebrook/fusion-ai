@@ -17,7 +17,7 @@ export function RoleManager() {
 
   const { data: roles = [], isLoading } = useQuery({
     queryKey: ['roles'],
-    queryFn: () => base44.entities.Role.list('-created_date', 50),
+    queryFn: () => base44.entities.Role.list('-created_date', 50)
   });
 
   const createRoleMutation = useMutation({
@@ -27,7 +27,7 @@ export function RoleManager() {
       setShowCreateForm(false);
       toast.success('Role created successfully');
     },
-    onError: () => toast.error('Failed to create role'),
+    onError: () => toast.error('Failed to create role')
   });
 
   const updateRoleMutation = useMutation({
@@ -37,7 +37,7 @@ export function RoleManager() {
       setEditingRole(null);
       toast.success('Role updated successfully');
     },
-    onError: () => toast.error('Failed to update role'),
+    onError: () => toast.error('Failed to update role')
   });
 
   const deleteRoleMutation = useMutation({
@@ -46,7 +46,7 @@ export function RoleManager() {
       queryClient.invalidateQueries({ queryKey: ['roles'] });
       toast.success('Role deleted successfully');
     },
-    onError: () => toast.error('Failed to delete role'),
+    onError: () => toast.error('Failed to delete role')
   });
 
   return (
@@ -58,37 +58,37 @@ export function RoleManager() {
         </div>
         <Button
           onClick={() => setShowCreateForm(true)}
-          className="bg-gradient-to-r from-cyan-500 to-blue-600"
-        >
+          className="bg-gradient-to-r from-cyan-500 to-blue-600">
+
           <Plus className="w-4 h-4 mr-2" />
           New Role
         </Button>
       </div>
 
-      {showCreateForm && (
-        <RoleForm
-          onSubmit={(data) => createRoleMutation.mutate(data)}
-          onCancel={() => setShowCreateForm(false)}
-          isSubmitting={createRoleMutation.isPending}
-        />
-      )}
+      {showCreateForm &&
+      <RoleForm
+        onSubmit={(data) => createRoleMutation.mutate(data)}
+        onCancel={() => setShowCreateForm(false)}
+        isSubmitting={createRoleMutation.isPending} />
+
+      }
 
       <div className="grid gap-4">
-        {roles.map((role) => (
-          <motion.div
-            key={role.id}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            {editingRole?.id === role.id ? (
-              <RoleForm
-                initialData={editingRole}
-                onSubmit={(data) => updateRoleMutation.mutate({ id: role.id, data })}
-                onCancel={() => setEditingRole(null)}
-                isSubmitting={updateRoleMutation.isPending}
-              />
-            ) : (
-              <CinematicCard className="p-6">
+        {roles.map((role) =>
+        <motion.div
+          key={role.id}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}>
+
+            {editingRole?.id === role.id ?
+          <RoleForm
+            initialData={editingRole}
+            onSubmit={(data) => updateRoleMutation.mutate({ id: role.id, data })}
+            onCancel={() => setEditingRole(null)}
+            isSubmitting={updateRoleMutation.isPending} /> :
+
+
+          <CinematicCard className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
@@ -101,47 +101,47 @@ export function RoleManager() {
                   </div>
                   <div className="flex gap-2">
                     <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => setEditingRole(role)}
-                      className="border-white/20"
-                    >
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setEditingRole(role)} className="bg-background text-slate-900 px-3 text-xs font-medium rounded-md inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border shadow-sm hover:bg-accent hover:text-accent-foreground h-8 border-white/20">
+
+
                       Edit
                     </Button>
-                    {!role.is_system_role && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => deleteRoleMutation.mutate(role.id)}
-                        className="border-red-500/30 text-red-400 hover:bg-red-500/10"
-                      >
+                    {!role.is_system_role &&
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => deleteRoleMutation.mutate(role.id)}
+                  className="border-red-500/30 text-red-400 hover:bg-red-500/10">
+
                         <Trash2 className="w-4 h-4" />
                       </Button>
-                    )}
+                }
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {Object.entries(role.permissions || {}).map(([key, value]) => (
-                    <div
-                      key={key}
-                      className={`px-3 py-2 rounded-lg text-sm ${
-                        value
-                          ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-                          : 'bg-white/5 text-white/40 border border-white/10'
-                      }`}
-                    >
-                      {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                  {Object.entries(role.permissions || {}).map(([key, value]) =>
+              <div
+                key={key}
+                className={`px-3 py-2 rounded-lg text-sm ${
+                value ?
+                'bg-green-500/20 text-green-400 border border-green-500/30' :
+                'bg-white/5 text-white/40 border border-white/10'}`
+                }>
+
+                      {key.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
                     </div>
-                  ))}
+              )}
                 </div>
               </CinematicCard>
-            )}
+          }
           </motion.div>
-        ))}
+        )}
       </div>
-    </div>
-  );
+    </div>);
+
 }
 
 function RoleForm({ initialData, onSubmit, onCancel, isSubmitting }) {
@@ -159,8 +159,8 @@ function RoleForm({ initialData, onSubmit, onCancel, isSubmitting }) {
         analytics_export: false,
         cohort_view: false,
         funnel_view: false,
-        role_manage: false,
-      },
+        role_manage: false
+      }
     }
   );
 
@@ -174,8 +174,8 @@ function RoleForm({ initialData, onSubmit, onCancel, isSubmitting }) {
       ...formData,
       permissions: {
         ...formData.permissions,
-        [key]: !formData.permissions[key],
-      },
+        [key]: !formData.permissions[key]
+      }
     });
   };
 
@@ -189,8 +189,8 @@ function RoleForm({ initialData, onSubmit, onCancel, isSubmitting }) {
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             placeholder="e.g., Analyst, Tester, Manager"
             className="bg-white/5 border-white/20"
-            required
-          />
+            required />
+
         </div>
 
         <div>
@@ -200,24 +200,24 @@ function RoleForm({ initialData, onSubmit, onCancel, isSubmitting }) {
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             placeholder="Describe this role's responsibilities"
             className="bg-white/5 border-white/20"
-            rows={3}
-          />
+            rows={3} />
+
         </div>
 
         <div>
           <label className="text-sm text-white/80 mb-3 block">Permissions</label>
           <div className="space-y-3">
-            {Object.entries(formData.permissions).map(([key, value]) => (
-              <div key={key} className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+            {Object.entries(formData.permissions).map(([key, value]) =>
+            <div key={key} className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
                 <span className="text-white text-sm">
-                  {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                  {key.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
                 </span>
                 <Switch
-                  checked={value}
-                  onCheckedChange={() => togglePermission(key)}
-                />
+                checked={value}
+                onCheckedChange={() => togglePermission(key)} />
+
               </div>
-            ))}
+            )}
           </div>
         </div>
 
@@ -228,13 +228,13 @@ function RoleForm({ initialData, onSubmit, onCancel, isSubmitting }) {
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="bg-gradient-to-r from-cyan-500 to-blue-600"
-          >
+            className="bg-gradient-to-r from-cyan-500 to-blue-600">
+
             <Save className="w-4 h-4 mr-2" />
             {isSubmitting ? 'Saving...' : 'Save Role'}
           </Button>
         </div>
       </form>
-    </CinematicCard>
-  );
+    </CinematicCard>);
+
 }
