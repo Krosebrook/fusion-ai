@@ -12,11 +12,13 @@ import { Filter, TrendingDown, AlertCircle, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
+import { useUserPermissions } from '@/components/hooks/useUserPermissions';
 
 export function FunnelVisualizationWidget({ testId }) {
   const [segmentBy, setSegmentBy] = useState('all');
   const [segmentValue, setSegmentValue] = useState('all');
   const [showFilters, setShowFilters] = useState(false);
+  const { hasPermission } = useUserPermissions();
 
   const { data: funnel, isLoading } = useQuery({
     queryKey: ['funnel-visualization', testId, segmentBy, segmentValue],
@@ -92,10 +94,12 @@ export function FunnelVisualizationWidget({ testId }) {
             <Filter className="w-4 h-4 mr-2" />
             Filters
           </Button>
-          <Button onClick={exportToCSV} variant="outline" size="sm" className="border-white/20">
-            <Download className="w-4 h-4 mr-2" />
-            CSV
-          </Button>
+          {hasPermission('analytics_export') && (
+            <Button onClick={exportToCSV} variant="outline" size="sm" className="border-white/20">
+              <Download className="w-4 h-4 mr-2" />
+              CSV
+            </Button>
+          )}
         </div>
       </div>
 

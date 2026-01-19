@@ -26,6 +26,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CinematicCard } from '@/components/atoms/CinematicCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
+import { PermissionGuard } from '@/components/rbac/PermissionGuard';
+import { useUserPermissions } from '@/components/hooks/useUserPermissions';
 
 // Lazy load heavy components for performance
 const ABTestCreator = lazy(() => import('@/components/abtest/ABTestCreator'));
@@ -59,6 +61,7 @@ export default function ABTestManagerPage() {
   const [creatorMode, setCreatorMode] = useState('standard'); // 'standard' or 'multi'
   const [showAISuggestions, setShowAISuggestions] = useState(false);
   const queryClient = useQueryClient();
+  const { hasPermission } = useUserPermissions();
 
   // Fetch A/B tests with automatic caching and error handling
   const { data: tests = [], isLoading: testsLoading, isError: testsError, refetch: refetchTests } = useQuery({
@@ -214,7 +217,8 @@ export default function ABTestManagerPage() {
   }
 
   return (
-    <div className="min-h-screen p-6 space-y-6">
+    <PermissionGuard permission="abtest_view">
+      <div className="min-h-screen p-6 space-y-6">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -229,34 +233,40 @@ export default function ABTestManagerPage() {
           <p className="text-white/60">Deploy variants and automatically promote winners</p>
         </div>
         <div className="flex gap-3">
-          <Button
-            onClick={() => setShowAISuggestions(!showAISuggestions)}
-            variant="outline"
-            className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10"
-          >
-            <Sparkles className="w-4 h-4 mr-2" />
-            AI Suggestions
-          </Button>
-          <Button
-            onClick={() => {
-              setCreatorMode('standard');
-              setShowCreator(true);
-            }}
-            className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 transition-all duration-300"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            New A/B Test
-          </Button>
-          <Button
-            onClick={() => {
-              setCreatorMode('multi');
-              setShowCreator(true);
-            }}
-            className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 transition-all duration-300"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Multi-Variant
-          </Button>
+          {hasPermission('abtest_view') && (
+            <Button
+              onClick={() => setShowAISuggestions(!showAISuggestions)}
+              variant="outline"
+              className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10"
+            >
+              <Sparkles className="w-4 h-4 mr-2" />
+              AI Suggestions
+            </Button>
+          )}
+          {hasPermission('abtest_create') && (
+            <>
+              <Button
+                onClick={() => {
+                  setCreatorMode('standard');
+                  setShowCreator(true);
+                }}
+                className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 transition-all duration-300"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                New A/B Test
+              </Button>
+              <Button
+                onClick={() => {
+                  setCreatorMode('multi');
+                  setShowCreator(true);
+                }}
+                className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 transition-all duration-300"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Multi-Variant
+              </Button>
+            </>
+          )}
         </div>
       </motion.div>
 
@@ -384,7 +394,7 @@ export default function ABTestManagerPage() {
                   )}
 
                   <div className="flex gap-2 mt-4">
-                    {test.status === 'active' ? (
+                    {hasPermission('abtest_edit') && test.status === 'active' && (
                       <Button
                         size="sm"
                         onClick={(e) => { e.stopPropagation(); pauseTestMutation.mutate(test.id); }}
@@ -394,7 +404,8 @@ export default function ABTestManagerPage() {
                         <Pause className="w-3 h-3 mr-1" />
                         Pause
                       </Button>
-                    ) : test.status === 'paused' ? (
+                    )}
+                    {hasPermission('abtest_edit') && test.status === 'paused' && (
                       <Button
                         size="sm"
                         onClick={(e) => { e.stopPropagation(); resumeTestMutation.mutate(test.id); }}
@@ -403,16 +414,18 @@ export default function ABTestManagerPage() {
                         <Play className="w-3 h-3 mr-1" />
                         Resume
                       </Button>
-                    ) : null}
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="border-cyan-500/30 text-cyan-400 ml-auto"
-                      onClick={(e) => { e.stopPropagation(); setSelectedTest(test); }}
-                    >
-                      <TrendingUp className="w-3 h-3 mr-1" />
-                      View Details
-                    </Button>
+                    )}
+                    {hasPermission('abtest_view') && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="border-cyan-500/30 text-cyan-400 ml-auto"
+                        onClick={(e) => { e.stopPropagation(); setSelectedTest(test); }}
+                      >
+                        <TrendingUp className="w-3 h-3 mr-1" />
+                        View Details
+                      </Button>
+                    )}
                   </div>
                 </motion.div>
               ))}
@@ -538,7 +551,8 @@ export default function ABTestManagerPage() {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+      </div>
+    </PermissionGuard>
   );
 }
 

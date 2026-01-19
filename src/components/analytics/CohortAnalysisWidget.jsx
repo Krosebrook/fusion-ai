@@ -14,12 +14,14 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
+import { useUserPermissions } from '@/components/hooks/useUserPermissions';
 
 export function CohortAnalysisWidget({ testId }) {
   const [timeframe, setTimeframe] = useState('week');
   const [segmentBy, setSegmentBy] = useState('all');
   const [segmentValue, setSegmentValue] = useState('all');
   const [showFilters, setShowFilters] = useState(false);
+  const { hasPermission } = useUserPermissions();
 
   const { data: cohorts = [], isLoading } = useQuery({
     queryKey: ['cohort-analysis', testId, timeframe, segmentBy, segmentValue],
@@ -90,10 +92,12 @@ export function CohortAnalysisWidget({ testId }) {
             <Filter className="w-4 h-4 mr-2" />
             Filters
           </Button>
-          <Button onClick={exportToCSV} variant="outline" size="sm" className="border-white/20">
-            <Download className="w-4 h-4 mr-2" />
-            CSV
-          </Button>
+          {hasPermission('analytics_export') && (
+            <Button onClick={exportToCSV} variant="outline" size="sm" className="border-white/20">
+              <Download className="w-4 h-4 mr-2" />
+              CSV
+            </Button>
+          )}
           {['day', 'week', 'month'].map((tf) => (
             <button
               key={tf}
