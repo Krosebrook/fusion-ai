@@ -1,0 +1,695 @@
+D	.env.example
+D	.github/PULL_REQUEST_TEMPLATE.yml
+D	.github/workflows/ci.yml
+D	.github/workflows/codeql-analysis.yml
+D	.github/workflows/dependency-review.yml
+D	.github/workflows/deploy-production.yml
+D	.github/workflows/deploy-staging.yml
+M	.gitignore
+M	AUDIT_SUMMARY.md
+M	CHANGELOG.md
+M	CODEBASE_AUDIT.md
+M	CODE_OF_CONDUCT.md
+M	DEBUG.md
+M	DOCUMENTATION_INDEX.md
+M	FEATURE_MAP.md
+D	IMPLEMENTATION_SUMMARY.md
+D	LICENSE
+M	PRODUCT_REQUIREMENTS_DOCUMENT.md
+M	QUICK_REFERENCE.md
+M	README.md
+M	RECOMMENDATIONS_2025.md
+M	REFACTORING.md
+D	REFACTORING_COMPLETE.md
+D	REFACTORING_SUMMARY.md
+M	ROADMAP.md
+M	SECURITY.md
+M	TESTING.md
+D	UArgo.zip
+M	agents.md
+M	claude.md
+D	docs/APP_EVALUATOR.md
+M	docs/README.md
+M	docs/explanation/architecture.md
+D	docs/how-to-guides/ci-cd-setup.md
+D	docs/how-to-guides/create-custom-agents.md
+D	docs/how-to-guides/deploy-to-aws.md
+M	docs/how-to-guides/integrate-github.md
+D	docs/how-to-guides/optimize-performance.md
+D	docs/how-to-guides/secure-your-instance.md
+M	docs/reference/api.md
+D	docs/tutorials/ai-assisted-workflow.md
+D	docs/tutorials/building-first-pipeline.md
+D	docs/tutorials/creating-custom-plugin.md
+M	eslint.config.js
+D	functions/AB_TESTING_DOCUMENTATION.md.ts
+D	functions/CHANGELOG.md.ts
+D	functions/CONTRIBUTING.md.ts
+D	functions/MODERNIZATION_SUMMARY.md.ts
+D	functions/PROMPT_STUDIO_DOCS.md.ts
+M	functions/README.md.ts
+D	functions/aiTestOptimization.ts
+D	functions/calculateIntegrationHealthScore.ts
+D	functions/claudeCode.ts
+D	functions/deployABTest.ts
+D	functions/deployStagingAuto.ts
+D	functions/detectEnvironmentDrift.ts
+D	functions/dispatchOutbox.ts
+D	functions/dispatchOutboxEnhanced.ts
+D	functions/enqueueOutbox.ts
+D	functions/generateABTestScenarios.ts
+D	functions/generateAPIDoc.ts
+D	functions/generateAutomatedReport.ts
+D	functions/generatePersonalizedInsights.ts
+D	functions/generateSyntheticTestData.ts
+D	functions/generateTestCases.ts
+D	functions/generateTestHypotheses.ts
+D	functions/getDeploymentHealth.ts
+M	functions/manifest.ts
+D	functions/mapUserJourneys.ts
+D	functions/multiBanditOptimization.ts
+D	functions/predictBuildFailures.ts
+D	functions/promoteABTestWinner.ts
+D	functions/promptHealthCheck.ts
+D	functions/promptPolicyCheck.ts
+D	functions/promptQualityCheck.ts
+D	functions/promptQualityGate.ts
+D	functions/reconcileGoogleSheets.ts
+D	functions/reconcileIntegrations.ts
+D	functions/reconcileResend.ts
+D	functions/reconcileSlack.ts
+D	functions/reconcileStubs.ts
+D	functions/reconcileTwilio.ts
+D	functions/rootCauseAnalysis.ts
+D	functions/rotateCICDSecrets.ts
+D	functions/rotateSecrets.ts
+D	functions/routeAlerts.ts
+D	functions/sastScan.ts
+D	functions/scanDependencies.ts
+D	functions/securityMonitor.ts
+M	functions/sw.ts
+D	functions/trainAgent.ts
+D	functions/triggerAutomatedRollback.ts
+M	gemini.md
+M	jsconfig.json
+M	package-lock.json
+M	package.json
+D	screenshots/1-home-page.png
+D	screenshots/2-api-generator.png
+D	screenshots/3-marketing-suite.png
+D	screenshots/4-ai-studio.png
+D	screenshots/5-analytics.png
+D	screenshots/6-integrations.png
+M	src/App.jsx
+M	src/Layout.jsx
+D	src/agents.js
+M	src/api/base44Client.js
+D	src/api/base44Client.test.js
+M	src/api/entities.js
+D	src/api/entities.test.js
+M	src/api/integrations.js
+D	src/api/integrations.test.js
+D	src/components/abtest/ABTestCreator.jsx
+D	src/components/abtest/AutoPromotionPanel.jsx
+D	src/components/abtest/MultiVariantCreator.jsx
+D	src/components/abtest/SuccessCriteriaConfig.jsx
+D	src/components/abtest/TrafficSplitter.jsx
+D	src/components/abtest/VariantMonitor.jsx
+D	src/components/abtesting/AIOptimizationPanel.jsx
+D	src/components/abtesting/AIRecommendationCard.jsx
+D	src/components/abtesting/AITestSuggestions.jsx
+D	src/components/abtesting/OptimizationHistory.jsx
+D	src/components/agent-orchestration/AgentOrchestrator.jsx
+D	src/components/agent-orchestration/DynamicCollaboration.jsx
+D	src/components/agent-orchestration/ErrorHandler.jsx
+D	src/components/agent-orchestration/ExecutionMonitor.jsx
+D	src/components/agent-orchestration/WorkflowBuilder.jsx
+D	src/components/agent-training/AgentTrainingModule.jsx
+M	src/components/agents/AgentCommunicationPanel.jsx
+M	src/components/agents/AgentConversation.jsx
+M	src/components/agents/AgentRoleManager.jsx
+M	src/components/agents/TaskExecutionManager.jsx
+M	src/components/agents/WorkflowBuilder.jsx
+M	src/components/agents/WorkflowVisualizer.jsx
+M	src/components/ai-agents/AgentCollaborationSystem.jsx
+M	src/components/ai-agents/AgentConfigurator.jsx
+M	src/components/ai-agents/NodeConfigDialog.jsx
+M	src/components/ai-agents/VisualPipelineEditor.jsx
+M	src/components/ai-agents/WorkflowBuilder.jsx
+M	src/components/ai-code/AdvancedProjectScaffolder.jsx
+M	src/components/ai-code/CodeGenerationPanel.jsx
+M	src/components/ai-code/CodeReviewAssistant.jsx
+M	src/components/ai-code/ComponentGenerator.jsx
+M	src/components/ai-code/DebuggingAssistant.jsx
+M	src/components/ai-code/DocumentationGenerator.jsx
+M	src/components/ai-code/IntegrationGenerator.jsx
+M	src/components/ai-code/ProjectScaffolder.jsx
+M	src/components/ai-code/RefactoringTool.jsx
+M	src/components/ai-code/TestingAssistant.jsx
+M	src/components/ai-code/WorkflowOrchestrator.jsx
+M	src/components/ai-studio/CodeAssistantPro.jsx
+M	src/components/ai-studio/ContentGeneratorPro.jsx
+M	src/components/ai-studio/VisualGeneratorPro.jsx
+M	src/components/ai/EnhancedGenerationPanel.jsx
+M	src/components/analytics/ABTestingView.jsx
+M	src/components/analytics/AIPredictiveInsights.jsx
+M	src/components/analytics/AnomalyDetection.jsx
+M	src/components/analytics/BottleneckAnalyzer.jsx
+M	src/components/analytics/BranchComparison.jsx
+M	src/components/analytics/CinematicChart.jsx
+D	src/components/analytics/CohortAnalysis.jsx
+D	src/components/analytics/CohortAnalysisWidget.jsx
+D	src/components/analytics/DashboardBuilder.jsx
+D	src/components/analytics/DashboardGrid.jsx
+D	src/components/analytics/DashboardList.jsx
+M	src/components/analytics/DraggableWidget.jsx
+D	src/components/analytics/FunnelVisualizationWidget.jsx
+M	src/components/analytics/InteractiveChart.jsx
+M	src/components/analytics/PerformanceHeatmap.jsx
+M	src/components/analytics/PredictiveInsights.jsx
+D	src/components/analytics/ReportBuilder.jsx
+D	src/components/analytics/StatisticalSignificance.jsx
+D	src/components/analytics/StatisticalSignificanceWidget.jsx
+M	src/components/analytics/StatsGrid.jsx
+D	src/components/analytics/TrendAnalysis.jsx
+D	src/components/analytics/UserJourneyVisualizer.jsx
+D	src/components/analytics/WidgetPalette.jsx
+D	src/components/analytics/widgets/AnomalyDetectionWidget.jsx
+D	src/components/analytics/widgets/CohortRetentionWidget.jsx
+D	src/components/analytics/widgets/ConversionFunnelWidget.jsx
+D	src/components/analytics/widgets/MultiVariantOverviewWidget.jsx
+D	src/components/analytics/widgets/PredictiveROIWidget.jsx
+D	src/components/analytics/widgets/ROITrackingWidget.jsx
+D	src/components/analytics/widgets/UserSegmentationWidget.jsx
+D	src/components/analytics/widgets/VariantPerformanceWidget.jsx
+M	src/components/api/APIKeyManager.jsx
+M	src/components/api/WebhookManager.jsx
+D	src/components/atoms/AnimatedCounter.jsx
+M	src/components/atoms/CinematicBadge.jsx
+M	src/components/atoms/CinematicButton.jsx
+M	src/components/atoms/CinematicCard.jsx
+D	src/components/atoms/GlowCard.jsx
+D	src/components/atoms/GradientText.jsx
+M	src/components/auth/AuthGuard.jsx
+D	src/components/cicd/AutomatedDeploymentPanel.jsx
+D	src/components/cicd/AutomatedRollbackManager.jsx
+M	src/components/cicd/CommitInfo.jsx
+M	src/components/cicd/DependencySecurityPanel.jsx
+M	src/components/cicd/DeploymentTimeline.jsx
+M	src/components/cicd/DynamicSecretsManager.jsx
+D	src/components/cicd/EnvironmentDriftDetection.jsx
+M	src/components/cicd/EnvironmentManager.jsx
+M	src/components/cicd/GitRepositoryManager.jsx
+M	src/components/cicd/OptimizationDashboard.jsx
+M	src/components/cicd/OptimizationReport.jsx
+M	src/components/cicd/PipelineConfigurator.jsx
+D	src/components/cicd/PipelineIntelligence.jsx
+M	src/components/cicd/PipelineRunDetails.jsx
+M	src/components/cicd/PipelineStatus.jsx
+D	src/components/cicd/PromptDeploymentManager.jsx
+D	src/components/cicd/PromptEnvironmentManager.jsx
+D	src/components/cicd/PromptGovernanceDashboard.jsx
+D	src/components/cicd/PromptPolicyManager.jsx
+D	src/components/cicd/PromptPromotionPipeline.jsx
+D	src/components/cicd/PromptQualityGates.jsx
+D	src/components/cicd/PromptReviewWorkflow.jsx
+D	src/components/cicd/PromptRollbackManager.jsx
+M	src/components/cicd/QualityResults.jsx
+M	src/components/cicd/RealTimeSecurityMonitor.jsx
+M	src/components/cicd/SecretManager.jsx
+M	src/components/cicd/SecurityAnalysisPanel.jsx
+M	src/components/cicd/TemplateLibrary.jsx
+D	src/components/cicd/ToolIntegrationHub.jsx
+M	src/components/cicd/VisualPipelineEditor.jsx
+M	src/components/cicd/WorkflowGenerator.jsx
+M	src/components/cinematic-engine/CameraController.jsx
+M	src/components/cinematic-engine/CinematicContainer.jsx
+M	src/components/cinematic-engine/StorytellingLayer.jsx
+M	src/components/code-agent/AgentDashboard.jsx
+M	src/components/code-agent/TaskExecutor.jsx
+M	src/components/code-agent/TaskQueue.jsx
+M	src/components/code-agent/TriggerManager.jsx
+M	src/components/code-review/CodeReviewPanel.jsx
+M	src/components/code-review/IssuesList.jsx
+M	src/components/code-review/RefactoringPanel.jsx
+M	src/components/code-review/SuggestionsPanel.jsx
+M	src/components/collaboration/CollaborationPanel.jsx
+M	src/components/collaboration/CommentThread.jsx
+M	src/components/collaboration/NotificationCenter.jsx
+M	src/components/collaboration/ShareDialog.jsx
+M	src/components/content-suite/CinematicImageGenerator.jsx
+M	src/components/content-suite/ContentGenerator.jsx
+M	src/components/content-suite/ContentOptimizer.jsx
+M	src/components/core/AppProvider.jsx
+M	src/components/core/GlobalErrorBoundary.jsx
+D	src/components/core/InputValidator.jsx
+D	src/components/core/LazyRoute.jsx
+M	src/components/core/PerformanceMonitor.jsx
+M	src/components/dashboard/AIToolsGrid.jsx
+M	src/components/dashboard/DashboardStats.jsx
+D	src/components/dashboard/PersonalizedInsights.jsx
+M	src/components/dashboard/WidgetSystem.jsx
+M	src/components/dashboard/widgets/PersonalizedInsights.jsx
+M	src/components/dashboard/widgets/QuickActionsWidget.jsx
+M	src/components/dashboard/widgets/RecentActivityWidget.jsx
+M	src/components/dashboard/widgets/RecommendationsWidget.jsx
+M	src/components/dashboard/widgets/StatsWidget.jsx
+M	src/components/deployment/DeploymentHistory.jsx
+M	src/components/deployment/DeploymentPipeline.jsx
+M	src/components/deployment/DeploymentStrategies.jsx
+M	src/components/deployment/EnvironmentCard.jsx
+M	src/components/deployment/EnvironmentConfig.jsx
+D	src/components/design-system/DesignSystemGuide.md.jsx
+D	src/components/design-system/FlashFusionTokens.jsx
+D	src/components/design-system/VisualAssets.md.jsx
+M	src/components/dev-tools/APIPlayground.jsx
+M	src/components/dev-tools/CLIReference.jsx
+D	src/components/dev-tools/ClaudeCodeIntegration.jsx
+M	src/components/dev-tools/PipelineTemplateGenerator.jsx
+D	src/components/dev-tools/SDKReference.jsx
+M	src/components/dev-tools/VSCodeExtension.jsx
+M	src/components/documentation/DocumentationPreview.jsx
+M	src/components/documentation/DocumentationSettings.jsx
+M	src/components/documentation/DocumentationViewer.jsx
+M	src/components/effects/AuroraBackground.jsx
+M	src/components/extended-analytics/CodeQualityTrends.jsx
+M	src/components/extended-analytics/ComplianceReports.jsx
+M	src/components/extended-analytics/CostOptimization.jsx
+M	src/components/extended-analytics/DependencyHealth.jsx
+M	src/components/feature-planner/EffortEstimator.jsx
+M	src/components/feature-planner/FeatureRoadmap.jsx
+M	src/components/feature-planner/FeedbackAnalyzer.jsx
+M	src/components/feature-planner/ImpactMatrix.jsx
+D	src/components/help/AIContextualHelp.jsx
+M	src/components/home/CTASection.jsx
+M	src/components/home/FAQSection.jsx
+M	src/components/home/FeaturesGrid.jsx
+M	src/components/home/HeroSection.jsx
+M	src/components/home/IntegrationsShowcase.jsx
+M	src/components/home/PricingSection.jsx
+M	src/components/home/SocialProof.jsx
+M	src/components/home/TestimonialsSection.jsx
+D	src/components/hooks/usePageTracking.jsx
+D	src/components/hooks/useUserPermissions.jsx
+D	src/components/integrations/IntegrationHealthDashboard.jsx
+D	src/components/integrations/IntegrationRateLimitViewer.jsx
+D	src/components/integrations/OutboxQueueDepthChart.jsx
+M	src/components/media-studio/AIPresetGenerator.jsx
+M	src/components/media-studio/ImageGenerationPanel.jsx
+M	src/components/media-studio/VideoGenerationPanel.jsx
+D	src/components/molecules/FeatureCard.jsx
+D	src/components/molecules/StatCard.jsx
+D	src/components/onboarding/AgentOrchestrationOnboarding.jsx
+D	src/components/onboarding/AnalyticsFeatureTutorial.jsx
+D	src/components/onboarding/ChainBuilderOnboarding.jsx
+D	src/components/onboarding/CommunityPreferencesStep.jsx
+D	src/components/onboarding/DashboardTour.jsx
+D	src/components/onboarding/DealSourcingStep.jsx
+D	src/components/onboarding/FirstABTestGuide.jsx
+D	src/components/onboarding/MonitoringOnboarding.jsx
+D	src/components/onboarding/ONBOARDING_DOCUMENTATION.md.jsx
+D	src/components/onboarding/OnboardingFlow.jsx
+M	src/components/onboarding/OnboardingWizard.jsx
+D	src/components/onboarding/PortfolioGoalsStep.jsx
+D	src/components/onboarding/PromptStudioOnboarding.jsx
+D	src/components/onboarding/RBACPermissionsGuide.jsx
+D	src/components/onboarding/README.md.jsx
+D	src/components/onboarding/ReviewStep.jsx
+D	src/components/onboarding/TestingSuiteOnboarding.jsx
+M	src/components/plugins/CustomPluginDashboard.jsx
+M	src/components/plugins/PMSyncStatusDashboard.jsx
+M	src/components/plugins/PluginAnalyticsDashboard.jsx
+M	src/components/plugins/PluginBoilerplateGenerator.jsx
+M	src/components/plugins/PluginDebugger.jsx
+M	src/components/plugins/PluginDevServer.jsx
+M	src/components/plugins/PluginSDKDocumentation.jsx
+M	src/components/plugins/PluginUIRenderer.jsx
+M	src/components/prompt-engineering/DynamicPromptGenerator.jsx
+M	src/components/prompt-engineering/PromptAnalyticsDashboard.jsx
+M	src/components/prompt-engineering/PromptChainBuilder.jsx
+M	src/components/prompt-engineering/PromptExecutor.jsx
+M	src/components/prompt-engineering/PromptExperimentManager.jsx
+M	src/components/prompt-engineering/PromptTemplateManager.jsx
+M	src/components/prompt-engineering/PromptVersionControl.jsx
+M	src/components/prompt-hub/CommunityTemplates.jsx
+M	src/components/prompt-hub/PromptAnalytics.jsx
+M	src/components/prompt-hub/PromptDiscovery.jsx
+M	src/components/prompt-hub/PromptWorkspace.jsx
+M	src/components/prompt-library/PromptOptimizer.jsx
+M	src/components/prompt-library/PromptTemplateEditor.jsx
+M	src/components/prompt-library/PromptTemplateLibrary.jsx
+D	src/components/prompt-studio/ABTestAnalytics.jsx
+D	src/components/prompt-studio/ABTestManager.jsx
+D	src/components/prompt-studio/ChainBuilder.jsx
+D	src/components/prompt-studio/ChainBuilderAdvanced.jsx
+D	src/components/prompt-studio/ChainDebugger.jsx
+D	src/components/prompt-studio/CorrelationMatrix.jsx
+D	src/components/prompt-studio/CustomMetricsBuilder.jsx
+D	src/components/prompt-studio/InteractiveDashboard.jsx
+D	src/components/prompt-studio/PerformanceDashboard.jsx
+D	src/components/prompt-studio/PerformanceHeatmap.jsx
+D	src/components/prompt-studio/PredictiveAnalytics.jsx
+D	src/components/prompt-studio/PromptAnalytics.jsx
+D	src/components/prompt-studio/PromptEditor.jsx
+D	src/components/prompt-studio/PromptLibrary.jsx
+D	src/components/prompt-studio/PromptTester.jsx
+D	src/components/prompt-studio/RealtimeMonitoring.jsx
+D	src/components/prompt-studio/TemplateLibrary.jsx
+D	src/components/prompt-studio/VersionComparison.jsx
+D	src/components/pwa/OfflineIndicator.jsx
+D	src/components/pwa/PWAInstallPrompt.jsx
+M	src/components/pwa/PWAInstaller.jsx
+D	src/components/rbac/AuditLogViewer.jsx
+M	src/components/rbac/PermissionGuard.jsx
+M	src/components/rbac/RoleManager.jsx
+D	src/components/rbac/UserAssignment.jsx
+M	src/components/rbac/UserRoleAssignment.jsx
+D	src/components/routing/LazyRoute.jsx
+M	src/components/secrets/ExternalVaultIntegration.jsx
+M	src/components/secrets/SecretAuditLog.jsx
+M	src/components/secrets/SecretRotation.jsx
+M	src/components/secrets/SecretsList.jsx
+D	src/components/security/SecurityMonitoringDashboard.jsx
+D	src/components/services/AuditService.jsx
+D	src/components/services/PersonalizationService.jsx
+M	src/components/services/PipelineSecurityService.jsx
+M	src/components/share/ShareModal.jsx
+M	src/components/templates/ComponentLibrary.jsx
+M	src/components/templates/FileTreeViewer.jsx
+M	src/components/templates/GeneratedProject.jsx
+M	src/components/templates/ProjectOptimizer.jsx
+M	src/components/templates/TemplateSelector.jsx
+D	src/components/testing/CoverageAnalyzer.jsx
+D	src/components/testing/PerformanceTestingPanel.jsx
+D	src/components/testing/TestGenerator.jsx
+D	src/components/testing/TestRunner.jsx
+D	src/components/testing/VisualTestingPanel.jsx
+M	src/components/ui-library/Card.jsx
+M	src/components/ui-library/CinemaButton.jsx
+M	src/components/ui-library/EmptyState.jsx
+D	src/components/ui-library/ErrorBoundaryWrapper.test.jsx
+M	src/components/ui-library/FormField.jsx
+M	src/components/ui-library/GlassmorphicCard.jsx
+M	src/components/ui-library/LoadingScreen.jsx
+M	src/components/ui-library/LoadingSpinner.jsx
+M	src/components/ui-library/Pagination.jsx
+M	src/components/ui-library/ProtectedRoute.jsx
+M	src/components/ui-library/StatCard.jsx
+D	src/components/ui/index.js
+D	src/components/user-journey/ABTestDeployment.jsx
+D	src/components/user-journey/ABTestScenarios.jsx
+D	src/components/user-journey/AnalysisResults.jsx
+D	src/components/user-journey/JourneyConfig.jsx
+D	src/components/user-journey/PresetCard.jsx
+D	src/components/user-journey/README.md
+D	src/components/user-journey/constants.jsx
+M	src/components/visual-engine/CameraPresets.jsx
+D	src/components/visualization/MermaidDiagram.jsx
+M	src/components/workflow-builder/AIComponentBuilder.jsx
+M	src/components/workflow-builder/APINodeConfigPanel.jsx
+M	src/components/workflow-builder/ComponentLibrary.jsx
+M	src/components/workflow-builder/CreateComponentDialog.jsx
+M	src/components/workflow-builder/OptimizationPanel.jsx
+M	src/components/workflow-builder/WorkflowAnalyticsPanel.jsx
+M	src/components/workflow-builder/WorkflowCanvas.jsx
+M	src/components/workflow-builder/WorkflowDocumentationTab.jsx
+M	src/components/workflow-builder/nodes/AITaskNode.jsx
+M	src/components/workflow-builder/nodes/APICallNode.jsx
+M	src/components/workflow-builder/nodes/ComponentNode.jsx
+M	src/components/workflow-builder/nodes/ConditionNode.jsx
+M	src/components/workflow-builder/nodes/EndNode.jsx
+M	src/components/workflow-builder/nodes/TransformNode.jsx
+M	src/components/workflow-builder/nodes/TriggerNode.jsx
+D	src/entities/ActivityLog.js
+D	src/entities/ClonedWebsite.js
+D	src/entities/Comment.js
+D	src/entities/Contact.js
+D	src/entities/InsightReport.js
+D	src/entities/Note.js
+D	src/entities/Notification.js
+D	src/entities/Project.js
+D	src/entities/Role.js
+D	src/entities/Task.js
+D	src/entities/User.js
+D	src/entities/UserRole.js
+D	src/entities/Workspace.js
+D	src/entities/WorkspaceMember.js
+D	src/functions/cloneWebsite.js
+D	src/hooks/use-mobile.test.jsx
+D	src/integrations/Core.js
+D	src/lib/app-evaluator.js
+M	src/lib/app-params.js
+D	src/lib/app-params.test.js
+M	src/lib/query-client.js
+D	src/lib/query-client.test.js
+D	src/lib/security/README.md
+D	src/lib/security/cors.js
+D	src/lib/security/index.js
+D	src/lib/security/sanitize.js
+M	src/lib/utils.js
+M	src/pages.config.js
+D	src/pages/ABTestManager.jsx
+D	src/pages/ABTestManager.md.jsx
+M	src/pages/AICodeAgent.jsx
+M	src/pages/AICodeGen.jsx
+M	src/pages/AICodeReview.jsx
+M	src/pages/AIDeployment.jsx
+M	src/pages/AIDocumentation.jsx
+M	src/pages/AIFeaturePlanner.jsx
+D	src/pages/AIOptimization.jsx
+M	src/pages/AIPipelineGenerator.jsx
+M	src/pages/AIStudio.jsx
+D	src/pages/AITestingSuite.jsx
+M	src/pages/APIDocumentation.jsx
+M	src/pages/APIGenerator.jsx
+M	src/pages/APIIntegration.jsx
+M	src/pages/AccessControl.jsx
+D	src/pages/ActivityDashboard.jsx
+D	src/pages/Admin.jsx
+M	src/pages/AdvancedAnalytics.jsx
+M	src/pages/AgentManagement.jsx
+M	src/pages/AgentOrchestration.jsx
+D	src/pages/AgentOrchestrationHub.jsx
+M	src/pages/AgentOrchestrator.jsx
+D	src/pages/AppEvaluator.jsx
+M	src/pages/CICDAnalytics.jsx
+M	src/pages/CICDAutomation.jsx
+D	src/pages/CICDHub.jsx
+M	src/pages/CinematicDemo.jsx
+D	src/pages/CollaborationWorkspace.jsx
+M	src/pages/ContentStudio.jsx
+D	src/pages/CustomDashboards.jsx
+M	src/pages/Dashboard.jsx
+M	src/pages/DeploymentCenter.jsx
+D	src/pages/DeveloperConsole.jsx
+D	src/pages/DeveloperDashboard.jsx
+M	src/pages/DeveloperTools.jsx
+M	src/pages/EnhancedAnalytics.jsx
+M	src/pages/ExtendedAnalytics.jsx
+M	src/pages/Home.jsx
+D	src/pages/IntegrationAdminHub.jsx
+M	src/pages/IntegrationManager.jsx
+M	src/pages/IntegrationsHub.jsx
+M	src/pages/MarketingSuite.jsx
+D	src/pages/Marketplace.jsx
+M	src/pages/MediaStudio.jsx
+M	src/pages/MyGenerations.jsx
+M	src/pages/MyPlugins.jsx
+M	src/pages/Onboarding.jsx
+M	src/pages/PipelineOptimization.jsx
+M	src/pages/PluginDashboards.jsx
+M	src/pages/PluginDevStudio.jsx
+M	src/pages/PluginMarketplace.jsx
+M	src/pages/PluginSDK.jsx
+M	src/pages/Profile.jsx
+M	src/pages/PromptHub.jsx
+M	src/pages/PromptLibrary.jsx
+D	src/pages/PromptStudio.jsx
+D	src/pages/RBACManager.jsx
+M	src/pages/Secrets.jsx
+M	src/pages/SecretsVault.jsx
+D	src/pages/SecurityMonitoring.jsx
+M	src/pages/Settings.jsx
+M	src/pages/Share.jsx
+D	src/pages/UserJourneyAnalyzer.jsx
+D	src/pages/UserJourneys.jsx
+M	src/pages/VisualPipelineBuilder.jsx
+M	src/pages/WorkflowBuilder.jsx
+M	src/pages/Workflows.jsx
+238ed39 fix(testing): Address code review findings
+ff0032b docs(testing): Update documentation with testing infrastructure details
+1f55740 feat(testing): Set up Vitest testing infrastructure (Q1 2026 Week 1)
+bd39e08 Initial plan
+140dae3 Merge pull request #6 from Krosebrook/copilot/audit-and-prepare-mvp-roadmap
+4cfe6bf Update base44 packages
+aedd33b Initial plan
+400f7c3 Merge pull request #5 from Krosebrook/copilot/feature-name-impact
+ac9e21c Merge pull request #3 from Krosebrook/copilot/audit-codebase-and-documentation-again
+0d70cf8 Merge branch 'main' into copilot/audit-codebase-and-documentation-again
+d08d64f Refine template based on code review feedback
+ff0e3da Add comprehensive Feature-to-PR Template for GitHub Copilot agents
+e13627a Initial plan
+fb4c9ae File changes
+732667f Merge pull request #4 from Krosebrook/copilot/audit-codebase-and-documentation-another-one
+38593dc File changes
+9d8c65c File changes
+a3ac0e7 Add comprehensive DOCUMENTATION_INDEX for easy navigation
+77668f1 Update README with enhanced architecture, security, and AI integration sections
+dff97a8 Add ROADMAP, REFACTORING, and DEBUG documentation
+3b269d6 Add comprehensive documentation: CHANGELOG, CONTRIBUTING, agents, claude, gemini
+e17c1cc Initial plan
+f8c473b Fix code review comments - add missing import and improve documentation clarity
+6e10337 Enhance README with architecture diagram and add API reference documentation
+de8e7c6 Add comprehensive documentation structure with tutorials, guides, and explanations
+1d3a855 Add claude.md, gemini.md, ROADMAP.md, TESTING.md, and .env.example
+46482af Add CHANGELOG, CONTRIBUTING, SECURITY, CODE_OF_CONDUCT, and agents.md documentation
+2f468e3 Initial plan
+c5f99ed Merge pull request #2 from Krosebrook/copilot/audit-codebase-and-documentation
+dd39725 Add quick implementation guide for easy onboarding
+a1ee3f4 Add comprehensive 2025 recommendations and audit summary
+00562d4 Initial plan
+6455747 Merge pull request #1 from Krosebrook/copilot/audit-codebase-and-generate-prd
+6674665 Address code review feedback - update status badges for accuracy
+a983e6e Complete codebase audit and generate comprehensive PRD with feature map
+68ed61c Initial plan
+8fd9314 File changes
+e470eb3 File changes
+5a3cd00 File changes
+e335f95 File changes
+dd244bf File changes
+f109909 File changes
+4707d2a File changes
+df2b182 File changes
+ecbf48b File changes
+8c1eb09 File changes
+059ccf4 File changes
+9934e78 File changes
+d3c7226 File changes
+24c6181 File changes
+048550d File changes
+7dc0973 File changes
+d675d92 File changes
+34aec66 File changes
+292ed87 File changes
+0313181 File changes
+9462148 File changes
+5caf9f2 File changes
+45a0255 File changes
+a4dc900 File changes
+36ccbfb File changes
+2ca58c8 File changes
+ed9d7e4 File changes
+ff4bfaf File changes
+b3ec587 File changes
+e4e11bb File changes
+44e9a20 File changes
+9f0c562 File changes
+7198008 File changes
+51035ef File changes
+adf129a File changes
+455810b File changes
+4f722dc File changes
+b29ecd4 File changes
+98cc135 File changes
+d1de03b File changes
+819b6d7 File changes
+29d084d File changes
+44c97a0 File changes
+5989e7a File changes
+4a301cb File changes
+e533b32 File changes
+67f0bae File changes
+1293a4a File changes
+1c0baed File changes
+89c2324 File changes
+0eab614 File changes
+513a3bf File changes
+413e2e4 File changes
+9e5b4f9 File changes
+f3ba856 File changes
+ef16cca File changes
+c8e9275 File changes
+43a897d File changes
+979b998 File changes
+fbf1dd1 File changes
+b8f8855 File changes
+8fbb93f File changes
+09d6a07 File changes
+48466c6 File changes
+c6afd70 File changes
+f29b440 File changes
+92b1718 File changes
+59587b8 File changes
+9488cce File changes
+c113d35 File changes
+1bd29be File changes
+ed61db5 File changes
+51245cb File changes
+2033bcd File changes
+5fc2eef File changes
+3e9eda8 File changes
+8d1cfdd File changes
+02f479d File changes
+82695fa File changes
+a8d5ebf File changes
+cc70a41 File changes
+1520a6c File changes
+7b35315 File changes
+b0ad22f File changes
+40e601a File changes
+4dacb14 File changes
+3f8c2c8 File changes
+769b88a File changes
+1a008d1 File changes
+8c1e4fb File changes
+3e23f9d File changes
+dc4e6da File changes
+32f1580 File changes
+d13de18 File changes
+dbb7737 File changes
+ba06927 File changes
+3161390 File changes
+66ed340 File changes
+a717990 File changes
+5335ed6 File changes
+cb7a380 File changes
+92e736f File changes
+9db7927 File changes
+be0e978 File changes
+f68d55e File changes
+cd3968c File changes
+1925a78 File changes
+8502432 File changes
+66db3f3 File changes
+d83bb8a File changes
+6b85fff File changes
+76f392d File changes
+6d271f0 File changes
+448903b File changes
+eb8b2d0 File changes
+c6b6f1a File changes
+54036f7 File changes
+39abbaa File changes
+a13e1d9 File changes
+27b1c50 File changes
+71ac1e7 File changes
+865a326 File changes
+b552161 File changes
+cf0c0fe File changes
+7b38edc File changes
+6c05138 File changes
+5be977a File changes
+f3de75e File changes
+1814608 File changes
+62ad08a File changes
+02f333d File changes
+8b0f1e2 File changes
+2b36c59 File changes
+4c343d5 File changes
+58ae602 File changes
+8552e24 File changes
+8076416 File changes
+238d207 File changes
+85e815d File changes
+b952fe6 File changes
+8898e8f Fix FolderTree Icon
