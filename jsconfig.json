@@ -8,7 +8,8 @@
       "@/lib/*": ["./src/lib/*"],
       "@/api/*": ["./src/api/*"],
       "@/hooks/*": ["./src/hooks/*"],
-      "@/utils/*": ["./src/utils/*"]
+      "@/utils/*": ["./src/utils/*"],
+      "@/functions/*": ["./functions/*"]
     },
     "jsx": "react-jsx",
     "module": "esnext",
